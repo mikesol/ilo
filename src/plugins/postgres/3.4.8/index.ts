@@ -445,11 +445,13 @@ export function postgres(config?: PostgresConfig | string): PluginDefinition<Pos
 //      })
 //    This works but is significantly less natural than the real thing.
 //
-// 9. Error handling / .catch():
+// 9. Error handling:
 //    Real:  sql`...`.catch(err => ...)
-//    Ilo: No concept of runtime errors in the AST.
-//    The interpreter handles errors. You could model $.try()
-//    but it's fundamentally different from JS try/catch.
+//    Ilo: $.try($.sql`...`).catch(err => fallback)
+//    The error plugin provides $.try(), $.attempt(), $.orElse(),
+//    $.guard(), $.settle(). These compose with postgres queries
+//    to catch real constraint violations, missing tables, etc.
+//    Tested with real Postgres via testcontainers.
 //
 // 10. Cursors:
 //    Real:  sql`...`.cursor(10, rows => ...)
@@ -476,11 +478,23 @@ export function postgres(config?: PostgresConfig | string): PluginDefinition<Pos
 //
 // ============================================================
 // SUMMARY:
+// Based on source-level analysis of postgres.js v3.4.8
+// (github.com/porsager/postgres, tag v3.4.8).
+//
 // For the 80% case of "query, transform, return" — this is
 // nearly identical to real postgres.js. For transactions with
 // data dependencies, it works via proxy chains. For complex
-// conditional logic and error handling inside transactions,
-// it diverges noticeably.
+// conditional logic inside transactions, it diverges.
+//
+// Error handling now works via the error plugin ($.try/catch),
+// cursor callback form works via $.sql.cursor(), and
+// concurrency (parallel queries, retry, timeout) works via
+// the fiber plugin. All validated against real Postgres.
+//
+// Not supported: COPY (streaming in postgres.js — .writable()
+// and .readable() return Node.js streams), LISTEN/NOTIFY
+// (push-based, server-initiated), cursor async-iterable form
+// (requires runtime iteration, can't be expressed as finite AST).
 //
 // The key insight: postgres.js's tagged template API is
 // *already* essentially a DSL. We're just making the DSL
