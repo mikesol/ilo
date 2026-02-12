@@ -37,3 +37,10 @@ describe("boolean: $.not()", () => {
     expect(ast.result.operand.kind).toBe("core/eq");
   });
 });
+
+describe("boolean: trait declaration", () => {
+  it("declares eq trait", () => {
+    expect(boolean.traits?.eq).toEqual({ type: "boolean", nodeKind: "boolean/eq" });
+    expect(boolean.nodeKinds).toContain("boolean/eq");
+  });
+});
