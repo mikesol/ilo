@@ -76,6 +76,7 @@ gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "<thre
 - **Wait for CI before merging.** After creating a PR, use `gh pr checks <N> --watch` or `sleep 60 && gh pr checks <N>` to confirm all checks pass before requesting merge authorization. Never merge a red PR.
 - **Every plugin must follow the contract in `src/plugin-authoring-guide.ts`.** Three fields: `name`, `nodeKinds`, `build(ctx)`. No exceptions.
 - **AST nodes must be namespaced to their plugin** (`plugin/kind`, not bare `kind`). The `nodeKinds` array in the plugin definition must list every kind the plugin emits.
+- **Never roll prelude-level logic into a plugin.** If an operation could be useful to more than one plugin, it MUST be its own plugin. This applies to both user-facing API and internal implementation. Examples: equality → `eq` plugin, ordering → `ord` plugin, null handling → `nullable` plugin. When you discover a missing prelude operation while building a plugin, STOP. Create an issue for the prelude plugin. Build it. Resume. This rule exists because agents learn by example — if a reference plugin inlines generic logic, every agent-generated plugin will do the same.
 
 ## Current phase
 
