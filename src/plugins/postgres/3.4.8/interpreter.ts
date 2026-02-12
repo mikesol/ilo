@@ -147,6 +147,25 @@ export function postgresInterpreter(
           return savepointExpr();
         }
 
+        case "postgres/cursor": {
+          const cursorExpr = async () => {
+            const queryNode = node.query as ASTNode;
+            const { sql, params } = buildSQL(queryNode, recurse);
+            const batchSize = (await Promise.resolve(recurse(node.batchSize as ASTNode))) as number;
+
+            await client.cursor(sql, params, batchSize, async (rows) => {
+              const bodyClone = structuredClone(node.body) as ASTNode;
+              injectCursorBatch(bodyClone, rows);
+              await Promise.resolve(recurse(bodyClone));
+              return undefined;
+            });
+          };
+          return cursorExpr();
+        }
+
+        case "postgres/cursor_batch":
+          return (node as any).__batchData;
+
         // These are resolved inline by buildSQL, never visited directly
         case "postgres/identifier":
         case "postgres/insert_helper":
@@ -160,4 +179,20 @@ export function postgresInterpreter(
       }
     },
   };
+}
+
+function injectCursorBatch(node: any, rows: unknown[]): void {
+  if (node === null || node === undefined || typeof node !== "object") return;
+  if (Array.isArray(node)) {
+    for (const item of node) injectCursorBatch(item, rows);
+    return;
+  }
+  if (node.kind === "postgres/cursor_batch") {
+    node.__batchData = rows;
+  }
+  for (const v of Object.values(node)) {
+    if (typeof v === "object" && v !== null) {
+      injectCursorBatch(v, rows);
+    }
+  }
 }
