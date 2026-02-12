@@ -43,7 +43,7 @@ export const str: PluginDefinition<StrMethods> = {
     "str/len",
     "str/eq",
   ],
-  traits: { eq: { type: "string", nodeKind: "str/eq" } },
+  traits: { eq: { type: "string", nodeKinds: { eq: "str/eq" } } },
   build(ctx: PluginContext): StrMethods {
     return {
       str(strings: TemplateStringsArray, ...exprs: (Expr<any> | string | number)[]) {

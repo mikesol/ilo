@@ -25,22 +25,11 @@ export const numInterpreter: InterpreterFragment = {
         return (
           (recurse(node.left as ASTNode) as number) % (recurse(node.right as ASTNode) as number)
         );
-      case "num/gt":
-        return (
-          (recurse(node.left as ASTNode) as number) > (recurse(node.right as ASTNode) as number)
-        );
-      case "num/gte":
-        return (
-          (recurse(node.left as ASTNode) as number) >= (recurse(node.right as ASTNode) as number)
-        );
-      case "num/lt":
-        return (
-          (recurse(node.left as ASTNode) as number) < (recurse(node.right as ASTNode) as number)
-        );
-      case "num/lte":
-        return (
-          (recurse(node.left as ASTNode) as number) <= (recurse(node.right as ASTNode) as number)
-        );
+      case "num/compare": {
+        const l = recurse(node.left as ASTNode) as number;
+        const r = recurse(node.right as ASTNode) as number;
+        return l < r ? -1 : l === r ? 0 : 1;
+      }
       case "num/neg":
         return -(recurse(node.operand as ASTNode) as number);
       case "num/abs":
@@ -57,6 +46,10 @@ export const numInterpreter: InterpreterFragment = {
         return Math.max(...(node.values as ASTNode[]).map((v) => recurse(v) as number));
       case "num/eq":
         return recurse(node.left as ASTNode) === recurse(node.right as ASTNode);
+      case "num/zero":
+        return 0;
+      case "num/one":
+        return 1;
       default:
         throw new Error(`Num interpreter: unknown node kind "${node.kind}"`);
     }

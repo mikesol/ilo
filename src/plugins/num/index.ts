@@ -1,15 +1,9 @@
 import type { Expr, PluginContext, PluginDefinition } from "../../core";
 
 export interface NumMethods {
-  add(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
   sub(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
-  mul(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
   div(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
   mod(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
-  gt(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
-  gte(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
-  lt(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
-  lte(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
   neg(a: Expr<number> | number): Expr<number>;
   abs(a: Expr<number> | number): Expr<number>;
   floor(a: Expr<number> | number): Expr<number>;
@@ -27,10 +21,7 @@ export const num: PluginDefinition<NumMethods> = {
     "num/mul",
     "num/div",
     "num/mod",
-    "num/gt",
-    "num/gte",
-    "num/lt",
-    "num/lte",
+    "num/compare",
     "num/neg",
     "num/abs",
     "num/floor",
@@ -39,8 +30,17 @@ export const num: PluginDefinition<NumMethods> = {
     "num/min",
     "num/max",
     "num/eq",
+    "num/zero",
+    "num/one",
   ],
-  traits: { eq: { type: "number", nodeKind: "num/eq" } },
+  traits: {
+    eq: { type: "number", nodeKinds: { eq: "num/eq" } },
+    ord: { type: "number", nodeKinds: { compare: "num/compare" } },
+    semiring: {
+      type: "number",
+      nodeKinds: { add: "num/add", zero: "num/zero", mul: "num/mul", one: "num/one" },
+    },
+  },
   build(ctx: PluginContext): NumMethods {
     const binop = (kind: string) => (a: Expr<number> | number, b: Expr<number> | number) =>
       ctx.expr<number>({
@@ -52,23 +52,10 @@ export const num: PluginDefinition<NumMethods> = {
     const unop = (kind: string) => (a: Expr<number> | number) =>
       ctx.expr<number>({ kind, operand: ctx.lift(a).__node });
 
-    const cmpop = (kind: string) => (a: Expr<number> | number, b: Expr<number> | number) =>
-      ctx.expr<boolean>({
-        kind,
-        left: ctx.lift(a).__node,
-        right: ctx.lift(b).__node,
-      });
-
     return {
-      add: binop("num/add"),
       sub: binop("num/sub"),
-      mul: binop("num/mul"),
       div: binop("num/div"),
       mod: binop("num/mod"),
-      gt: cmpop("num/gt"),
-      gte: cmpop("num/gte"),
-      lt: cmpop("num/lt"),
-      lte: cmpop("num/lte"),
       neg: unop("num/neg"),
       abs: unop("num/abs"),
       floor: unop("num/floor"),

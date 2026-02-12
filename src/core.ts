@@ -123,7 +123,7 @@ export interface PluginContext {
 
 export interface TraitImpl {
   type: string;
-  nodeKind: string;
+  nodeKinds: Record<string, string>;
 }
 
 export interface PluginDefinition<T = any> {
@@ -132,6 +132,9 @@ export interface PluginDefinition<T = any> {
   build: (ctx: PluginContext) => T;
   traits?: {
     eq?: TraitImpl;
+    ord?: TraitImpl;
+    semiring?: TraitImpl;
+    heytingAlgebra?: TraitImpl;
   };
 }
 
