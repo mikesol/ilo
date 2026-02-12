@@ -350,9 +350,6 @@ interface CoreDollar<I = never> {
     f: (els: Expr<any> | any) => { t: (then: Expr<any> | any) => Expr<any> };
   };
 
-  /** Equality */
-  eq<T>(a: Expr<T> | T, b: Expr<T> | T): Expr<boolean>;
-
   /**
    * Sequence side effects with a final return value.
    * All arguments are included in the program.
@@ -464,17 +461,6 @@ export function ilo<P extends PluginDefinition<any>[]>(...plugins: P) {
             };
           },
         };
-      },
-
-      eq<T>(a: Expr<T> | T, b: Expr<T> | T): Expr<boolean> {
-        return makeExprProxy<boolean>(
-          {
-            kind: "core/eq",
-            left: ctx.lift(a).__node,
-            right: ctx.lift(b).__node,
-          },
-          ctx,
-        );
       },
 
       do(...exprs: (Expr<any> | any)[]) {
