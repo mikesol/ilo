@@ -18,3 +18,12 @@ export type { StMethods } from "./plugins/st";
 export { st } from "./plugins/st";
 export type { StrMethods } from "./plugins/str";
 export { str } from "./plugins/str";
+export type {
+  ArraySchema,
+  InferSchema,
+  NullableSchema,
+  SchemaShape,
+  SchemaTag,
+  SchemaType,
+} from "./schema";
+export { array, nullable } from "./schema";
