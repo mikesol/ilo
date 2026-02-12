@@ -3,13 +3,16 @@
 export type {
   ASTNode,
   Expr,
+  Interpreter,
+  InterpreterFragment,
   Plugin,
   PluginContext,
   PluginDefinition,
   Program,
   TraitImpl,
 } from "./core";
-export { ilo } from "./core";
+export { composeInterpreters, ilo } from "./core";
+export { coreInterpreter } from "./interpreters/core";
 export type { BooleanMethods } from "./plugins/boolean";
 export { boolean } from "./plugins/boolean";
 export type { ControlMethods } from "./plugins/control";
