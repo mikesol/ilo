@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { PluginDefinition } from "../src/core";
 import { ilo } from "../src/core";
 import { num } from "../src/plugins/num";
 import { str } from "../src/plugins/str";
@@ -270,5 +271,52 @@ describe("core: program metadata", () => {
     const app = ilo();
     const prog = app(($) => $.input.x);
     expect(prog.plugins).toEqual([]);
+  });
+});
+
+describe("core: trait protocol", () => {
+  it("plugins field on PluginContext exposes loaded plugins", () => {
+    let capturedPlugins: any[] = [];
+    const spy: PluginDefinition<{}> = {
+      name: "spy",
+      nodeKinds: [],
+      build(ctx) {
+        capturedPlugins = ctx.plugins;
+        return {};
+      },
+    };
+    const app = ilo(num, spy);
+    app(($) => $.add(1, 2));
+    expect(capturedPlugins).toHaveLength(2);
+    expect(capturedPlugins[0].name).toBe("num");
+    expect(capturedPlugins[1].name).toBe("spy");
+  });
+
+  it("inputSchema on PluginContext exposes runtime schema", () => {
+    let capturedSchema: any;
+    const spy: PluginDefinition<{}> = {
+      name: "spy",
+      nodeKinds: [],
+      build(ctx) {
+        capturedSchema = ctx.inputSchema;
+        return {};
+      },
+    };
+    const app = ilo(num, spy);
+    app({ x: "number" }, ($) => $.add($.input.x, 1));
+    expect(capturedSchema).toEqual({ x: "number" });
+  });
+
+  it("traits field on PluginDefinition is accessible", () => {
+    const p: PluginDefinition<{}> = {
+      name: "test",
+      nodeKinds: ["test/eq"],
+      traits: { eq: { type: "number", nodeKind: "test/eq" } },
+      build() {
+        return {};
+      },
+    };
+    expect(p.traits?.eq?.type).toBe("number");
+    expect(p.traits?.eq?.nodeKind).toBe("test/eq");
   });
 });

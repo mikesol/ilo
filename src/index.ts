@@ -1,6 +1,14 @@
 // Public API
 
-export type { ASTNode, Expr, Plugin, PluginContext, PluginDefinition, Program } from "./core";
+export type {
+  ASTNode,
+  Expr,
+  Plugin,
+  PluginContext,
+  PluginDefinition,
+  Program,
+  TraitImpl,
+} from "./core";
 export { ilo } from "./core";
 export type { BooleanMethods } from "./plugins/boolean";
 export { boolean } from "./plugins/boolean";
