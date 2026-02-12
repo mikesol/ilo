@@ -28,6 +28,7 @@ export { error } from "./plugins/error";
 export { errorInterpreter } from "./plugins/error/interpreter";
 export type { FiberMethods } from "./plugins/fiber";
 export { fiber } from "./plugins/fiber";
+export { fiberInterpreter } from "./plugins/fiber/interpreter";
 export type { HeytingAlgebraMethods } from "./plugins/heyting-algebra";
 export { heytingAlgebra } from "./plugins/heyting-algebra";
 export type { MonoidMethods } from "./plugins/monoid";
