@@ -73,7 +73,6 @@ gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "<thre
 - **SCAFFOLD code**: If you encounter code marked `SCAFFOLD`, don't modify/extend/build on it beyond its stated purpose. When you create scaffold code, add a `SCAFFOLD(phase, #issue)` comment and create a `scaffold-cleanup` issue.
 - **Spec seems wrong?** STOP. Open a GitHub Issue labeled `spec-change` with: the problem (with evidence), affected VISION.md sections, proposed change, downstream impact. Don't build on a wrong assumption.
 - **Type-check and run demos**: Validate with `npm run build && npm run demo`. AST output must be inspectable and deterministic.
-- **Use .venv** when running poetry, pytest, python, or formatters.
 - **Every plugin must follow the contract in `src/plugin-authoring-guide.ts`.** Three fields: `name`, `nodeKinds`, `build(ctx)`. No exceptions.
 - **AST nodes must be namespaced to their plugin** (`plugin/kind`, not bare `kind`). The `nodeKinds` array in the plugin definition must list every kind the plugin emits.
 
