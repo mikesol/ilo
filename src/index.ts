@@ -14,6 +14,8 @@ export type { BooleanMethods } from "./plugins/boolean";
 export { boolean } from "./plugins/boolean";
 export type { ControlMethods } from "./plugins/control";
 export { control } from "./plugins/control";
+export type { EqMethods } from "./plugins/eq";
+export { eq, inferType, resolveSchemaType } from "./plugins/eq";
 export type { ErrorMethods } from "./plugins/error";
 export { error } from "./plugins/error";
 export type { FiberMethods } from "./plugins/fiber";
