@@ -25,6 +25,7 @@ export { eq } from "./plugins/eq";
 export { eqInterpreter } from "./plugins/eq/interpreter";
 export type { ErrorMethods } from "./plugins/error";
 export { error } from "./plugins/error";
+export { errorInterpreter } from "./plugins/error/interpreter";
 export type { FiberMethods } from "./plugins/fiber";
 export { fiber } from "./plugins/fiber";
 export type { HeytingAlgebraMethods } from "./plugins/heyting-algebra";

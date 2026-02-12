@@ -27,13 +27,34 @@ export const coreInterpreter: InterpreterFragment = {
 
       case "core/cond": {
         const predicate = recurse(node.predicate as ASTNode);
+        if (predicate && typeof (predicate as any).then === "function") {
+          const condExpr = async () => {
+            const resolved = await predicate;
+            return resolved
+              ? await Promise.resolve(recurse(node.then as ASTNode))
+              : await Promise.resolve(recurse(node.else as ASTNode));
+          };
+          return condExpr();
+        }
         return predicate ? recurse(node.then as ASTNode) : recurse(node.else as ASTNode);
       }
 
       case "core/do": {
         const steps = node.steps as ASTNode[];
-        for (const step of steps) {
-          recurse(step);
+        // Execute steps, switching to async if any returns a Promise
+        for (let i = 0; i < steps.length; i++) {
+          const result = recurse(steps[i]);
+          if (result && typeof (result as any).then === "function") {
+            // Async step detected — finish remaining steps asynchronously
+            const doExpr = async () => {
+              await result;
+              for (let j = i + 1; j < steps.length; j++) {
+                await Promise.resolve(recurse(steps[j]));
+              }
+              return await Promise.resolve(recurse(node.result as ASTNode));
+            };
+            return doExpr();
+          }
         }
         return recurse(node.result as ASTNode);
       }
@@ -45,6 +66,9 @@ export const coreInterpreter: InterpreterFragment = {
         const elements = node.elements as ASTNode[];
         return elements.map((el) => recurse(el));
       }
+
+      case "core/lambda_param":
+        return (node as any).__value;
 
       default:
         throw new Error(`Core interpreter: unknown node kind "${node.kind}"`);
