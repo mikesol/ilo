@@ -1,4 +1,4 @@
-# Ilo — Vision 0.1.0
+# Ilo — Vision 0.2.0
 
 *Extensible tagless final DSL for deterministic, verifiable TypeScript programs.*
 
@@ -11,13 +11,13 @@
 Ilo is a **library** for building programs that are data. You compose a set of plugins, write a closure, and get back a deterministic AST with a content hash. Nothing executes. The AST is a complete, self-contained description of what the program *would* do — an interpreter gives it meaning.
 
 ```ts
-const serverless = ilo(num, str, db('postgres://...'))
+const serverless = ilo(num, str, postgres('postgres://...'), fiber, error)
 
 const getUser = serverless(($) => {
-  const user = $.db.one('SELECT * FROM users WHERE id = $1', [$.input.userId])
+  const user = $.sql`select * from users where id = ${$.input.userId}`
   return $.do(
-    $.db.exec('UPDATE users SET last_seen = now() WHERE id = $1', [$.input.userId]),
-    user
+    $.sql`update users set last_seen = now() where id = ${$.input.userId}`,
+    user[0]
   )
 })
 // getUser is a Program: { ast, hash, plugins, inputSchema }
@@ -66,6 +66,14 @@ See `src/plugin-authoring-guide.ts` for a complete worked example.
 
 After the closure executes, ilo walks the return tree and all emitted statements. Any registered node not reachable from the root is an orphan — likely a forgotten side effect. The build fails with a diagnostic error listing the orphaned nodes.
 
+### Recursion via Y combinator
+
+The DSL needs recursion for tree traversal, recursive data processing, and any program that can't be expressed as a flat map/filter/reduce. Native JS recursion doesn't work — a function calling itself would re-execute the closure and build a new AST.
+
+The approach: a Y combinator injected into the AST. Something like `$.rec(self => ...)` where `self` is a proxy representing "call this function again." The recursive call becomes an AST node (`core/rec_call`), and the interpreter implements the actual recursion. This keeps the AST finite and inspectable even for recursive programs.
+
+**Status:** Not yet implemented. This is a core capability gap.
+
 ### Content hashing
 
 The AST (with internal IDs stripped) is hashed to produce a deterministic program fingerprint. Identical programs produce identical hashes regardless of when or where they were built.
@@ -76,22 +84,112 @@ The AST (with internal IDs stripped) is hashed to produce a deterministic progra
 
 - **Not a runtime.** Ilo produces ASTs. It does not execute them.
 - **Not a framework.** There is no application lifecycle, no middleware stack, no request/response model. Ilo is a library you call.
-- **Not an ORM.** The `db` plugin builds AST nodes containing SQL strings. It doesn't generate queries, manage connections, or migrate schemas.
+- **Not an ORM.** The `postgres` plugin builds AST nodes containing SQL strings. It doesn't generate queries, manage connections, or migrate schemas.
 - **Not a compiler.** There is no codegen step. The output is a runtime JavaScript object (`Program`) that you can inspect, serialize, or hand to an interpreter.
 
 ---
 
 ## 5. Current Plugins
 
+### Core plugins (in `src/plugins.ts`)
+
 | Plugin | Namespace | What it adds to $ |
 |--------|-----------|-------------------|
-| `num` | `num/` | Arithmetic, comparison, rounding |
-| `str` | `str/` | String ops, template literals, split/join |
-| `db` | `db/` | SQL queries (`one`, `many`, `exec`) |
+| `num` | `num/` | Arithmetic (`add`, `sub`, `mul`, `div`, `mod`), comparison (`gt`, `gte`, `lt`, `lte`), rounding (`floor`, `ceil`, `round`, `abs`), variadic (`min`, `max`), negation |
+| `str` | `str/` | Tagged template `` $.str`...` ``, `concat`, `upper`, `lower`, `trim`, `slice`, `includes`, `startsWith`, `endsWith`, `split`, `join`, `replace`, `len` |
+| `db` | `db/` | SQL queries (`one`, `many`, `exec`). Generic — not tied to any specific database. |
 | `api` | `api/` | HTTP methods (`get`, `post`, `put`, `delete`) |
-| `jwt` | `jwt/` | Token verification, claims, role checking |
-| `crypto` | `crypto/` | SHA-256, SHA-512, HMAC |
-| `kv` | `kv/` | Key-value store (get, set, del, incr) |
-| `postgres` | `postgres/` | PostgreSQL-specific (transactions, listen/notify) |
-| `fiber` | `fiber/` | Structured concurrency (spawn, race, all, timeout) |
-| `error` | `error/` | Error handling (tryCatch, throw, assert) |
+| `jwt` | `jwt/` | Token verification (`verify`), claims extraction (`claims`), role checking (`hasRole`). Configurable: issuer, audience. |
+| `crypto` | `crypto/` | Hashing: `sha256`, `sha512`, `hmac` |
+| `kv` | `kv/` | Key-value store: `get`, `set` (with optional TTL), `del`, `incr`. Configurable: url. |
+
+### Standalone plugins (separate files)
+
+| Plugin | Namespace | What it adds to $ |
+|--------|-----------|-------------------|
+| `postgres` | `postgres/` | postgres.js-compatible API. Tagged template queries (`` $.sql`...` ``), dynamic identifiers (`$.sql.id()`), insert/set helpers (`$.sql.insert()`, `$.sql.set()`), transactions (`$.sql.begin()`), savepoints. **Not supported:** cursors, streaming, COPY, LISTEN/NOTIFY. |
+| `fiber` | `fiber/` | Concurrency primitives. Parallel execution (`par` — tuple and bounded map forms), sequential (`seq`), first-wins (`race`), `timeout` with fallback, `retry` with attempts/delay. Concurrency limits are always explicit. |
+| `error` | `error/` | Structured error handling. `try`/`.catch`/`.match`/`.finally`, explicit failure (`fail`), default-on-error (`orElse`), Either-style (`attempt`), assertions (`guard`), collect-all (`settle`). |
+
+### Composition model
+
+Plugins don't depend on each other. They compose at the user level:
+
+```ts
+const app = ilo(num, str, postgres('postgres://...'), fiber, error)
+```
+
+The resulting `$` is the intersection of all plugin contributions. A `postgres/query` node can be wrapped in `fiber/retry`, which can be wrapped in `error/try` — the AST captures the full structure. This is a monad stack without the ceremony:
+
+```
+Layer       Plugin     Provides           PureScript equivalent
+─────       ──────     ────────           ─────────────────────
+pure        core       $.do, $.cond       Identity
+concurrency fiber      $.par, $.retry     Aff
+failure     error      $.try, $.guard     ExceptT
+database    postgres   $.sql`...`         postgres FFI
+```
+
+---
+
+## 6. Testing Philosophy
+
+### Framework
+
+Vitest. No alternatives considered — it's the standard for modern TS projects.
+
+### Two categories of tests
+
+**1. Parity tests** — for plugins that model real-world systems. The `postgres` plugin models the postgres.js API. Tests should verify that every pattern in the "Honest Assessment Matrix" (documented in the plugin source) produces the correct AST shape. If postgres.js supports `sql.begin(sql => [...])`, the ilo equivalent must produce a `postgres/begin` node with `mode: "pipeline"`. The matrix documents what works, what's different, and what's unsupported — tests encode that matrix.
+
+**2. Structural tests** — for plugins with no real-world analogue. `fiber` and `error` are structural (concurrency and error handling aren't "copying" a specific library). Tests verify AST shape, composition behavior, and reachability analysis. Example: `$.par(a, b)` inside `$.try().catch()` must produce the right nesting.
+
+### What tests are NOT
+
+Tests do not execute programs. There is no interpreter in the test suite. Tests verify that the AST builder produces the right tree — not that some interpreter does the right thing with it.
+
+---
+
+## 7. File Organization
+
+```
+src/
+├── core.ts                    — Expr, ASTNode, ilo(), plugin contract
+├── plugins/
+│   ├── num.ts                 — arithmetic, comparison, rounding
+│   ├── str.ts                 — string ops, tagged templates
+│   ├── db.ts                  — generic SQL (one, many, exec)
+│   ├── api.ts                 — HTTP methods
+│   ├── jwt.ts                 — token verification
+│   ├── crypto.ts              — hashing
+│   ├── kv.ts                  — key-value store
+│   ├── postgres.ts            — postgres.js-compatible
+│   ├── fiber.ts               — concurrency primitives
+│   └── error.ts               — structured error handling
+├── plugin-authoring-guide.ts  — worked example (stripe)
+└── index.ts                   — public API re-exports
+tests/
+├── core.test.ts               — reachability, hashing, $.do, $.cond, $.let, $.each
+├── plugins/
+│   ├── postgres.test.ts       — parity tests against postgres.js API
+│   ├── fiber.test.ts          — structural tests for concurrency
+│   ├── error.test.ts          — structural tests for error handling
+│   └── ...
+└── composition.test.ts        — cross-plugin composition (postgres+fiber+error)
+```
+
+Demos live in a `demos/` directory or are replaced entirely by tests. The current `demo.ts`, `postgres-demo.ts`, `fiber-demo.ts`, `error-demo.ts` files served their purpose during prototyping but should migrate to test assertions.
+
+---
+
+## 8. Documentation
+
+Astro with Starlight. Covers:
+
+- **Getting started** — install, first program, what comes out
+- **Plugin API** — how to write a plugin, the `PluginContext` contract, worked example
+- **Built-in plugins** — one page per plugin with real-world examples
+- **Interpreter contract** — what an interpreter receives, how to write one
+- **Design rationale** — why tagless final, why proxies, why no runtime
+
+**Status:** Not yet implemented.
