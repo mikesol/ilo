@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Minimal pure-logic (num + eq)",
+    "path": "dist/index.js",
+    "import": "{ num, eq }"
+  },
+  {
+    "name": "Medium prelude (num + str + eq + boolean + control)",
+    "path": "dist/index.js",
+    "import": "{ num, str, eq, boolean, control }"
+  },
+  {
+    "name": "External service (postgres)",
+    "path": "dist/index.js",
+    "import": "{ postgres, postgresInterpreter }"
+  },
+  {
+    "name": "External service (stripe)",
+    "path": "dist/index.js",
+    "import": "{ stripe, stripeInterpreter }"
+  },
+  {
+    "name": "Full bundle",
+    "path": "dist/index.js",
+    "import": "*"
+  }
+]
