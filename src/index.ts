@@ -7,6 +7,7 @@ export type {
   Interpreter,
   InterpreterFragment,
   LegacyInterpreterFragment,
+  MissingTraitError,
   Plugin,
   PluginContext,
   PluginDefinition,
@@ -17,6 +18,8 @@ export type {
   StepEffect,
   StepHandler,
   TraitImpl,
+  TypeclassMapping,
+  TypeclassSlot,
 } from "./core";
 // Note: GeneratorInterpreterFragment is kept as an export for backward
 // compatibility — it is now a type alias for InterpreterFragment.

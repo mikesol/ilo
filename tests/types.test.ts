@@ -1,6 +1,18 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type { Expr } from "../src";
-import { boolean, eq, heytingAlgebra, ilo, num, ord, semigroup, semiring, show, str } from "../src";
+import {
+  boolean,
+  eq,
+  heytingAlgebra,
+  ilo,
+  num,
+  ord,
+  postgres,
+  semigroup,
+  semiring,
+  show,
+  str,
+} from "../src";
 
 const app = ilo(num, str, semiring);
 
@@ -289,5 +301,16 @@ describe("typeclass type safety — negative tests", () => {
       return $.do(r1, r2, r3);
     });
     expect(prog.ast).toBeDefined();
+  });
+});
+
+describe("non-typeclass plugin isolation", () => {
+  it("non-typeclass plugins work without any type plugins", () => {
+    const app = ilo(postgres("postgres://localhost/test"));
+    app(($) => {
+      const result = $.sql`select 1`;
+      expectTypeOf(result).toEqualTypeOf<Expr<Record<string, any>[]>>();
+      return result;
+    });
   });
 });
