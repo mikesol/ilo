@@ -1,21 +1,29 @@
-import type { Expr, PluginContext, PluginDefinition } from "../../core";
+import type { Expr, PluginContext, PluginDefinition, TypeclassSlot } from "../../core";
 import { inferType } from "../../trait-utils";
 
 /**
- * Semiring typeclass operations providing addition and multiplication.
+ * Semiring typeclass template — generates add/mul methods for a specific type T.
+ * Resolved by MergePlugins based on which type plugins are loaded.
  */
-export interface SemiringMethods {
+export interface SemiringFor<T> {
   /** Add two values via the semiring typeclass. */
-  add(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
+  add(a: Expr<T> | T, b: Expr<T> | T): Expr<T>;
   /** Multiply two values via the semiring typeclass. */
-  mul(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
+  mul(a: Expr<T> | T, b: Expr<T> | T): Expr<T>;
+}
+
+// Register with the typeclass mapping
+declare module "../../core" {
+  interface TypeclassMapping<T> {
+    semiring: SemiringFor<T>;
+  }
 }
 
 /** Semiring typeclass plugin. Dispatches `add` and `mul` to type-specific implementations. */
-export const semiring: PluginDefinition<SemiringMethods> = {
+export const semiring: PluginDefinition<TypeclassSlot<"semiring">> = {
   name: "semiring",
   nodeKinds: [],
-  build(ctx: PluginContext): SemiringMethods {
+  build(ctx: PluginContext): any {
     const impls = ctx.plugins.filter((p) => p.traits?.semiring).map((p) => p.traits!.semiring!);
 
     function dispatch(op: string) {
@@ -47,6 +55,6 @@ export const semiring: PluginDefinition<SemiringMethods> = {
     return {
       add: dispatch("add"),
       mul: dispatch("mul"),
-    } as SemiringMethods;
+    };
   },
 };

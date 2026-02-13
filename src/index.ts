@@ -38,14 +38,14 @@ export { errorInterpreter } from "./plugins/error/interpreter";
 export type { FiberMethods } from "./plugins/fiber";
 export { fiber } from "./plugins/fiber";
 export { fiberInterpreter } from "./plugins/fiber/interpreter";
-export type { HeytingAlgebraMethods } from "./plugins/heyting-algebra";
+export type { HeytingAlgebraFor } from "./plugins/heyting-algebra";
 export { heytingAlgebra } from "./plugins/heyting-algebra";
 export type { MonoidMethods } from "./plugins/monoid";
 export { monoid } from "./plugins/monoid";
 export type { NumMethods } from "./plugins/num";
 export { num } from "./plugins/num";
 export { numInterpreter } from "./plugins/num/interpreter";
-export type { OrdMethods } from "./plugins/ord";
+export type { OrdFor } from "./plugins/ord";
 export { ord } from "./plugins/ord";
 export { ordInterpreter } from "./plugins/ord/interpreter";
 export type { PostgresConfig, PostgresMethods } from "./plugins/postgres/3.4.8";
@@ -63,11 +63,11 @@ export {
   findCursorBatch,
   postgresInterpreter,
 } from "./plugins/postgres/3.4.8/interpreter";
-export type { SemigroupMethods } from "./plugins/semigroup";
+export type { SemigroupFor } from "./plugins/semigroup";
 export { semigroup } from "./plugins/semigroup";
-export type { SemiringMethods } from "./plugins/semiring";
+export type { SemiringFor } from "./plugins/semiring";
 export { semiring } from "./plugins/semiring";
-export type { ShowMethods } from "./plugins/show";
+export type { ShowFor } from "./plugins/show";
 export { show } from "./plugins/show";
 export type { StMethods } from "./plugins/st";
 export { st } from "./plugins/st";

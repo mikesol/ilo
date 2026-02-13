@@ -1,23 +1,31 @@
-import type { Expr, PluginContext, PluginDefinition } from "../../core";
+import type { Expr, PluginContext, PluginDefinition, TypeclassSlot } from "../../core";
 import { inferType } from "../../trait-utils";
 
 /**
- * Heyting algebra typeclass operations for lattice-based boolean logic.
+ * HeytingAlgebra typeclass template — generates and/or/not methods for a specific type T.
+ * Resolved by MergePlugins based on which type plugins are loaded.
  */
-export interface HeytingAlgebraMethods {
+export interface HeytingAlgebraFor<T> {
   /** Logical conjunction (AND). */
-  and(a: Expr<boolean>, b: Expr<boolean>): Expr<boolean>;
+  and(a: Expr<T>, b: Expr<T>): Expr<T>;
   /** Logical disjunction (OR). */
-  or(a: Expr<boolean>, b: Expr<boolean>): Expr<boolean>;
+  or(a: Expr<T>, b: Expr<T>): Expr<T>;
   /** Logical negation (NOT). */
-  not(a: Expr<boolean>): Expr<boolean>;
+  not(a: Expr<T>): Expr<T>;
+}
+
+// Register with the typeclass mapping
+declare module "../../core" {
+  interface TypeclassMapping<T> {
+    heytingAlgebra: HeytingAlgebraFor<T>;
+  }
 }
 
 /** Heyting algebra typeclass plugin. Dispatches `and`, `or`, `not` to type-specific implementations. */
-export const heytingAlgebra: PluginDefinition<HeytingAlgebraMethods> = {
+export const heytingAlgebra: PluginDefinition<TypeclassSlot<"heytingAlgebra">> = {
   name: "heytingAlgebra",
   nodeKinds: [],
-  build(ctx: PluginContext): HeytingAlgebraMethods {
+  build(ctx: PluginContext): any {
     const impls = ctx.plugins
       .filter((p) => p.traits?.heytingAlgebra)
       .map((p) => p.traits!.heytingAlgebra!);
