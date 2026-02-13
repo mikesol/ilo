@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "sideEffects": false,
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "check": "biome check . && tsc && api-extractor run --local",
