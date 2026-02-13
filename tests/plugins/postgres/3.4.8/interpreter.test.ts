@@ -1,7 +1,7 @@
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { adaptLegacy, ilo } from "../../../../src/core";
+import { ilo } from "../../../../src/core";
 import { coreInterpreter } from "../../../../src/interpreters/core";
 import { eq } from "../../../../src/plugins/eq";
 import { eqInterpreter } from "../../../../src/plugins/eq/interpreter";
@@ -35,11 +35,10 @@ function injectInput(node: any, input: Record<string, unknown>): any {
 let container: StartedPostgreSqlContainer;
 let sql: ReturnType<typeof postgres>;
 
-// error and fiber are still legacy-style; wrap them with adaptLegacy.
-// The rest are already generator-based.
+// All fragments are now generator-based.
 const nonPgFragments = [
   errorInterpreter,
-  adaptLegacy(fiberInterpreter),
+  fiberInterpreter,
   coreInterpreter,
   numInterpreter,
   ordInterpreter,
