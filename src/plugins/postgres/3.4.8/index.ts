@@ -39,7 +39,7 @@ export interface PostgresMethods {
    * Ilo:
    *   const users = $.sql`select * from users where age > ${age}`
    *
-   * Returns Expr<Row[]> — an array of result rows.
+   * Returns `Expr<Row[]>` — an array of result rows.
    */
   sql: PostgresSql;
 }

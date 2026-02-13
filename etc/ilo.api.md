@@ -6,10 +6,10 @@
 
 import type { default as postgres_2 } from 'postgres';
 
-// @public (undocumented)
+// @public
 export function array(of: SchemaType): ArraySchema;
 
-// @public (undocumented)
+// @public
 export interface ArraySchema {
     // (undocumented)
     readonly __tag: "array";
@@ -27,69 +27,61 @@ export interface ASTNode {
     kind: string;
 }
 
-// @public (undocumented)
+// @public
 export const boolean: PluginDefinition<BooleanMethods>;
 
-// @public (undocumented)
+// @public
 export const booleanInterpreter: InterpreterFragment;
 
-// @public (undocumented)
+// @public
 export type BooleanMethods = {};
 
-// @public (undocumented)
+// @public
 export const bounded: PluginDefinition<BoundedMethods>;
 
-// @public (undocumented)
+// @public
 export type BoundedMethods = {};
 
 // @public
 export function composeInterpreters(fragments: InterpreterFragment[]): (node: ASTNode) => Promise<unknown>;
 
-// @public (undocumented)
+// @public
 export const control: PluginDefinition<ControlMethods>;
 
-// @public (undocumented)
+// @public
 export interface ControlMethods {
-    // (undocumented)
     each<T>(collection: Expr<T[]>, body: (item: Expr<T>) => void): void;
-    // (undocumented)
     while(condition: Expr<boolean>): {
         body: (...statements: unknown[]) => void;
     };
 }
 
-// @public (undocumented)
+// @public
 export const coreInterpreter: InterpreterFragment;
 
-// @public (undocumented)
+// @public
 export const eq: PluginDefinition<EqMethods>;
 
-// @public (undocumented)
+// @public
 export const eqInterpreter: InterpreterFragment;
 
-// @public (undocumented)
+// @public
 export interface EqMethods {
-    // (undocumented)
     eq(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
-    // (undocumented)
     eq(a: Expr<string> | string, b: Expr<string> | string): Expr<boolean>;
-    // (undocumented)
     eq(a: Expr<boolean> | boolean, b: Expr<boolean> | boolean): Expr<boolean>;
-    // (undocumented)
     neq(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
-    // (undocumented)
     neq(a: Expr<string> | string, b: Expr<string> | string): Expr<boolean>;
-    // (undocumented)
     neq(a: Expr<boolean> | boolean, b: Expr<boolean> | boolean): Expr<boolean>;
 }
 
-// @public (undocumented)
+// @public
 export const error: PluginDefinition<ErrorMethods>;
 
-// @public (undocumented)
+// @public
 export const errorInterpreter: InterpreterFragment;
 
-// @public (undocumented)
+// @public
 export interface ErrorMethods {
     attempt<T>(expr: Expr<T>): Expr<{
         ok: T | null;
@@ -112,13 +104,13 @@ export interface ErrorMethods {
 // @public
 export type Expr<T> = ExprBase<T> & ExprFields<T>;
 
-// @public (undocumented)
+// @public
 export const fiber: PluginDefinition<FiberMethods>;
 
-// @public (undocumented)
+// @public
 export const fiberInterpreter: InterpreterFragment;
 
-// @public (undocumented)
+// @public
 export interface FiberMethods {
     // Warning: (ae-forgotten-export) The symbol "ParFn" needs to be exported by the entry point index.d.ts
     par: ParFn;
@@ -131,16 +123,13 @@ export interface FiberMethods {
     timeout(expr: Expr<any>, ms: number | Expr<number>, fallback: Expr<any> | any): Expr<any>;
 }
 
-// @public (undocumented)
+// @public
 export const heytingAlgebra: PluginDefinition<HeytingAlgebraMethods>;
 
-// @public (undocumented)
+// @public
 export interface HeytingAlgebraMethods {
-    // (undocumented)
     and(a: Expr<boolean>, b: Expr<boolean>): Expr<boolean>;
-    // (undocumented)
     not(a: Expr<boolean>): Expr<boolean>;
-    // (undocumented)
     or(a: Expr<boolean>, b: Expr<boolean>): Expr<boolean>;
 }
 
@@ -152,7 +141,7 @@ export function ilo<P extends PluginDefinition<any>[]>(...plugins: P): {
 
 // Warning: (ae-forgotten-export) The symbol "TagToType" needs to be exported by the entry point index.d.ts
 //
-// @public (undocumented)
+// @public
 export type InferSchema<S> = S extends SchemaTag ? TagToType<S> : S extends {
     __tag: "array";
     of: infer U;
@@ -163,10 +152,10 @@ export type InferSchema<S> = S extends SchemaTag ? TagToType<S> : S extends {
     [K in keyof S]: InferSchema<S[K]>;
 } : never;
 
-// @public (undocumented)
+// @public
 export function inferType(node: ASTNode, impls: TraitImpl[], schema?: Record<string, unknown>): string | null;
 
-// @public (undocumented)
+// @public
 export type Interpreter = (program: Program) => {
     run: (input: Record<string, unknown>) => Promise<unknown>;
 };
@@ -181,16 +170,16 @@ export interface InterpreterFragment {
     visit: (node: ASTNode, recurse: (node: ASTNode) => Promise<unknown>) => Promise<unknown>;
 }
 
-// @public (undocumented)
+// @public
 export const monoid: PluginDefinition<MonoidMethods>;
 
-// @public (undocumented)
+// @public
 export type MonoidMethods = {};
 
-// @public (undocumented)
+// @public
 export function nullable(of: SchemaType): NullableSchema;
 
-// @public (undocumented)
+// @public
 export interface NullableSchema {
     // (undocumented)
     readonly __tag: "nullable";
@@ -198,53 +187,38 @@ export interface NullableSchema {
     readonly of: SchemaType;
 }
 
-// @public (undocumented)
+// @public
 export const num: PluginDefinition<NumMethods>;
 
-// @public (undocumented)
+// @public
 export const numInterpreter: InterpreterFragment;
 
-// @public (undocumented)
+// @public
 export interface NumMethods {
-    // (undocumented)
     abs(a: Expr<number> | number): Expr<number>;
-    // (undocumented)
     ceil(a: Expr<number> | number): Expr<number>;
-    // (undocumented)
     div(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
-    // (undocumented)
     floor(a: Expr<number> | number): Expr<number>;
-    // (undocumented)
     max(...values: (Expr<number> | number)[]): Expr<number>;
-    // (undocumented)
     min(...values: (Expr<number> | number)[]): Expr<number>;
-    // (undocumented)
     mod(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
-    // (undocumented)
     neg(a: Expr<number> | number): Expr<number>;
-    // (undocumented)
     round(a: Expr<number> | number): Expr<number>;
-    // (undocumented)
     sub(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
 }
 
-// @public (undocumented)
+// @public
 export const ord: PluginDefinition<OrdMethods>;
 
-// @public (undocumented)
+// @public
 export const ordInterpreter: InterpreterFragment;
 
-// @public (undocumented)
+// @public
 export interface OrdMethods {
-    // (undocumented)
     compare(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
-    // (undocumented)
     gt(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
-    // (undocumented)
     gte(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
-    // (undocumented)
     lt(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
-    // (undocumented)
     lte(a: Expr<number> | number, b: Expr<number> | number): Expr<boolean>;
 }
 
@@ -264,7 +238,7 @@ export interface PluginContext {
     statements: ASTNode[];
 }
 
-// @public (undocumented)
+// @public
 export interface PluginDefinition<T = any> {
     // (undocumented)
     build: (ctx: PluginContext) => T;
@@ -285,10 +259,10 @@ export interface PluginDefinition<T = any> {
     };
 }
 
-// @public (undocumented)
+// @public
 export function postgres(config?: PostgresConfig | string): PluginDefinition<PostgresMethods>;
 
-// @public (undocumented)
+// @public
 export interface PostgresClient {
     // (undocumented)
     begin<T>(fn: (tx: PostgresClient) => Promise<T>): Promise<T>;
@@ -300,7 +274,7 @@ export interface PostgresClient {
     savepoint<T>(fn: (tx: PostgresClient) => Promise<T>): Promise<T>;
 }
 
-// @public (undocumented)
+// @public
 export interface PostgresConfig {
     // (undocumented)
     connectionString?: string;
@@ -327,10 +301,10 @@ export interface PostgresConfig {
     username?: string;
 }
 
-// @public (undocumented)
+// @public
 export function postgresInterpreter(client: PostgresClient, outerFragments?: InterpreterFragment[]): InterpreterFragment;
 
-// @public (undocumented)
+// @public
 export interface PostgresMethods {
     // Warning: (ae-forgotten-export) The symbol "PostgresSql" needs to be exported by the entry point index.d.ts
     sql: PostgresSql;
@@ -348,59 +322,52 @@ export interface Program {
     plugins: string[];
 }
 
-// @public (undocumented)
+// @public
 export function resolveSchemaType(node: ASTNode, schema?: Record<string, unknown>): string | null;
 
-// @public (undocumented)
+// @public
 export type SchemaShape = Record<string, SchemaType>;
 
-// @public (undocumented)
+// @public
 export type SchemaTag = "string" | "number" | "boolean" | "date" | "null";
 
-// @public (undocumented)
+// @public
 export type SchemaType = SchemaTag | ArraySchema | NullableSchema | {
     readonly [key: string]: SchemaType;
 };
 
-// @public (undocumented)
+// @public
 export const semigroup: PluginDefinition<SemigroupMethods>;
 
-// @public (undocumented)
+// @public
 export interface SemigroupMethods {
-    // (undocumented)
     append(a: Expr<string> | string, b: Expr<string> | string): Expr<string>;
 }
 
-// @public (undocumented)
+// @public
 export const semiring: PluginDefinition<SemiringMethods>;
 
-// @public (undocumented)
+// @public
 export interface SemiringMethods {
-    // (undocumented)
     add(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
-    // (undocumented)
     mul(a: Expr<number> | number, b: Expr<number> | number): Expr<number>;
 }
 
-// @public (undocumented)
+// @public
 export const show: PluginDefinition<ShowMethods>;
 
-// @public (undocumented)
+// @public
 export interface ShowMethods {
-    // (undocumented)
     show(a: Expr<number> | number): Expr<string>;
-    // (undocumented)
     show(a: Expr<string> | string): Expr<string>;
-    // (undocumented)
     show(a: Expr<boolean> | boolean): Expr<string>;
 }
 
-// @public (undocumented)
+// @public
 export const st: PluginDefinition<StMethods>;
 
-// @public (undocumented)
+// @public
 export interface StMethods {
-    // (undocumented)
     let<T>(initial: Expr<T> | T): {
         get: () => Expr<T>;
         set: (value: Expr<T> | T) => void;
@@ -408,42 +375,30 @@ export interface StMethods {
     };
 }
 
-// @public (undocumented)
+// @public
 export const str: PluginDefinition<StrMethods>;
 
-// @public (undocumented)
+// @public
 export const strInterpreter: InterpreterFragment;
 
-// @public (undocumented)
+// @public
 export interface StrMethods {
-    // (undocumented)
     concat(...parts: (Expr<string> | string)[]): Expr<string>;
-    // (undocumented)
     endsWith(s: Expr<string> | string, suffix: Expr<string> | string): Expr<boolean>;
-    // (undocumented)
     includes(haystack: Expr<string> | string, needle: Expr<string> | string): Expr<boolean>;
-    // (undocumented)
     join(arr: Expr<string[]>, separator: Expr<string> | string): Expr<string>;
-    // (undocumented)
     len(s: Expr<string> | string): Expr<number>;
-    // (undocumented)
     lower(s: Expr<string> | string): Expr<string>;
-    // (undocumented)
     replace(s: Expr<string> | string, search: Expr<string> | string, replacement: Expr<string> | string): Expr<string>;
-    // (undocumented)
     slice(s: Expr<string> | string, start: Expr<number> | number, end?: Expr<number> | number): Expr<string>;
-    // (undocumented)
     split(s: Expr<string> | string, delimiter: Expr<string> | string): Expr<string[]>;
-    // (undocumented)
     startsWith(s: Expr<string> | string, prefix: Expr<string> | string): Expr<boolean>;
     str(strings: TemplateStringsArray, ...exprs: (Expr<any> | string | number)[]): Expr<string>;
-    // (undocumented)
     trim(s: Expr<string> | string): Expr<string>;
-    // (undocumented)
     upper(s: Expr<string> | string): Expr<string>;
 }
 
-// @public (undocumented)
+// @public
 export interface TraitImpl {
     // (undocumented)
     nodeKinds: Record<string, string>;
@@ -454,13 +409,13 @@ export interface TraitImpl {
 // Warning: (ae-forgotten-export) The symbol "Sql" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "TransactionSql" needs to be exported by the entry point index.d.ts
 //
-// @public (undocumented)
+// @public
 export function wrapPostgresJs(sql: Sql | TransactionSql): PostgresClient;
 
 // Warnings were encountered during analysis:
 //
-// dist/core.d.ts:178:5 - (ae-forgotten-export) The symbol "CoreDollar" needs to be exported by the entry point index.d.ts
-// dist/core.d.ts:178:5 - (ae-forgotten-export) The symbol "MergePlugins" needs to be exported by the entry point index.d.ts
+// dist/core.d.ts:196:5 - (ae-forgotten-export) The symbol "CoreDollar" needs to be exported by the entry point index.d.ts
+// dist/core.d.ts:196:5 - (ae-forgotten-export) The symbol "MergePlugins" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

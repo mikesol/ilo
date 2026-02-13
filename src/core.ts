@@ -26,12 +26,12 @@ interface ExprBase<T> {
 }
 
 /**
- * Conditional mapped fields for Expr<T>.
+ * Conditional mapped fields for `Expr<T>`.
  *
- * - never        → {} (no property access — forces schema declaration)
- * - T[]          → permissive index sig (array typing deferred, see #18)
- * - Record type  → mapped { K: Expr<T[K]> } (type-preserving proxy)
- * - leaf (string, number, etc.) → {} (no extra properties)
+ * - `never`        → `{}` (no property access — forces schema declaration)
+ * - `T[]`          → permissive index sig (array typing deferred, see #18)
+ * - Record type  → mapped `{ K: Expr<T[K]> }` (type-preserving proxy)
+ * - leaf (string, number, etc.) → `{}` (no extra properties)
  */
 type ExprFields<T> = [T] extends [never]
   ? {}
@@ -409,8 +409,8 @@ interface CoreDollar<I = never> {
  * Create a ilo program builder with the given plugins.
  *
  * Usage:
- *   const serverless = ilo(num, str, db('postgres://...'))
- *   const myProgram = serverless(($) => { ... })
+ *   `const serverless = ilo(num, str, db('postgres://...'))`
+ *   `const myProgram = serverless(($) => { ... })`
  */
 export function ilo<P extends PluginDefinition<any>[]>(...plugins: P) {
   function define<S extends SchemaShape>(

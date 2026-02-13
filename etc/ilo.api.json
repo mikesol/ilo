@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "ilo!array:function(1)",
-          "docComment": "",
+          "docComment": "/**\n * Creates an array schema type.\n *\n * @param of - The element schema type.\n *\n * @returns An {@link ArraySchema} descriptor.\n *\n * @example\n * ```ts\n * const schema = { tags: array(\"string\") };\n * ```\n *\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -238,7 +238,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!ArraySchema:interface",
-          "docComment": "",
+          "docComment": "/**\n * Schema type representing an array of elements.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -427,7 +427,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!boolean:var",
-          "docComment": "",
+          "docComment": "/**\n * Boolean type plugin. Namespace: `boolean/`. Registers boolean trait implementations for use by typeclass plugins.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -464,7 +464,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!booleanInterpreter:var",
-          "docComment": "",
+          "docComment": "/**\n * Interpreter fragment for `boolean/` node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -488,7 +488,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "ilo!BooleanMethods:type",
-          "docComment": "",
+          "docComment": "/**\n * Boolean type plugin. Provides no direct methods — exposes trait implementations for eq, show, bounded, and heytingAlgebra.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -514,7 +514,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!bounded:var",
-          "docComment": "",
+          "docComment": "/**\n * Bounded typeclass plugin. No direct methods; dispatched through trait implementations registered by type plugins (e.g. `num`, `boolean`).\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -551,7 +551,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "ilo!BoundedMethods:type",
-          "docComment": "",
+          "docComment": "/**\n * Bounded typeclass plugin — marker plugin that enables `top` and `bottom` dispatch for types with registered bounded traits.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -645,7 +645,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!control:var",
-          "docComment": "",
+          "docComment": "/**\n * Control flow plugin. Namespace: `control/`.\n *\n * Provides `each` for collection iteration and `while` for conditional loops.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -682,7 +682,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!ControlMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Control flow operations for iteration.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -697,7 +697,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ControlMethods#each:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Iterate over each element of a collection, executing side effects.\n *\n * @param collection - The array expression to iterate.\n *\n * @param body - Callback receiving each element as an `Expr<T>`.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -785,7 +785,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ControlMethods#while:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Loop while a condition is true.\n *\n * @param condition - Boolean expression to evaluate each iteration.\n *\n * @returns A builder with a `body` method for the loop statements.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -838,7 +838,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!coreInterpreter:var",
-          "docComment": "",
+          "docComment": "/**\n * Interpreter fragment for core node kinds (literal, input, prop_access, cond, do, program, tuple, record).\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -862,7 +862,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!eq:var",
-          "docComment": "",
+          "docComment": "/**\n * Equality typeclass plugin. Namespace: `eq/`.\n *\n * Dispatches `eq` and `neq` to the appropriate type-specific implementation based on runtime type inference.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -899,7 +899,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!eqInterpreter:var",
-          "docComment": "",
+          "docComment": "/**\n * Interpreter fragment for `eq/` node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -923,7 +923,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!EqMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Equality comparison operations dispatched via the Eq typeclass.\n *\n * Supports any type that has an eq trait implementation registered (e.g. number via `num`, string via `str`, boolean via `boolean`).\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -938,7 +938,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!EqMethods#eq:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Test structural equality of two values of the same type.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1014,7 +1014,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!EqMethods#eq:member(2)",
-              "docComment": "",
+              "docComment": "/**\n * Test structural equality of two values of the same type.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1090,7 +1090,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!EqMethods#eq:member(3)",
-              "docComment": "",
+              "docComment": "/**\n * Test structural equality of two values of the same type.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1166,7 +1166,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!EqMethods#neq:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Test structural inequality (negated eq).\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1242,7 +1242,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!EqMethods#neq:member(2)",
-              "docComment": "",
+              "docComment": "/**\n * Test structural inequality (negated eq).\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1318,7 +1318,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!EqMethods#neq:member(3)",
-              "docComment": "",
+              "docComment": "/**\n * Test structural inequality (negated eq).\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1397,7 +1397,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!error:var",
-          "docComment": "",
+          "docComment": "/**\n * Error handling plugin. Namespace: `error/`.\n *\n * Makes failures explicit in the AST via try/catch, fail, attempt, guard, and settle combinators.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1434,7 +1434,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!errorInterpreter:var",
-          "docComment": "",
+          "docComment": "/**\n * Interpreter fragment for `error/` node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1458,7 +1458,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!ErrorMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Structured error handling operations added to the DSL context.\n *\n * Provides try/catch, fail, orElse, attempt, guard, and settle combinators for explicit, AST-level error handling.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1473,7 +1473,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ErrorMethods#attempt:member(1)",
-              "docComment": "/**\n * Attempt an expression and return an Either-style result. The result has .ok and .err properties.\n *\n * const result = $.attempt( $.sql`select * from users where id = ${id}` ) // result.ok — Expr<T | null> (null if failed) // result.err — Expr<Error | null> (null if succeeded)\n *\n * return $.cond($.eq(result.err, null)) .t(transform(result.ok)) .f({ error: result.err })\n */\n",
+              "docComment": "/**\n * Attempt an expression and return an Either-style result. The result has `.ok` and `.err` properties.\n * ```\n * const result = $.attempt(\n *   $.sql`select * from users where id = ${id}`\n * )\n * // result.ok  — Expr<T | null>  (null if failed)\n * // result.err — Expr<Error | null> (null if succeeded)\n *\n * return $.cond($.eq(result.err, null))\n *   .t(transform(result.ok))\n *   .f({ error: result.err })\n * ```\n *\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1541,7 +1541,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ErrorMethods#fail:member(1)",
-              "docComment": "/**\n * Explicitly fail with an error value. This is `throw` for the DSL.\n *\n * $.cond($.eq(user, null)) .t($.fail({ code: 404, message: 'not found' })) .f(user)\n */\n",
+              "docComment": "/**\n * Explicitly fail with an error value. This is `throw` for the DSL.\n * ```\n * $.cond($.eq(user, null))\n *   .t($.fail({ code: 404, message: 'not found' }))\n *   .f(user)\n * ```\n *\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1596,7 +1596,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ErrorMethods#guard:member(1)",
-              "docComment": "/**\n * Validate a condition, failing if it's false. Like an assertion in the program.\n *\n * $.guard($.gt(user.age, 18), { code: 403, message: 'must be 18+' })\n *\n * If the condition is true, continues. If false, fails with the given error. Useful in $.do() chains:\n *\n * return $.do( $.guard($.gt(balance, amount), 'insufficient funds'), $.sql`update accounts set balance = balance - ${amount}`, { success: true } )\n */\n",
+              "docComment": "/**\n * Validate a condition, failing if it's false. Like an assertion in the program.\n * ```\n * $.guard($.gt(user.age, 18), { code: 403, message: 'must be 18+' })\n * ```\n *\n * If the condition is true, continues. If false, fails with the given error. Useful in `$.do()` chains:\n * ```\n * return $.do(\n *   $.guard($.gt(balance, amount), 'insufficient funds'),\n *   $.sql`update accounts set balance = balance - ${amount}`,\n *   { success: true }\n * )\n * ```\n *\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1672,7 +1672,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ErrorMethods#orElse:member(1)",
-              "docComment": "/**\n * Unwrap an attempted expression, providing a default on failure. Sugar for $.try(expr).catch(() => default).\n *\n * const user = $.orElse( $.sql`select * from users where id = ${id}`, { name: 'anonymous', id: 0 } )\n */\n",
+              "docComment": "/**\n * Unwrap an attempted expression, providing a default on failure. Sugar for `$.try(expr).catch(() => default)`.\n * ```\n * const user = $.orElse(\n *   $.sql`select * from users where id = ${id}`,\n *   { name: 'anonymous', id: 0 }\n * )\n * ```\n *\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1761,7 +1761,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ErrorMethods#settle:member(1)",
-              "docComment": "/**\n * Collect results from multiple expressions, accumulating both successes and failures instead of failing fast.\n *\n * const results = $.settle( $.sql`select * from service_a`, $.sql`select * from service_b`, $.sql`select * from service_c` ) // results.fulfilled — array of successful values // results.rejected — array of errors\n *\n * This is Promise.allSettled for the DSL.\n */\n",
+              "docComment": "/**\n * Collect results from multiple expressions, accumulating both successes and failures instead of failing fast.\n * ```\n * const results = $.settle(\n *   $.sql`select * from service_a`,\n *   $.sql`select * from service_b`,\n *   $.sql`select * from service_c`\n * )\n * // results.fulfilled — array of successful values\n * // results.rejected  — array of errors\n * ```\n *\n * This is `Promise.allSettled` for the DSL.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1816,7 +1816,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ErrorMethods#try:member(1)",
-              "docComment": "/**\n * Attempt an expression that might fail. Returns a builder with .catch() and .finally().\n *\n * $.try($.sql`select * from users where id = ${id}`) .catch(err => ({ error: err.message, data: null }))\n *\n * Without .catch(), an unhandled failure propagates up (equivalent to re-throwing). The .catch() provides the recovery branch.\n */\n",
+              "docComment": "/**\n * Attempt an expression that might fail. Returns a builder with `.catch()` and `.finally()`.\n * ```\n * $.try($.sql`select * from users where id = ${id}`)\n *   .catch(err => ({ error: err.message, data: null }))\n * ```\n *\n * Without `.catch()`, an unhandled failure propagates up (equivalent to re-throwing). The `.catch()` provides the recovery branch.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1940,7 +1940,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!fiber:var",
-          "docComment": "",
+          "docComment": "/**\n * Concurrency plugin. Namespace: `fiber/`.\n *\n * Provides `par` for parallel execution, `seq` for sequential execution, `race` for first-to-complete, `timeout`, and `retry` combinators.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1977,7 +1977,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!fiberInterpreter:var",
-          "docComment": "",
+          "docComment": "/**\n * Interpreter fragment for `fiber/` node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2001,7 +2001,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!FiberMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Concurrency primitives added to the DSL context.\n *\n * Provides par, seq, race, timeout, and retry combinators that describe concurrency structure in the AST for the interpreter to execute.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2016,7 +2016,7 @@
             {
               "kind": "PropertySignature",
               "canonicalReference": "ilo!FiberMethods#par:member",
-              "docComment": "/**\n * Run expressions in parallel, return all results. This is the safe Promise.all — with mandatory concurrency limit.\n *\n * // Run 3 things concurrently (default concurrency = Infinity for tuple form) const [users, posts, stats] = $.par( $.sql`select * from users`, $.sql`select * from posts`, $.fetch`https://api.example.com/stats` )\n *\n * // Map over a collection with bounded concurrency const details = $.par(userIds, { concurrency: 5 }, (id) => $.sql`select * from details where user_id = ${id}` )\n */\n",
+              "docComment": "/**\n * Run expressions in parallel, return all results. This is the safe `Promise.all` -- with mandatory concurrency limit.\n * ```\n * // Run 3 things concurrently (default concurrency = Infinity for tuple form)\n * const [users, posts, stats] = $.par(\n *   $.sql`select * from users`,\n *   $.sql`select * from posts`,\n *   $.fetch`https://api.example.com/stats`\n * )\n *\n * // Map over a collection with bounded concurrency\n * const details = $.par(userIds, { concurrency: 5 }, (id) =>\n *   $.sql`select * from details where user_id = ${id}`\n * )\n * ```\n *\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2099,7 +2099,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!FiberMethods#retry:member(1)",
-              "docComment": "/**\n * Retry an expression up to N times with optional delay.\n *\n * const data = $.retry( $.fetch`https://flaky.api.com/data`, { attempts: 3, delay: 1000 } )\n */\n",
+              "docComment": "/**\n * Retry an expression up to N times with optional delay.\n * ```\n * const data = $.retry(\n *   $.fetch`https://flaky.api.com/data`,\n *   { attempts: 3, delay: 1000 }\n * )\n * ```\n *\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2170,7 +2170,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!FiberMethods#seq:member(1)",
-              "docComment": "/**\n * Run expressions sequentially, return last result. This is $.do() with fiber awareness — each step is guaranteed to complete before the next starts.\n *\n * Alias for $.do() but makes the intent clearer in a concurrent context.\n *\n * $.seq( $.sql`insert into users ...`, $.sql`insert into accounts ...`, $.sql`select * from users where ...` // returned )\n */\n",
+              "docComment": "/**\n * Run expressions sequentially, return last result. This is `$.do()` with fiber awareness -- each step is guaranteed to complete before the next starts.\n *\n * Alias for `$.do()` but makes the intent clearer in a concurrent context.\n * ```\n * $.seq(\n *   $.sql`insert into users ...`,\n *   $.sql`insert into accounts ...`,\n *   $.sql`select * from users where ...`  // returned\n * )\n * ```\n *\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2229,7 +2229,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!FiberMethods#timeout:member(1)",
-              "docComment": "/**\n * Timeout an expression. If it doesn't complete within the given milliseconds, the fallback is used.\n *\n * const data = $.timeout( $.fetch`https://slow.api.com/data`, 5000, { error: 'timeout' } // fallback value )\n */\n",
+              "docComment": "/**\n * Timeout an expression. If it doesn't complete within the given milliseconds, the fallback is used.\n * ```\n * const data = $.timeout(\n *   $.fetch`https://slow.api.com/data`,\n *   5000,\n *   { error: 'timeout' }  // fallback value\n * )\n * ```\n *\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2333,7 +2333,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!heytingAlgebra:var",
-          "docComment": "",
+          "docComment": "/**\n * Heyting algebra typeclass plugin. Dispatches `and`, `or`, `not` to type-specific implementations.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2370,7 +2370,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!HeytingAlgebraMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Heyting algebra typeclass operations for lattice-based boolean logic.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2385,7 +2385,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!HeytingAlgebraMethods#and:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Logical conjunction (AND).\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2461,7 +2461,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!HeytingAlgebraMethods#not:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Logical negation (NOT).\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2516,7 +2516,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!HeytingAlgebraMethods#or:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Logical disjunction (OR).\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2595,7 +2595,7 @@
         {
           "kind": "Function",
           "canonicalReference": "ilo!ilo:function(1)",
-          "docComment": "/**\n * Create a ilo program builder with the given plugins.\n *\n * Usage: const serverless = ilo(num, str, db('postgres://...')) const myProgram = serverless(($) => { ... })\n */\n",
+          "docComment": "/**\n * Create a ilo program builder with the given plugins.\n *\n * Usage: `const serverless = ilo(num, str, db('postgres://...'))` `const myProgram = serverless(($) => { ... })`\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2756,7 +2756,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "ilo!InferSchema:type",
-          "docComment": "",
+          "docComment": "/**\n * Infers a TypeScript type from a runtime schema declaration.\n *\n * Maps {@link SchemaTag} primitives to their TS equivalents and recursively resolves arrays, nullables, and nested records.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2849,7 +2849,7 @@
         {
           "kind": "Function",
           "canonicalReference": "ilo!inferType:function(1)",
-          "docComment": "",
+          "docComment": "/**\n * Infers the runtime type of an AST node by checking it against registered trait implementations.\n *\n * @param node - The AST node to type-check.\n *\n * @param impls - Trait implementations to match against.\n *\n * @param schema - Optional input schema for resolving property access types.\n *\n * @returns The type string (e.g. `\"number\"`, `\"string\"`) or `null` if unresolvable.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2937,7 +2937,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "ilo!Interpreter:type",
-          "docComment": "",
+          "docComment": "/**\n * An interpreter is a function that takes a {@link Program} and returns a runner with an async `run` method.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -3134,7 +3134,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!monoid:var",
-          "docComment": "",
+          "docComment": "/**\n * Monoid typeclass plugin. Enables identity element dispatch for types with registered monoid traits.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -3171,7 +3171,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "ilo!MonoidMethods:type",
-          "docComment": "",
+          "docComment": "/**\n * Monoid typeclass plugin — extends Semigroup with an identity element. No direct methods; dispatched through trait implementations.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -3197,7 +3197,7 @@
         {
           "kind": "Function",
           "canonicalReference": "ilo!nullable:function(1)",
-          "docComment": "",
+          "docComment": "/**\n * Creates a nullable schema type.\n *\n * @param of - The inner schema type that may be null.\n *\n * @returns A {@link NullableSchema} descriptor.\n *\n * @example\n * ```ts\n * const schema = { nickname: nullable(\"string\") };\n * ```\n *\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -3244,7 +3244,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!NullableSchema:interface",
-          "docComment": "",
+          "docComment": "/**\n * Schema type representing a nullable value.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -3317,7 +3317,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!num:var",
-          "docComment": "",
+          "docComment": "/**\n * Numeric operations plugin. Namespace: `num/`.\n *\n * Provides arithmetic beyond semiring (sub, div, mod), rounding, and min/max. Also registers trait implementations for eq, ord, semiring, show, and bounded.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -3354,7 +3354,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!numInterpreter:var",
-          "docComment": "",
+          "docComment": "/**\n * Interpreter fragment for `num/` node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -3378,7 +3378,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!NumMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Numeric operations beyond what the semiring typeclass provides.\n *\n * Includes subtraction, division, modular arithmetic, rounding, and min/max. All methods accept raw numbers or `Expr<number>` (auto-lifted).\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -3393,7 +3393,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#abs:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Absolute value.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3448,7 +3448,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#ceil:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Round up to nearest integer.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3503,7 +3503,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#div:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Divide two numbers.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3579,7 +3579,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#floor:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Round down to nearest integer.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3634,7 +3634,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#max:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Maximum of one or more numbers.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3693,7 +3693,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#min:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Minimum of one or more numbers.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3752,7 +3752,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#mod:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Modulo (remainder) of two numbers.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3828,7 +3828,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#neg:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Negate a number.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3883,7 +3883,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#round:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Round to nearest integer.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3938,7 +3938,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!NumMethods#sub:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Subtract two numbers.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -4017,7 +4017,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!ord:var",
-          "docComment": "",
+          "docComment": "/**\n * Ordering typeclass plugin. Namespace: `ord/`.\n *\n * Dispatches comparisons to type-specific implementations. Derives `gt`, `gte`, `lt`, `lte` from the base `compare` operation.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -4054,7 +4054,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!ordInterpreter:var",
-          "docComment": "",
+          "docComment": "/**\n * Interpreter fragment for `ord/` node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -4078,7 +4078,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!OrdMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Ordering comparison operations dispatched via the Ord typeclass.\n *\n * Provides `compare` (returns -1/0/1) and derived boolean comparisons.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -4093,7 +4093,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!OrdMethods#compare:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Three-way comparison returning -1, 0, or 1.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -4169,7 +4169,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!OrdMethods#gt:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Greater than.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -4245,7 +4245,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!OrdMethods#gte:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Greater than or equal.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -4321,7 +4321,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!OrdMethods#lt:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Less than.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -4397,7 +4397,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!OrdMethods#lte:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Less than or equal.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -4476,7 +4476,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "ilo!Plugin_2:type",
-          "docComment": "/**\n * A PluginFactory is what users import and optionally configure.\n *\n * import { db } from 'ilo/plugins/db' const myStack = ilo(num, str, db('postgres://...'))\n *\n * Plugins with no config are just bare PluginDefinition factories. Plugins with config are functions that return a PluginDefinition.\n */\n",
+          "docComment": "/**\n * A plugin export: either a bare {@link PluginDefinition} or a factory function that returns one (for plugins requiring configuration).\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -4863,7 +4863,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!PluginDefinition:interface",
-          "docComment": "",
+          "docComment": "/**\n * Defines a plugin's contract: its name, the AST node kinds it emits, and a build function that returns the methods it contributes to `$`.\n *\n * @example\n * ```ts\n * const myPlugin: PluginDefinition<MyMethods> = {\n *   name: \"my\",\n *   nodeKinds: [\"my/op\"],\n *   build(ctx) { return { op: (a) => ctx.expr({ kind: \"my/op\", a: ctx.lift(a).__node }) }; }\n * };\n * ```\n *\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -5091,7 +5091,7 @@
         {
           "kind": "Function",
           "canonicalReference": "ilo!postgres:function(1)",
-          "docComment": "",
+          "docComment": "/**\n * Postgres plugin factory. Namespace: `postgres/`.\n *\n * Creates a plugin that exposes a `sql` tagged template for building parameterized queries, plus helpers for identifiers, inserts, updates, transactions, savepoints, and cursors.\n *\n * @param config - A connection string or {@link PostgresConfig} object.\n *\n * @returns A {@link PluginDefinition} for the postgres plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -5155,7 +5155,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!PostgresClient:interface",
-          "docComment": "",
+          "docComment": "/**\n * Database client interface consumed by the postgres interpreter.\n *\n * Abstracts over the actual database driver so interpreters can be tested with mock clients.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -5508,7 +5508,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!PostgresConfig:interface",
-          "docComment": "",
+          "docComment": "/**\n * Connection configuration for the postgres plugin.\n *\n * Accepts the same options as postgres.js: connection string or individual host/port/database/username/password fields, plus SSL, connection pool size, and column name transforms.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -5769,7 +5769,7 @@
         {
           "kind": "Function",
           "canonicalReference": "ilo!postgresInterpreter:function(1)",
-          "docComment": "",
+          "docComment": "/**\n * Interpreter fragment for postgres plugin nodes.\n *\n * @param client - A {@link PostgresClient} implementation.\n *\n * @param outerFragments - Optional additional interpreter fragments to compose when recursing inside transactions and savepoints.\n *\n * @returns An {@link InterpreterFragment} handling all `postgres/` node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -5837,7 +5837,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!PostgresMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Database operations added to the DSL context by the postgres plugin.\n *\n * Mirrors the postgres.js (porsager/postgres) v3.4.x API as closely as possible: tagged template queries, dynamic identifiers, insert/set helpers, transactions, savepoints, and cursors.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -5852,7 +5852,7 @@
             {
               "kind": "PropertySignature",
               "canonicalReference": "ilo!PostgresMethods#sql:member",
-              "docComment": "/**\n * Tagged template query — the core of postgres.js.\n *\n * Real postgres.js: const users = await sql`select * from users where age > ${age}`\n *\n * Ilo: const users = $.sql`select * from users where age > ${age}`\n *\n * Returns Expr<Row[]> — an array of result rows.\n */\n",
+              "docComment": "/**\n * Tagged template query — the core of postgres.js.\n *\n * Real postgres.js: const users = await sql`select * from users where age > ${age}`\n *\n * Ilo: const users = $.sql`select * from users where age > ${age}`\n *\n * Returns `Expr<Row[]>` — an array of result rows.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -6015,7 +6015,7 @@
         {
           "kind": "Function",
           "canonicalReference": "ilo!resolveSchemaType:function(1)",
-          "docComment": "",
+          "docComment": "/**\n * Resolves the schema type of a property access chain rooted at `core/input`.\n *\n * Walks backwards through nested `core/prop_access` nodes to reconstruct the access path, then looks it up in the schema.\n *\n * @param node - A `core/prop_access` AST node.\n *\n * @param schema - The program's input schema.\n *\n * @returns The schema type string or `null` if the path doesn't resolve.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6082,7 +6082,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "ilo!SchemaShape:type",
-          "docComment": "",
+          "docComment": "/**\n * A record mapping field names to schema types, used to declare program input shapes.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6122,7 +6122,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "ilo!SchemaTag:type",
-          "docComment": "",
+          "docComment": "/**\n * Primitive runtime type tags used in schema declarations.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6148,7 +6148,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "ilo!SchemaType:type",
-          "docComment": "",
+          "docComment": "/**\n * A schema type: a primitive tag, array, nullable, or nested record.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6206,7 +6206,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!semigroup:var",
-          "docComment": "",
+          "docComment": "/**\n * Semigroup typeclass plugin. Dispatches `append` to type-specific implementations.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6243,7 +6243,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!SemigroupMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Semigroup typeclass operations for associative binary combination.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6258,7 +6258,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!SemigroupMethods#append:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Combine two values using the semigroup's associative operation.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -6337,7 +6337,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!semiring:var",
-          "docComment": "",
+          "docComment": "/**\n * Semiring typeclass plugin. Dispatches `add` and `mul` to type-specific implementations.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6374,7 +6374,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!SemiringMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Semiring typeclass operations providing addition and multiplication.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6389,7 +6389,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!SemiringMethods#add:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Add two values via the semiring typeclass.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -6465,7 +6465,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!SemiringMethods#mul:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Multiply two values via the semiring typeclass.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -6544,7 +6544,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!show:var",
-          "docComment": "",
+          "docComment": "/**\n * Show typeclass plugin. Dispatches to type-specific `show` implementations.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6581,7 +6581,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!ShowMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Show typeclass operations for converting values to their string representation.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6596,7 +6596,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ShowMethods#show:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Convert a value to its string representation via the Show typeclass.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -6651,7 +6651,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ShowMethods#show:member(2)",
-              "docComment": "",
+              "docComment": "/**\n * Convert a value to its string representation via the Show typeclass.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -6706,7 +6706,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!ShowMethods#show:member(3)",
-              "docComment": "",
+              "docComment": "/**\n * Convert a value to its string representation via the Show typeclass.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -6764,7 +6764,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!st:var",
-          "docComment": "",
+          "docComment": "/**\n * Mutable state plugin. Namespace: `st/`.\n *\n * Provides `let` for declaring local mutable variables with get/set/push access.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6801,7 +6801,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!StMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Mutable state operations for local variables within a program.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6816,7 +6816,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StMethods#let:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Declare a mutable local variable.\n *\n * @param initial - The initial value.\n *\n * @returns An object with `get`, `set`, and `push` methods.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -6909,7 +6909,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!str:var",
-          "docComment": "",
+          "docComment": "/**\n * String operations plugin. Namespace: `str/`.\n *\n * Provides template literals, concatenation, case conversion, search, and splitting. Registers trait implementations for eq, show, semigroup, and monoid.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6946,7 +6946,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "ilo!strInterpreter:var",
-          "docComment": "",
+          "docComment": "/**\n * Interpreter fragment for `str/` node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6970,7 +6970,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!StrMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * String manipulation operations.\n *\n * All methods accept raw strings or `Expr<string>` (auto-lifted).\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6985,7 +6985,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#concat:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Concatenate multiple string values.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7044,7 +7044,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#endsWith:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Test whether a string ends with a suffix.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7120,7 +7120,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#includes:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Test whether a string contains a substring.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7196,7 +7196,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#join:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Join an array of strings with a separator.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7272,7 +7272,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#len:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Get the length of a string.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7327,7 +7327,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#lower:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Convert to lowercase.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7382,7 +7382,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#replace:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Replace the first occurrence of a search string.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7479,7 +7479,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#slice:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Extract a substring by start/end index.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7576,7 +7576,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#split:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Split a string by delimiter into an array.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7652,7 +7652,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#startsWith:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Test whether a string starts with a prefix.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7728,7 +7728,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#str:member(1)",
-              "docComment": "/**\n * Tagged template literal: $.str`hello ${name}`\n */\n",
+              "docComment": "/**\n * Tagged template literal for string interpolation.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7804,7 +7804,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#trim:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Remove leading and trailing whitespace.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7859,7 +7859,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StrMethods#upper:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Convert to uppercase.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7917,7 +7917,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "ilo!TraitImpl:interface",
-          "docComment": "",
+          "docComment": "/**\n * Declares a typeclass trait implementation for a plugin's type.\n *\n * Maps a runtime type string (e.g. `\"number\"`) to the AST node kinds that implement each operation in the trait.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -7994,7 +7994,7 @@
         {
           "kind": "Function",
           "canonicalReference": "ilo!wrapPostgresJs:function(1)",
-          "docComment": "",
+          "docComment": "/**\n * Wraps a `postgres` (v3.4.x) SQL client into a {@link PostgresClient}.\n *\n * @param sql - A postgres-js SQL tagged template function.\n *\n * @returns A {@link PostgresClient} adapter.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
