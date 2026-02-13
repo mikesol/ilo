@@ -30,6 +30,29 @@ export { boolean } from "./plugins/boolean";
 export { booleanInterpreter } from "./plugins/boolean/interpreter";
 export type { BoundedFor } from "./plugins/bounded";
 export { bounded } from "./plugins/bounded";
+// ---- cloudflare-kv plugin ----
+export type {
+  CloudflareKvConfig,
+  CloudflareKvMethods,
+  KvGet,
+  KvListOptions,
+  KvListResult,
+  KvPutOptions,
+} from "./plugins/cloudflare-kv/4.20260213.0";
+export { cloudflareKv } from "./plugins/cloudflare-kv/4.20260213.0";
+export type { KVNamespaceLike } from "./plugins/cloudflare-kv/4.20260213.0/client-cf-kv";
+export { wrapKVNamespace } from "./plugins/cloudflare-kv/4.20260213.0/client-cf-kv";
+export type {
+  ClientHandlerOptions as CloudflareKvClientHandlerOptions,
+  ClientHandlerState as CloudflareKvClientHandlerState,
+} from "./plugins/cloudflare-kv/4.20260213.0/handler.client";
+export { clientHandler as cloudflareKvClientHandler } from "./plugins/cloudflare-kv/4.20260213.0/handler.client";
+export {
+  serverEvaluate as cloudflareKvServerEvaluate,
+  serverHandler as cloudflareKvServerHandler,
+} from "./plugins/cloudflare-kv/4.20260213.0/handler.server";
+export type { CloudflareKvClient } from "./plugins/cloudflare-kv/4.20260213.0/interpreter";
+export { cloudflareKvInterpreter } from "./plugins/cloudflare-kv/4.20260213.0/interpreter";
 export type { ControlMethods } from "./plugins/control";
 export { control } from "./plugins/control";
 export type { EqFor } from "./plugins/eq";

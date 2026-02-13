@@ -45,11 +45,14 @@ export const booleanInterpreter: InterpreterFragment;
 // @public
 export type BooleanMethods = {};
 
+// Warning: (ae-incompatible-release-tags) The symbol "bounded" is marked as @public, but its signature references "TypeclassSlot" which is marked as @internal
+//
 // @public
-export const bounded: PluginDefinition<BoundedMethods>;
+export const bounded: PluginDefinition<TypeclassSlot<"bounded">>;
 
 // @public
-export type BoundedMethods = {};
+export interface BoundedFor<_T> {
+}
 
 // @public
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState>;
@@ -66,6 +69,73 @@ export interface ClientHandlerOptions {
 export interface ClientHandlerState {
     stepIndex: number;
 }
+
+// @public
+export function cloudflareKv(config: CloudflareKvConfig): PluginDefinition<CloudflareKvMethods>;
+
+// @public
+export interface CloudflareKvClient {
+    delete(key: string): Promise<void>;
+    get(key: string): Promise<string | null>;
+    getJson<T = unknown>(key: string): Promise<T | null>;
+    list(options?: {
+        limit?: number;
+        prefix?: string;
+        cursor?: string;
+    }): Promise<{
+        keys: Array<{
+            name: string;
+            expiration?: number;
+        }>;
+        list_complete: boolean;
+        cursor?: string;
+    }>;
+    put(key: string, value: string, options?: {
+        expiration?: number;
+        expirationTtl?: number;
+        metadata?: unknown;
+    }): Promise<void>;
+}
+
+// @public
+export function cloudflareKvClientHandler(options: CloudflareKvClientHandlerOptions): StepHandler<CloudflareKvClientHandlerState>;
+
+// @public
+export interface CloudflareKvClientHandlerOptions {
+    baseUrl: string;
+    contractHash: string;
+    fetch?: typeof globalThis.fetch;
+    headers?: Record<string, string>;
+}
+
+// @public
+export interface CloudflareKvClientHandlerState {
+    stepIndex: number;
+}
+
+// @public
+export interface CloudflareKvConfig {
+    namespaceId: string;
+}
+
+// @public
+export const cloudflareKvInterpreter: InterpreterFragment;
+
+// @public
+export interface CloudflareKvMethods {
+    kv: {
+        get: KvGet;
+        put(key: Expr<string> | string, value: Expr<string> | string, options?: Expr<KvPutOptions> | KvPutOptions): Expr<void>;
+        delete(key: Expr<string> | string): Expr<void>;
+        list(options?: Expr<KvListOptions> | KvListOptions): Expr<KvListResult>;
+    };
+}
+
+// @public
+export function cloudflareKvServerEvaluate(client: CloudflareKvClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
+
+// @public
+export function cloudflareKvServerHandler(client: CloudflareKvClient): StepHandler<void>;
 
 // @public
 export function composeInterpreters(fragments: InterpreterFragment[]): RecurseFn;
@@ -209,6 +279,68 @@ export interface InterpreterFragment {
 }
 
 // @public
+export interface KvGet {
+    (key: Expr<string> | string): Expr<string | null>;
+    (key: Expr<string> | string, type: "text"): Expr<string | null>;
+    <T = unknown>(key: Expr<string> | string, type: "json"): Expr<T | null>;
+}
+
+// @public
+export interface KvListOptions {
+    cursor?: string;
+    limit?: number;
+    prefix?: string;
+}
+
+// @public
+export interface KvListResult {
+    cursor?: string;
+    keys: Array<{
+        name: string;
+        expiration?: number;
+    }>;
+    list_complete: boolean;
+}
+
+// @public
+export interface KVNamespaceLike {
+    // (undocumented)
+    delete(key: string): Promise<void>;
+    // (undocumented)
+    get(key: string): Promise<string | null>;
+    // (undocumented)
+    get(key: string, type: "text"): Promise<string | null>;
+    // (undocumented)
+    get<T = unknown>(key: string, type: "json"): Promise<T | null>;
+    // (undocumented)
+    list(options?: {
+        limit?: number;
+        prefix?: string | null;
+        cursor?: string | null;
+    }): Promise<{
+        keys: Array<{
+            name: string;
+            expiration?: number;
+        }>;
+        list_complete: boolean;
+        cursor?: string;
+    }>;
+    // (undocumented)
+    put(key: string, value: string, options?: {
+        expiration?: number;
+        expirationTtl?: number;
+        metadata?: unknown;
+    }): Promise<void>;
+}
+
+// @public
+export interface KvPutOptions {
+    expiration?: number;
+    expirationTtl?: number;
+    metadata?: unknown;
+}
+
+// @public
 export interface LegacyInterpreterFragment {
     // (undocumented)
     canHandle: (node: ASTNode) => boolean;
@@ -226,11 +358,14 @@ export interface MissingTraitError<_TraitName extends string, Hint extends strin
     readonly __error: Hint;
 }
 
+// Warning: (ae-incompatible-release-tags) The symbol "monoid" is marked as @public, but its signature references "TypeclassSlot" which is marked as @internal
+//
 // @public
-export const monoid: PluginDefinition<MonoidMethods>;
+export const monoid: PluginDefinition<TypeclassSlot<"monoid">>;
 
 // @public
-export type MonoidMethods = {};
+export interface MonoidFor<_T> {
+}
 
 // @public
 export function nullable(of: SchemaType): NullableSchema;
@@ -614,6 +749,9 @@ export interface TypeclassSlot<Name extends string> {
     // (undocumented)
     readonly __typeclassSlot: Name;
 }
+
+// @public
+export function wrapKVNamespace(kv: KVNamespaceLike): CloudflareKvClient;
 
 // Warning: (ae-forgotten-export) The symbol "Sql" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "TransactionSql" needs to be exported by the entry point index.d.ts

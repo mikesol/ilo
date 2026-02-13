@@ -20,14 +20,12 @@ export function serverHandler(client: CloudflareKvClient): StepHandler<void> {
         key,
         value: val,
         options,
-        namespaceId,
       } = effect as {
         type: "cloudflare-kv/api_call";
         operation: string;
         key?: string;
         value?: string;
         options?: Record<string, unknown>;
-        namespaceId: string;
       };
 
       let result: unknown;

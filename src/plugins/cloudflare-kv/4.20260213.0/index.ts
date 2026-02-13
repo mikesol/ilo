@@ -150,20 +150,20 @@ export function cloudflareKv(config: CloudflareKvConfig): PluginDefinition<Cloud
 
       return {
         kv: {
-          get(key: Expr<string> | string, type?: "text" | "json") {
+          get: ((key: Expr<string> | string, type?: "text" | "json") => {
             if (type === "json") {
-              return ctx.expr({
+              return ctx.expr<unknown>({
                 kind: "cloudflare-kv/get_json",
                 key: resolveKey(key),
                 config,
               });
             }
-            return ctx.expr({
+            return ctx.expr<string | null>({
               kind: "cloudflare-kv/get",
               key: resolveKey(key),
               config,
             });
-          },
+          }) as KvGet,
 
           put(key, value, options?) {
             return ctx.expr({
