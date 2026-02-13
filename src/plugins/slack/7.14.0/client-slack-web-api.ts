@@ -2,7 +2,7 @@ import type { WebClient } from "@slack/web-api";
 import type { SlackClient } from "./interpreter";
 
 /**
- * Wraps a `@slack/web-api` {@link WebClient} instance into the
+ * Wraps a `@slack/web-api` `WebClient` instance into the
  * abstract {@link SlackClient} interface consumed by the slack handler.
  *
  * This adapter decouples the handler from the concrete SDK, allowing
@@ -10,7 +10,7 @@ import type { SlackClient } from "./interpreter";
  * real `WebClient`.
  *
  * @param client - The `@slack/web-api` `WebClient` instance to wrap.
- * @returns A {@link SlackClient} that delegates to the underlying `WebClient`.
+ * @returns A {@link SlackClient} that delegates to the underlying `WebClient`
  */
 export function wrapSlackWebClient(client: WebClient): SlackClient {
   return {
