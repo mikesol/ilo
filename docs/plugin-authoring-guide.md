@@ -41,6 +41,35 @@ Before writing any plugin code for an external service, you must understand the 
 
 > **Docs lie. Source doesn't.** An agent that reads the postgres.js README will miss edge cases in `src/types.js` and `src/connection.js`. An agent that reads the Stripe API docs will not discover that `rawRequest()` encodes GET and POST parameters differently. The assessment must come from source.
 
+### Scoping: how much to implement
+
+After completing the assessment matrix, decide how much of the upstream API to port. Classify the plugin by the size of its modelable API surface (excluding anything in the "can't model" category):
+
+| Size | Modelable operations | Implementation strategy | Example |
+|------|---------------------|------------------------|---------|
+| **Small** | < 15 distinct operations | Implement 100% in one pass | postgres (queries, transactions, savepoints, cursors) |
+| **Medium** | 15–50 operations | Two passes: 75% core operations, then 25% long tail | — |
+| **Large** | 50+ operations | Three passes following a 60/30/10 rule | Stripe (57 top-level resources, each with CRUD methods) |
+
+**The 60/30/10 rule for large plugins:**
+1. **Pass 1 (60%):** The operations that cover 60% of real-world usage. Pick the resources/methods that most users reach for first. The goal is a plugin that's useful for the majority of use cases. This pass must also prove the architecture — if the plugin needs multiple effect types, handler patterns, or SDK adapter quirks, they must surface here.
+2. **Pass 2 (30%):** The next tier of operations. Same patterns, less common resources. No architectural changes expected — just more switch cases.
+3. **Pass 3 (10%):** The long tail. Rarely-used resources, edge-case operations. Mechanical additions.
+
+**The 75/25 rule for medium plugins:**
+1. **Pass 1 (75%):** Core operations covering most usage plus architecture validation.
+2. **Pass 2 (25%):** Remaining operations.
+
+**Document the sizing decision in `index.ts`.** After the implementation status line, add a plugin size line:
+
+```ts
+// Plugin size: SMALL — fully implemented modulo known limitations
+// Plugin size: MEDIUM — at pass 1 of 75/25 split
+// Plugin size: LARGE — at pass 1 of 60/30/10 split (3 of 57 resources)
+```
+
+This tells future authors (and agents) where the plugin is in its lifecycle and how much work remains.
+
 ---
 
 ## Step 1: Directory Structure
@@ -1640,6 +1669,12 @@ Every plugin's `index.ts` must begin with a block comment that describes what th
 //   -- or --
 // Implementation status: PARTIAL (N of M <unit>)
 //
+// Plugin size: SMALL -- fully implemented modulo known limitations
+//   -- or --
+// Plugin size: MEDIUM -- at pass N of 75/25 split
+//   -- or --
+// Plugin size: LARGE -- at pass N of 60/30/10 split (N of M <unit>)
+//
 // Implemented:
 //   - <resource/operation>
 //
@@ -1670,6 +1705,7 @@ From `src/plugins/postgres/3.4.8/index.ts`:
 // ============================================================
 //
 // Implementation status: COMPLETE (modulo known limitations)
+// Plugin size: SMALL — fully implemented modulo known limitations
 //
 // Known limitations (deliberate omissions):
 //   - No COPY (streaming bulk import/export)
@@ -1703,6 +1739,7 @@ From `src/plugins/stripe/2025-04-30.basil/index.ts`:
 // ============================================================
 //
 // Implementation status: PARTIAL (3 of 57 top-level resources)
+// Plugin size: LARGE — at pass 1 of 60/30/10 split (3 of 57 resources)
 //
 // Implemented:
 //   - PaymentIntents: create, retrieve, confirm
