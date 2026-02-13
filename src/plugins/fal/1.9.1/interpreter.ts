@@ -3,7 +3,7 @@ import type { ASTNode, InterpreterFragment, StepEffect } from "../../../core";
 /**
  * Fal client interface consumed by the fal handler.
  *
- * Abstracts over the actual @fal-ai/client so handlers can be
+ * Abstracts over the actual `\@fal-ai/client` so handlers can be
  * tested with mock clients.
  */
 export interface FalClient {

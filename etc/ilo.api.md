@@ -4,6 +4,7 @@
 
 ```ts
 
+import type { FalClient as FalClient_2 } from '@fal-ai/client';
 import type { default as postgres_2 } from 'postgres';
 import type Stripe from 'stripe';
 
@@ -45,11 +46,14 @@ export const booleanInterpreter: InterpreterFragment;
 // @public
 export type BooleanMethods = {};
 
+// Warning: (ae-incompatible-release-tags) The symbol "bounded" is marked as @public, but its signature references "TypeclassSlot" which is marked as @internal
+//
 // @public
-export const bounded: PluginDefinition<BoundedMethods>;
+export const bounded: PluginDefinition<TypeclassSlot<"bounded">>;
 
 // @public
-export type BoundedMethods = {};
+export interface BoundedFor<_T> {
+}
 
 // @public
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState>;
@@ -129,6 +133,73 @@ export function escapeIdentifier(name: string): string;
 //
 // @public
 export type Expr<T> = ExprBase<T> & ExprFields<T>;
+
+// @public
+export function fal(config: FalConfig): PluginDefinition<FalMethods>;
+
+// @public
+export interface FalClient {
+    queueCancel(endpointId: string, requestId: string): Promise<void>;
+    queueResult(endpointId: string, requestId: string): Promise<unknown>;
+    queueStatus(endpointId: string, requestId: string): Promise<unknown>;
+    queueSubmit(endpointId: string, input?: Record<string, unknown>): Promise<unknown>;
+    run(endpointId: string, input?: Record<string, unknown>): Promise<unknown>;
+    subscribe(endpointId: string, input?: Record<string, unknown>): Promise<unknown>;
+}
+
+// @public
+export function falClientHandler(options: FalClientHandlerOptions): StepHandler<FalClientHandlerState>;
+
+// @public
+export interface FalClientHandlerOptions {
+    baseUrl: string;
+    contractHash: string;
+    fetch?: typeof globalThis.fetch;
+    headers?: Record<string, string>;
+}
+
+// @public
+export interface FalClientHandlerState {
+    stepIndex: number;
+}
+
+// @public
+export interface FalConfig {
+    credentials: string;
+}
+
+// @public
+export const falInterpreter: InterpreterFragment;
+
+// @public (undocumented)
+export interface FalMethods {
+    fal: {
+        run(endpointId: Expr<string> | string, options?: FalRunOptions): Expr<Record<string, unknown>>;
+        subscribe(endpointId: Expr<string> | string, options?: FalRunOptions): Expr<Record<string, unknown>>;
+        queue: {
+            submit(endpointId: Expr<string> | string, options?: FalRunOptions): Expr<Record<string, unknown>>;
+            status(endpointId: Expr<string> | string, options: FalQueueOptions): Expr<Record<string, unknown>>;
+            result(endpointId: Expr<string> | string, options: FalQueueOptions): Expr<Record<string, unknown>>;
+            cancel(endpointId: Expr<string> | string, options: FalQueueOptions): Expr<Record<string, unknown>>;
+        };
+    };
+}
+
+// @public
+export type FalQueueOptions = {
+    requestId: Expr<string> | string;
+};
+
+// @public
+export type FalRunOptions = {
+    input?: Expr<Record<string, unknown>> | Record<string, unknown>;
+};
+
+// @public
+export function falServerEvaluate(client: FalClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
+
+// @public
+export function falServerHandler(client: FalClient): StepHandler<void>;
 
 // @public
 export const fiber: PluginDefinition<FiberMethods>;
@@ -226,11 +297,14 @@ export interface MissingTraitError<_TraitName extends string, Hint extends strin
     readonly __error: Hint;
 }
 
+// Warning: (ae-incompatible-release-tags) The symbol "monoid" is marked as @public, but its signature references "TypeclassSlot" which is marked as @internal
+//
 // @public
-export const monoid: PluginDefinition<MonoidMethods>;
+export const monoid: PluginDefinition<TypeclassSlot<"monoid">>;
 
 // @public
-export type MonoidMethods = {};
+export interface MonoidFor<_T> {
+}
 
 // @public
 export function nullable(of: SchemaType): NullableSchema;
@@ -614,6 +688,9 @@ export interface TypeclassSlot<Name extends string> {
     // (undocumented)
     readonly __typeclassSlot: Name;
 }
+
+// @public
+export function wrapFalSdk(client: FalClient_2): FalClient;
 
 // Warning: (ae-forgotten-export) The symbol "Sql" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "TransactionSql" needs to be exported by the entry point index.d.ts

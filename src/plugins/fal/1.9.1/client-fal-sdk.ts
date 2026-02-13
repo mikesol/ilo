@@ -2,12 +2,12 @@ import type { FalClient as FalSdk } from "@fal-ai/client";
 import type { FalClient } from "./interpreter";
 
 /**
- * Wraps the official @fal-ai/client into a {@link FalClient}.
+ * Wraps the official `\@fal-ai/client` into a {@link FalClient}.
  *
  * Delegates to the real SDK's run, subscribe, and queue methods,
  * preserving the SDK's authentication, retries, and storage handling.
  *
- * @param client - A configured @fal-ai/client FalClient instance.
+ * @param client - A configured `\@fal-ai/client` FalClient instance.
  * @returns A {@link FalClient} adapter.
  */
 export function wrapFalSdk(client: FalSdk): FalClient {
