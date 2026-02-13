@@ -197,6 +197,115 @@ describe("DAG memoization: taint tracking", () => {
   });
 });
 
+describe("DAG memoization: adversarial cases", () => {
+  it("same node referenced in both tainted and untainted positions", async () => {
+    // shared is used both as a sibling to a volatile node (tainted path)
+    // and independently (untainted path). Should be cached.
+    const { fragment, visitCount } = createTrackingFragment();
+    const interp = composeInterpreters([coreInterpreter, fragment]);
+
+    const shared: ASTNode = { kind: "track/value", value: 42, id: "shared" };
+    const param: ASTNode = { kind: "core/lambda_param", name: "x" } as any;
+    (param as any).__value = 1;
+
+    // tainted path: add(param, shared) — param is volatile
+    const taintedUse: ASTNode = {
+      kind: "track/add",
+      left: param,
+      right: shared,
+      id: "tainted-use",
+    };
+    // untainted path: add(shared, literal)
+    const cleanUse: ASTNode = {
+      kind: "track/add",
+      left: shared,
+      right: { kind: "track/value", value: 0, id: "zero" },
+      id: "clean-use",
+    };
+    const root: ASTNode = { kind: "track/pair", a: taintedUse, b: cleanUse, id: "root" };
+
+    const result = await interp(root);
+    expect(result).toEqual([43, 42]);
+    expect(visitCount.get("shared")).toBe(1); // cached, used in both paths
+
+    // Change volatile, re-evaluate
+    (param as any).__value = 100;
+    const result2 = await interp(root);
+    expect(result2).toEqual([142, 42]);
+    expect(visitCount.get("shared")).toBe(1); // still cached
+    expect(visitCount.get("tainted-use")).toBe(2); // re-evaluated
+    expect(visitCount.get("clean-use")).toBe(1); // cached
+  });
+
+  it("long prop_access chain is fully cached", async () => {
+    const { fragment, visitCount } = createTrackingFragment();
+    const interp = composeInterpreters([coreInterpreter, fragment]);
+
+    // Simulate: config[0].items[0].name via nested prop_access
+    const query: ASTNode = {
+      kind: "track/value",
+      value: [{ items: [{ name: "hello" }] }],
+      id: "query",
+    };
+    const access0: ASTNode = { kind: "core/prop_access", object: query, property: 0 };
+    const accessItems: ASTNode = { kind: "core/prop_access", object: access0, property: "items" };
+    const accessItem0: ASTNode = { kind: "core/prop_access", object: accessItems, property: 0 };
+    const accessName: ASTNode = { kind: "core/prop_access", object: accessItem0, property: "name" };
+
+    // Use the end of the chain twice
+    const root: ASTNode = { kind: "track/pair", a: accessName, b: accessName, id: "root" };
+
+    const result = await interp(root);
+    expect(result).toEqual(["hello", "hello"]);
+    expect(visitCount.get("query")).toBe(1); // query evaluated once
+  });
+
+  it("cache handles rejected promises correctly", async () => {
+    let callCount = 0;
+    const failOnce: InterpreterFragment = {
+      pluginName: "fx",
+      canHandle: (node) => node.kind === "fx/flaky",
+      async visit() {
+        callCount++;
+        throw new Error("boom");
+      },
+    };
+
+    const interp = composeInterpreters([failOnce, coreInterpreter]);
+
+    const node: ASTNode = { kind: "fx/flaky" };
+    await expect(interp(node)).rejects.toThrow("boom");
+    // Second call: same node, should return cached rejected promise
+    await expect(interp(node)).rejects.toThrow("boom");
+    expect(callCount).toBe(1); // cached, not re-executed
+  });
+
+  it("deeply nested shared node in parallel branches", async () => {
+    const { fragment, visitCount } = createTrackingFragment();
+    const interp = composeInterpreters([fragment]);
+
+    const deep: ASTNode = { kind: "track/value", value: 1, id: "deep" };
+    const mid1: ASTNode = {
+      kind: "track/add",
+      left: deep,
+      right: { kind: "track/value", value: 2, id: "l2a" },
+      id: "mid1",
+    };
+    const mid2: ASTNode = {
+      kind: "track/add",
+      left: deep,
+      right: { kind: "track/value", value: 3, id: "l2b" },
+      id: "mid2",
+    };
+    // mid1 and mid2 share "deep", run in parallel
+    const root: ASTNode = { kind: "track/parallel", elements: [mid1, mid2], id: "root" };
+
+    const result = await interp(root);
+    expect(result).toEqual([3, 4]);
+    expect(visitCount.get("deep")).toBe(1);
+  });
+});
+
 describe("DAG memoization: retry with fresh cache", () => {
   it("retry re-executes on each attempt (not cached)", async () => {
     let callCount = 0;

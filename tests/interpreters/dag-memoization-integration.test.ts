@@ -137,3 +137,42 @@ describe("DAG memoization integration: cursor with shared external query", () =>
     expect(queryCount).toBe(4);
   });
 });
+
+describe("DAG memoization: adversarial integration tests", () => {
+  it("cursor inside retry: retry re-runs cursor with fresh cache", async () => {
+    const prog = app(($) => {
+      const settings = $.sql`SELECT value FROM settings WHERE key = 'tax_rate'`;
+      return $.retry(
+        $.sql.cursor(
+          $.sql`SELECT * FROM big_table ORDER BY id LIMIT 4`,
+          2,
+          (batch) =>
+            $.sql`INSERT INTO processed (data, tax_rate)
+              SELECT unnest(ARRAY[${batch[0].data}]), ${settings[0].value}`,
+        ),
+        { attempts: 2, delay: 0 },
+      );
+    });
+    const { queryCount } = await run(prog);
+    // Attempt 1 succeeds: 1 cursor + 1 settings + 2 inserts = 4
+    expect(queryCount).toBe(4);
+  });
+
+  it("same query used inside and outside cursor", async () => {
+    const prog = app(($) => {
+      const settings = $.sql`SELECT value FROM settings WHERE key = 'tax_rate'`;
+      const rateCheck = $.sql`SELECT ${settings[0].value} as rate`;
+      const cursorResult = $.sql.cursor(
+        $.sql`SELECT * FROM big_table ORDER BY id LIMIT 4`,
+        2,
+        (batch) =>
+          $.sql`INSERT INTO processed (data, tax_rate)
+            SELECT unnest(ARRAY[${batch[0].data}]), ${settings[0].value}`,
+      );
+      return $.do(rateCheck, cursorResult, settings);
+    });
+    const { queryCount } = await run(prog);
+    // 1 (settings, cached) + 1 (rateCheck) + 1 (cursor) + 2 (inserts) = 5
+    expect(queryCount).toBe(5);
+  });
+});
