@@ -92,6 +92,27 @@ export {
 export type { StripeClient } from "./plugins/stripe/2025-04-30.basil/interpreter";
 export { stripeInterpreter } from "./plugins/stripe/2025-04-30.basil/interpreter";
 export type {
+  TwilioCallContext,
+  TwilioCallsResource,
+  TwilioConfig,
+  TwilioMessageContext,
+  TwilioMessagesResource,
+  TwilioMethods,
+} from "./plugins/twilio/5.5.1";
+export { twilio } from "./plugins/twilio/5.5.1";
+export { wrapTwilioSdk } from "./plugins/twilio/5.5.1/client-twilio-sdk";
+export type {
+  ClientHandlerOptions as TwilioClientHandlerOptions,
+  ClientHandlerState as TwilioClientHandlerState,
+} from "./plugins/twilio/5.5.1/handler.client";
+export { clientHandler as twilioClientHandler } from "./plugins/twilio/5.5.1/handler.client";
+export {
+  serverEvaluate as twilioServerEvaluate,
+  serverHandler as twilioServerHandler,
+} from "./plugins/twilio/5.5.1/handler.server";
+export type { TwilioClient } from "./plugins/twilio/5.5.1/interpreter";
+export { twilioInterpreter } from "./plugins/twilio/5.5.1/interpreter";
+export type {
   ArraySchema,
   InferSchema,
   NullableSchema,
