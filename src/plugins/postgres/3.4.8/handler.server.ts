@@ -70,9 +70,11 @@ function buildEvaluate(
     const fragment = findFragment(node);
     const gen = fragment.visit(node);
     let input: unknown;
+    let isError = false;
 
     while (true) {
-      const result = gen.next(input);
+      const result = isError ? gen.throw(input) : gen.next(input);
+      isError = false;
 
       if (result.done) {
         const value = result.value;
@@ -89,14 +91,24 @@ function buildEvaluate(
 
       if (effect.type === "recurse") {
         const child = (effect as { type: "recurse"; child: ASTNode }).child;
-        input = await evaluate(child);
+        try {
+          input = await evaluate(child);
+        } catch (e) {
+          input = e;
+          isError = true;
+        }
       } else if (effect.type === "__legacy") {
         const legacyEffect = effect as {
           type: "__legacy";
           fragment: LegacyInterpreterFragment;
           node: ASTNode;
         };
-        input = await legacyEffect.fragment.visit(legacyEffect.node, evaluate);
+        try {
+          input = await legacyEffect.fragment.visit(legacyEffect.node, evaluate);
+        } catch (e) {
+          input = e;
+          isError = true;
+        }
       } else {
         input = await handleEffect(effect, node);
       }

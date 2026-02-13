@@ -46,7 +46,7 @@ let sql: ReturnType<typeof postgres>;
 // error and fiber are still legacy-style; wrap them with adaptLegacy.
 // The rest are already generator-based.
 const nonPgFragments = [
-  adaptLegacy(errorInterpreter),
+  errorInterpreter,
   adaptLegacy(fiberInterpreter),
   coreInterpreter,
   numInterpreter,

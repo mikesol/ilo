@@ -494,9 +494,11 @@ export async function runAST<S>(
     const fragment = findFragment(node);
     const gen = fragment.visit(node);
     let input: unknown;
+    let isError = false;
 
     while (true) {
-      const result = gen.next(input);
+      const result = isError ? gen.throw(input) : gen.next(input);
+      isError = false;
 
       if (result.done) {
         const value = result.value;
@@ -513,7 +515,12 @@ export async function runAST<S>(
 
       if (effect.type === "recurse") {
         const child = (effect as { type: "recurse"; child: ASTNode }).child;
-        input = await evaluate(child);
+        try {
+          input = await evaluate(child);
+        } catch (e) {
+          input = e;
+          isError = true;
+        }
       } else if (effect.type === "__legacy") {
         // Handle legacy fragment callback
         const legacyEffect = effect as {
@@ -521,7 +528,12 @@ export async function runAST<S>(
           fragment: LegacyInterpreterFragment;
           node: ASTNode;
         };
-        input = await legacyEffect.fragment.visit(legacyEffect.node, evaluate);
+        try {
+          input = await legacyEffect.fragment.visit(legacyEffect.node, evaluate);
+        } catch (e) {
+          input = e;
+          isError = true;
+        }
       } else {
         // IO / custom effect — delegate to handler
         const context: StepContext = {
@@ -594,9 +606,11 @@ export function foldAST(
     const fragment = findFragment(node);
     const gen = fragment.visit(node);
     let input: unknown;
+    let isError = false;
 
     while (true) {
-      const result = gen.next(input);
+      const result = isError ? gen.throw(input) : gen.next(input);
+      isError = false;
 
       if (result.done) {
         const value = result.value;
@@ -613,14 +627,24 @@ export function foldAST(
 
       if (effect.type === "recurse") {
         const child = (effect as { type: "recurse"; child: ASTNode }).child;
-        input = await recurse(child);
+        try {
+          input = await recurse(child);
+        } catch (e) {
+          input = e;
+          isError = true;
+        }
       } else if (effect.type === "__legacy") {
         const legacyEffect = effect as {
           type: "__legacy";
           fragment: LegacyInterpreterFragment;
           node: ASTNode;
         };
-        input = await legacyEffect.fragment.visit(legacyEffect.node, recurse);
+        try {
+          input = await legacyEffect.fragment.visit(legacyEffect.node, recurse);
+        } catch (e) {
+          input = e;
+          isError = true;
+        }
       } else {
         const resolved = await handler(effect, { depth: 0, path: [node.kind] }, undefined);
         input = resolved.value;
@@ -692,19 +716,31 @@ export function composeInterpreters(
       async visit(node: ASTNode, recurse: (node: ASTNode) => Promise<unknown>): Promise<unknown> {
         const gen = genFragment.visit(node);
         let input: unknown;
+        let isError = false;
         while (true) {
-          const result = gen.next(input);
+          const result = isError ? gen.throw(input) : gen.next(input);
+          isError = false;
           if (result.done) return result.value;
           const effect = result.value as StepEffect;
           if (effect.type === "recurse") {
-            input = await recurse((effect as { type: "recurse"; child: ASTNode }).child);
+            try {
+              input = await recurse((effect as { type: "recurse"; child: ASTNode }).child);
+            } catch (e) {
+              input = e;
+              isError = true;
+            }
           } else if (effect.type === "__legacy") {
             const legacyEffect = effect as {
               type: "__legacy";
               fragment: LegacyInterpreterFragment;
               node: ASTNode;
             };
-            input = await legacyEffect.fragment.visit(legacyEffect.node, recurse);
+            try {
+              input = await legacyEffect.fragment.visit(legacyEffect.node, recurse);
+            } catch (e) {
+              input = e;
+              isError = true;
+            }
           } else {
             throw new Error(
               `composeInterpreters cannot handle effect type "${effect.type}". ` +
