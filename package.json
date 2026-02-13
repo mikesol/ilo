@@ -4,6 +4,7 @@
   "description": "Extensible tagless final DSL for deterministic, verifiable programs in TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
   "scripts": {
     "build": "tsc",
     "check": "biome check . && tsc && api-extractor run --local",
