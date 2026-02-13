@@ -25,7 +25,7 @@ export const semigroup: PluginDefinition<TypeclassSlot<"semigroup">> = {
     const impls = ctx.plugins.filter((p) => p.traits?.semigroup).map((p) => p.traits!.semigroup!);
 
     return {
-      append(a: any, b: any): Expr<string> {
+      append(a: any, b: any) {
         const aNode = ctx.lift(a).__node;
         const bNode = ctx.lift(b).__node;
         const type =
@@ -42,7 +42,7 @@ export const semigroup: PluginDefinition<TypeclassSlot<"semigroup">> = {
               : "Cannot infer type for append — both arguments are untyped",
           );
         }
-        return ctx.expr<string>({
+        return ctx.expr({
           kind: impl.nodeKinds.append,
           left: aNode,
           right: bNode,

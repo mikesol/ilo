@@ -31,9 +31,9 @@ export const heytingAlgebra: PluginDefinition<TypeclassSlot<"heytingAlgebra">> =
       .map((p) => p.traits!.heytingAlgebra!);
 
     function dispatchBinary(op: string) {
-      return (a: Expr<boolean>, b: Expr<boolean>): Expr<boolean> => {
-        const aNode = a.__node;
-        const bNode = b.__node;
+      return (a: any, b: any) => {
+        const aNode = ctx.isExpr(a) ? a.__node : ctx.lift(a).__node;
+        const bNode = ctx.isExpr(b) ? b.__node : ctx.lift(b).__node;
         const type =
           inferType(aNode, impls, ctx.inputSchema) ?? inferType(bNode, impls, ctx.inputSchema);
         const impl = type
@@ -48,7 +48,7 @@ export const heytingAlgebra: PluginDefinition<TypeclassSlot<"heytingAlgebra">> =
               : `Cannot infer type for ${op} — both arguments are untyped`,
           );
         }
-        return ctx.expr<boolean>({
+        return ctx.expr({
           kind: impl.nodeKinds[op],
           left: aNode,
           right: bNode,
@@ -59,8 +59,8 @@ export const heytingAlgebra: PluginDefinition<TypeclassSlot<"heytingAlgebra">> =
     return {
       and: dispatchBinary("conj"),
       or: dispatchBinary("disj"),
-      not(a: Expr<boolean>): Expr<boolean> {
-        const aNode = a.__node;
+      not(a: any) {
+        const aNode = ctx.isExpr(a) ? a.__node : ctx.lift(a).__node;
         const type = inferType(aNode, impls, ctx.inputSchema);
         const impl = type
           ? impls.find((i) => i.type === type)
@@ -74,7 +74,7 @@ export const heytingAlgebra: PluginDefinition<TypeclassSlot<"heytingAlgebra">> =
               : "Cannot infer type for not — argument is untyped",
           );
         }
-        return ctx.expr<boolean>({
+        return ctx.expr({
           kind: impl.nodeKinds.not,
           operand: aNode,
         });

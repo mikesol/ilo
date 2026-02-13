@@ -27,7 +27,7 @@ export const semiring: PluginDefinition<TypeclassSlot<"semiring">> = {
     const impls = ctx.plugins.filter((p) => p.traits?.semiring).map((p) => p.traits!.semiring!);
 
     function dispatch(op: string) {
-      return (a: any, b: any): Expr<number> => {
+      return (a: any, b: any) => {
         const aNode = ctx.lift(a).__node;
         const bNode = ctx.lift(b).__node;
         const type =
@@ -44,7 +44,7 @@ export const semiring: PluginDefinition<TypeclassSlot<"semiring">> = {
               : `Cannot infer type for ${op} — both arguments are untyped`,
           );
         }
-        return ctx.expr<number>({
+        return ctx.expr({
           kind: impl.nodeKinds[op],
           left: aNode,
           right: bNode,
