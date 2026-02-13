@@ -490,7 +490,6 @@ export function stripe(config: StripeConfig): PluginDefinition<StripeMethods>;
 
 // @public
 export interface StripeClient {
-    // (undocumented)
     request(method: string, path: string, params?: Record<string, unknown>): Promise<unknown>;
 }
 
@@ -512,9 +511,7 @@ export interface StripeClientHandlerState {
 
 // @public
 export interface StripeConfig {
-    // (undocumented)
     apiKey: string;
-    // (undocumented)
     apiVersion?: string;
 }
 
@@ -523,7 +520,6 @@ export const stripeInterpreter: InterpreterFragment;
 
 // @public
 export interface StripeMethods {
-    // (undocumented)
     stripe: {
         paymentIntents: {
             create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;

@@ -7,6 +7,7 @@ import type { ASTNode, InterpreterFragment, StepEffect } from "../../../core";
  * tested with mock clients.
  */
 export interface StripeClient {
+  /** Execute a Stripe API request and return the parsed response. */
   request(method: string, path: string, params?: Record<string, unknown>): Promise<unknown>;
 }
 

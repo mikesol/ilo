@@ -8543,7 +8543,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "ilo!StripeClient#request:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Execute a Stripe API request and return the parsed response.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -8889,7 +8889,7 @@
             {
               "kind": "PropertySignature",
               "canonicalReference": "ilo!StripeConfig#apiKey:member",
-              "docComment": "",
+              "docComment": "/**\n * Stripe secret API key (e.g. `sk_test_...` or `sk_live_...`).\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -8916,7 +8916,7 @@
             {
               "kind": "PropertySignature",
               "canonicalReference": "ilo!StripeConfig#apiVersion:member",
-              "docComment": "",
+              "docComment": "/**\n * Stripe API version override. Defaults to `2025-04-30.basil`.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -8985,7 +8985,7 @@
             {
               "kind": "PropertySignature",
               "canonicalReference": "ilo!StripeMethods#stripe:member",
-              "docComment": "",
+              "docComment": "/**\n * Stripe API operations, namespaced under `$.stripe`.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",

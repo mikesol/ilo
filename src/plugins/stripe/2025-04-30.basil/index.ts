@@ -2,6 +2,36 @@
 // ILO PLUGIN: stripe (stripe-node compatible API)
 // ============================================================
 //
+// Implementation status: PARTIAL (3 of 57 top-level resources)
+//
+// Implemented:
+//   - PaymentIntents: create, retrieve, confirm
+//   - Customers: create, retrieve, update, list
+//   - Charges: create, retrieve, list
+//
+// Not doable (fundamental mismatch with AST model):
+//   (none — every Stripe resource is request/response, all are
+//   modelable. Even pagination can be done via $.rec + has_more.)
+//
+// Remaining (same CRUD pattern, add as needed):
+//   Accounts, AccountLinks, AccountSessions, ApplicationFees,
+//   Balance, BalanceTransactions, Coupons, CreditNotes,
+//   Disputes, Events, Files, FileLinks, Invoices, InvoiceItems,
+//   Mandates, PaymentLinks, PaymentMethods, Payouts, Plans,
+//   Prices, Products, PromotionCodes, Quotes, Refunds,
+//   SetupIntents, ShippingRates, Sources, Subscriptions,
+//   SubscriptionItems, SubscriptionSchedules, Tokens, Topups,
+//   Transfers, WebhookEndpoints, and sub-resources under
+//   Billing, Checkout, Climate, Identity, Issuing, Radar,
+//   Reporting, Sigma, Tax, Terminal, Treasury.
+//
+//   Each resource follows the same pattern: add node kinds,
+//   add methods to StripeMethods, add switch cases to the
+//   interpreter. The interpreter/handler architecture does
+//   not need to change — stripe/api_call covers everything.
+//
+// ============================================================
+//
 // Goal: An LLM that knows stripe-node should be able to write
 // Ilo programs with near-zero learning curve. The API should
 // look like the real stripe-node SDK as closely as possible.
@@ -38,6 +68,7 @@ import type { Expr, PluginContext, PluginDefinition } from "../../../core";
  * that produce namespaced AST nodes.
  */
 export interface StripeMethods {
+  /** Stripe API operations, namespaced under `$.stripe`. */
   stripe: {
     paymentIntents: {
       /** Create a PaymentIntent. */
@@ -93,7 +124,9 @@ export interface StripeMethods {
  * apiVersion string to pin a specific Stripe API version.
  */
 export interface StripeConfig {
+  /** Stripe secret API key (e.g. `sk_test_...` or `sk_live_...`). */
   apiKey: string;
+  /** Stripe API version override. Defaults to `2025-04-30.basil`. */
   apiVersion?: string;
 }
 
