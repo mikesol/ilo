@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "check": "biome check . && api-extractor run --local",
+    "check": "biome check . && tsc && api-extractor run --local",
     "format": "biome check --write .",
     "test": "vitest run",
     "prepare": "husky"
