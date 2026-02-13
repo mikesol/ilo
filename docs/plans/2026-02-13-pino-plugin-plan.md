@@ -42,7 +42,7 @@ const app = ilo(num, str, pino({ level: "info" }));
 
 describe("pino: info with message only", () => {
   it("produces pino/info node with msg", () => {
-    const prog = app(($) => $.log.info("user logged in"));
+    const prog = app(($) => $.pino.info("user logged in"));
     const ast = strip(prog.ast) as any;
     expect(ast.result.kind).toBe("pino/info");
     expect(ast.result.level).toBe("info");
@@ -55,7 +55,7 @@ describe("pino: info with message only", () => {
 
 describe("pino: info with merge object and message", () => {
   it("produces pino/info node with mergeObject and msg", () => {
-    const prog = app(($) => $.log.info({ userId: 123 }, "user logged in"));
+    const prog = app(($) => $.pino.info({ userId: 123 }, "user logged in"));
     const ast = strip(prog.ast) as any;
     expect(ast.result.kind).toBe("pino/info");
     expect(ast.result.mergeObject.kind).toBe("core/record");
@@ -66,7 +66,7 @@ describe("pino: info with merge object and message", () => {
 
 describe("pino: info with Expr params", () => {
   it("captures proxy dependencies in merge object", () => {
-    const prog = app(($) => $.log.info({ userId: $.input.id }, "user logged in"));
+    const prog = app(($) => $.pino.info({ userId: $.input.id }, "user logged in"));
     const ast = strip(prog.ast) as any;
     expect(ast.result.kind).toBe("pino/info");
     expect(ast.result.mergeObject.fields.userId.kind).toBe("core/prop_access");
@@ -80,8 +80,8 @@ describe("pino: info with Expr params", () => {
 describe("pino: all six log levels produce correct node kinds", () => {
   const levels = ["trace", "debug", "info", "warn", "error", "fatal"] as const;
   for (const level of levels) {
-    it(`$.log.${level}() produces pino/${level} node`, () => {
-      const prog = app(($) => ($.log as any)[level]("test message"));
+    it(`$.pino.${level}() produces pino/${level} node`, () => {
+      const prog = app(($) => ($.pino as any)[level]("test message"));
       const ast = strip(prog.ast) as any;
       expect(ast.result.kind).toBe(`pino/${level}`);
       expect(ast.result.level).toBe(level);
@@ -95,7 +95,7 @@ describe("pino: all six log levels produce correct node kinds", () => {
 
 describe("pino: child logger", () => {
   it("child bindings are baked into the log node", () => {
-    const prog = app(($) => $.log.child({ requestId: "abc" }).info("handling request"));
+    const prog = app(($) => $.pino.child({ requestId: "abc" }).info("handling request"));
     const ast = strip(prog.ast) as any;
     expect(ast.result.kind).toBe("pino/info");
     expect(ast.result.bindings).toHaveLength(1);
@@ -105,7 +105,7 @@ describe("pino: child logger", () => {
 
   it("nested child loggers accumulate bindings", () => {
     const prog = app(($) =>
-      $.log.child({ requestId: "abc" }).child({ userId: 42 }).warn("slow query"),
+      $.pino.child({ requestId: "abc" }).child({ userId: 42 }).warn("slow query"),
     );
     const ast = strip(prog.ast) as any;
     expect(ast.result.kind).toBe("pino/warn");
@@ -115,9 +115,32 @@ describe("pino: child logger", () => {
   });
 
   it("child logger accepts Expr bindings", () => {
-    const prog = app(($) => $.log.child({ reqId: $.input.requestId }).info("test"));
+    const prog = app(($) => $.pino.child({ reqId: $.input.requestId }).info("test"));
     const ast = strip(prog.ast) as any;
     expect(ast.result.bindings[0].fields.reqId.kind).toBe("core/prop_access");
+  });
+});
+
+// ============================================================
+// Object-only logging (no message)
+// ============================================================
+
+describe("pino: object-only logging (single raw object arg)", () => {
+  it("raw object single arg becomes mergeObject, not msg", () => {
+    const prog = app(($) => $.pino.info({ userId: 123 }));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.kind).toBe("pino/info");
+    expect(ast.result.mergeObject.kind).toBe("core/record");
+    expect(ast.result.mergeObject.fields.userId.value).toBe(123);
+    expect(ast.result.msg).toBeNull();
+  });
+
+  it("Expr single arg is treated as msg (use 2-arg form for Expr merge objects)", () => {
+    const prog = app(($) => $.pino.info($.input.message));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.kind).toBe("pino/info");
+    expect(ast.result.msg.kind).toBe("core/prop_access");
+    expect(ast.result.mergeObject).toBeNull();
   });
 });
 
@@ -129,7 +152,7 @@ describe("pino: integration with $.do()", () => {
   it("log calls composed with $.do() are reachable", () => {
     expect(() => {
       app(($) => {
-        const logLine = $.log.info({ action: "login" }, "user logged in");
+        const logLine = $.pino.info({ action: "login" }, "user logged in");
         return $.do(logLine, $.input.result);
       });
     }).not.toThrow();
@@ -138,7 +161,7 @@ describe("pino: integration with $.do()", () => {
   it("orphaned log calls are rejected", () => {
     expect(() => {
       app(($) => {
-        $.log.info("this is orphaned");
+        $.pino.info("this is orphaned");
         return $.input.result;
       });
     }).toThrow(/unreachable node/i);
@@ -265,8 +288,8 @@ export interface PinoLogger {
  * Pino operations added to the DSL context by the pino plugin.
  */
 export interface PinoMethods {
-  /** Pino structured logger, accessed via `$.log`. */
-  log: PinoLogger;
+  /** Pino structured logger, accessed via `$.pino`. */
+  pino: PinoLogger;
 }
 
 // ---- Configuration ----------------------------------------
@@ -318,10 +341,20 @@ export function pino(config: PinoConfig = {}): PluginDefinition<PinoMethods> {
             let msg: ASTNode | null = null;
 
             if (args.length === 2) {
+              // Two args: (mergeObject, msg)
               mergeObject = ctx.lift(args[0]).__node;
               msg = ctx.lift(args[1]).__node;
             } else if (args.length === 1) {
-              msg = ctx.lift(args[0]).__node;
+              // Single arg: type heuristic matching real pino behavior
+              // - raw string → message
+              // - raw object → merge object (no message)
+              // - Expr → treated as message (use 2-arg form for Expr merge objects)
+              const arg = args[0];
+              if (typeof arg === "object" && arg !== null && !ctx.isExpr(arg)) {
+                mergeObject = ctx.lift(arg).__node;
+              } else {
+                msg = ctx.lift(arg).__node;
+              }
             }
 
             return ctx.expr<void>({
@@ -348,7 +381,7 @@ export function pino(config: PinoConfig = {}): PluginDefinition<PinoMethods> {
       }
 
       return {
-        log: buildLogger([]),
+        pino: buildLogger([]),
       };
     },
   };
@@ -362,16 +395,20 @@ export function pino(config: PinoConfig = {}): PluginDefinition<PinoMethods> {
 //
 // 1. Level methods:
 //    Real:  logger.info({ userId: 123 }, 'user logged in')
-//    Ilo:   $.log.info({ userId: 123 }, 'user logged in')
+//    Ilo:   $.pino.info({ userId: 123 }, 'user logged in')
 //    Identical. Only difference is $ prefix.
+//
+//    Real:  logger.info({ userId: 123 })  // object-only, no msg
+//    Ilo:   $.pino.info({ userId: 123 })  // same — raw object = mergeObject
 //
 // 2. Child loggers:
 //    Real:  logger.child({ requestId: 'abc' }).info('handling')
-//    Ilo:   $.log.child({ requestId: 'abc' }).info('handling')
+//    Ilo:   $.pino.child({ requestId: 'abc' }).info('handling')
+//    Namespace is $.pino (consistent with $.stripe, $.postgres).
 //    Identical. Bindings accumulate in the AST.
 //
 // 3. Dynamic values:
-//    $.log.info({ userId: $.input.id }, 'user action')
+//    $.pino.info({ userId: $.input.id }, 'user action')
 //    Proxy chains capture dependencies correctly.
 //
 // DOESN'T WORK / NOT MODELED:
@@ -460,7 +497,7 @@ async function run(prog: { ast: any }, input: Record<string, unknown> = {}) {
 
 describe("pino interpreter: info with message", () => {
   it("yields pino/log effect with level info", async () => {
-    const prog = app(($) => $.log.info("hello world"));
+    const prog = app(($) => $.pino.info("hello world"));
     const { captured } = await run(prog);
     expect(captured).toHaveLength(1);
     expect(captured[0].type).toBe("pino/log");
@@ -473,7 +510,7 @@ describe("pino interpreter: info with message", () => {
 
 describe("pino interpreter: info with merge object and message", () => {
   it("yields pino/log with mergeObject", async () => {
-    const prog = app(($) => $.log.info({ userId: 123 }, "user action"));
+    const prog = app(($) => $.pino.info({ userId: 123 }, "user action"));
     const { captured } = await run(prog);
     expect(captured).toHaveLength(1);
     expect(captured[0].type).toBe("pino/log");
@@ -491,7 +528,7 @@ describe("pino interpreter: all six levels yield correct effect", () => {
   const levels = ["trace", "debug", "info", "warn", "error", "fatal"] as const;
   for (const level of levels) {
     it(`${level} yields pino/log with level="${level}"`, async () => {
-      const prog = app(($) => ($.log as any)[level]("test"));
+      const prog = app(($) => ($.pino as any)[level]("test"));
       const { captured } = await run(prog);
       expect(captured).toHaveLength(1);
       expect(captured[0].type).toBe("pino/log");
@@ -502,12 +539,27 @@ describe("pino interpreter: all six levels yield correct effect", () => {
 });
 
 // ============================================================
+// Object-only logging
+// ============================================================
+
+describe("pino interpreter: object-only logging", () => {
+  it("yields pino/log with mergeObject and no msg", async () => {
+    const prog = app(($) => $.pino.info({ userId: 123 }));
+    const { captured } = await run(prog);
+    expect(captured).toHaveLength(1);
+    expect(captured[0].type).toBe("pino/log");
+    expect(captured[0].mergeObject).toEqual({ userId: 123 });
+    expect(captured[0].msg).toBeUndefined();
+  });
+});
+
+// ============================================================
 // Child loggers
 // ============================================================
 
 describe("pino interpreter: child logger bindings", () => {
   it("single child merges bindings into effect", async () => {
-    const prog = app(($) => $.log.child({ requestId: "abc" }).info("handling"));
+    const prog = app(($) => $.pino.child({ requestId: "abc" }).info("handling"));
     const { captured } = await run(prog);
     expect(captured).toHaveLength(1);
     expect(captured[0].bindings).toEqual([{ requestId: "abc" }]);
@@ -516,7 +568,7 @@ describe("pino interpreter: child logger bindings", () => {
 
   it("nested children accumulate bindings in order", async () => {
     const prog = app(($) =>
-      $.log.child({ requestId: "abc" }).child({ userId: 42 }).warn("slow"),
+      $.pino.child({ requestId: "abc" }).child({ userId: 42 }).warn("slow"),
     );
     const { captured } = await run(prog);
     expect(captured).toHaveLength(1);
@@ -532,7 +584,7 @@ describe("pino interpreter: child logger bindings", () => {
 describe("pino interpreter: input resolution", () => {
   it("resolves input values in merge object", async () => {
     const prog = app({ userId: "number" }, ($) =>
-      $.log.info({ userId: $.input.userId }, "user action"),
+      $.pino.info({ userId: $.input.userId }, "user action"),
     );
     const { captured } = await run(prog, { userId: 456 });
     expect(captured).toHaveLength(1);
@@ -541,7 +593,7 @@ describe("pino interpreter: input resolution", () => {
 
   it("resolves input values in child bindings", async () => {
     const prog = app({ reqId: "string" }, ($) =>
-      $.log.child({ requestId: $.input.reqId }).info("test"),
+      $.pino.child({ requestId: $.input.reqId }).info("test"),
     );
     const { captured } = await run(prog, { reqId: "req-789" });
     expect(captured).toHaveLength(1);
@@ -555,7 +607,7 @@ describe("pino interpreter: input resolution", () => {
 
 describe("pino interpreter: return value", () => {
   it("returns undefined (fire-and-forget)", async () => {
-    const prog = app(($) => $.log.info("test"));
+    const prog = app(($) => $.pino.info("test"));
     const { result } = await run(prog);
     expect(result).toBeUndefined();
   });
@@ -954,7 +1006,7 @@ async function run(
 describe("pino integration: basic logging", () => {
   it("info writes a log line", async () => {
     const { logger, lines } = createCapturingLogger();
-    const prog = app(($) => $.log.info("hello world"));
+    const prog = app(($) => $.pino.info("hello world"));
     await run(prog, logger);
     expect(lines).toHaveLength(1);
     expect(lines[0].msg).toBe("hello world");
@@ -963,11 +1015,22 @@ describe("pino integration: basic logging", () => {
 
   it("info with merge object", async () => {
     const { logger, lines } = createCapturingLogger();
-    const prog = app(($) => $.log.info({ userId: 123 }, "user action"));
+    const prog = app(($) => $.pino.info({ userId: 123 }, "user action"));
     await run(prog, logger);
     expect(lines).toHaveLength(1);
     expect(lines[0].msg).toBe("user action");
     expect(lines[0].userId).toBe(123);
+  });
+});
+
+describe("pino integration: object-only logging", () => {
+  it("object-only log writes merge fields without msg", async () => {
+    const { logger, lines } = createCapturingLogger();
+    const prog = app(($) => $.pino.info({ userId: 123 }));
+    await run(prog, logger);
+    expect(lines).toHaveLength(1);
+    expect(lines[0].userId).toBe(123);
+    expect(lines[0].msg).toBeUndefined();
   });
 });
 
@@ -984,7 +1047,7 @@ describe("pino integration: all levels", () => {
   for (const [level, num] of Object.entries(levelMap)) {
     it(`${level} writes at level ${num}`, async () => {
       const { logger, lines } = createCapturingLogger();
-      const prog = app(($) => ($.log as any)[level]("test"));
+      const prog = app(($) => ($.pino as any)[level]("test"));
       await run(prog, logger);
       expect(lines).toHaveLength(1);
       expect(lines[0].level).toBe(num);
@@ -995,7 +1058,7 @@ describe("pino integration: all levels", () => {
 describe("pino integration: child loggers", () => {
   it("child bindings appear in log output", async () => {
     const { logger, lines } = createCapturingLogger();
-    const prog = app(($) => $.log.child({ requestId: "abc" }).info("handling"));
+    const prog = app(($) => $.pino.child({ requestId: "abc" }).info("handling"));
     await run(prog, logger);
     expect(lines).toHaveLength(1);
     expect(lines[0].requestId).toBe("abc");
@@ -1005,7 +1068,7 @@ describe("pino integration: child loggers", () => {
   it("nested children accumulate bindings", async () => {
     const { logger, lines } = createCapturingLogger();
     const prog = app(($) =>
-      $.log.child({ requestId: "abc" }).child({ userId: 42 }).warn("slow"),
+      $.pino.child({ requestId: "abc" }).child({ userId: 42 }).warn("slow"),
     );
     await run(prog, logger);
     expect(lines).toHaveLength(1);
@@ -1019,7 +1082,7 @@ describe("pino integration: input resolution", () => {
   it("resolves dynamic input values", async () => {
     const { logger, lines } = createCapturingLogger();
     const prog = app({ userId: "number" }, ($) =>
-      $.log.info({ userId: $.input.userId }, "action"),
+      $.pino.info({ userId: $.input.userId }, "action"),
     );
     await run(prog, logger, { userId: 789 });
     expect(lines).toHaveLength(1);

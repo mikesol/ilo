@@ -14,20 +14,34 @@ pino 10.3.1 (latest stable). Directory: `src/plugins/pino/10.3.1/`.
 
 ## API shape
 
-Mirrors real pino 1:1. Six level methods plus `child()` for scoped bindings.
+Mirrors real pino 1:1. Six level methods plus `child()` for scoped bindings. Namespace is `$.pino` (consistent with `$.stripe`, `$.postgres`).
 
 ```ts
 // Real pino
 const logger = pino({ level: "info" });
+logger.info("hello");
 logger.info({ userId: 123 }, "user logged in");
+logger.info({ userId: 123 });  // object-only, no message
 logger.child({ requestId: "abc" }).warn("slow query");
 
 // Ilo pino
 const p = pino({ level: "info" });
 // in program:
-$.log.info({ userId: $.input.id }, "user logged in");
-$.log.child({ requestId: $.input.reqId }).warn("slow query");
+$.pino.info("hello");
+$.pino.info({ userId: $.input.id }, "user logged in");
+$.pino.info({ userId: 123 });  // object-only, no message
+$.pino.child({ requestId: $.input.reqId }).warn("slow query");
 ```
+
+### Argument disambiguation (single-arg heuristic)
+
+Real pino distinguishes `logger.info("msg")` from `logger.info({ key: val })` by argument type. Ilo uses a build-time heuristic:
+
+- Raw `string` → message (no merge object)
+- Raw `object` → merge object (no message)
+- `Expr<T>` → treated as message (use 2-arg form for merge object with Expr)
+
+This matches real pino behavior for raw values. The only deviation: if you have a dynamic merge object as an `Expr`, you must use the 2-arg form `$.pino.info(exprObj, exprMsg)` rather than relying on single-arg type inference.
 
 ## Directory structure
 
@@ -56,7 +70,8 @@ export interface PinoConfig {
 export interface PinoLogger {
   trace(mergeObject: Expr<Record<string, unknown>> | Record<string, unknown>, msg?: Expr<string> | string): Expr<void>;
   trace(msg: Expr<string> | string): Expr<void>;
-  debug(/* same overloads */): Expr<void>;
+  trace(mergeObject: Record<string, unknown>): Expr<void>;  // object-only (raw)
+  debug(/* same 3 overloads */): Expr<void>;
   info(/* same */): Expr<void>;
   warn(/* same */): Expr<void>;
   error(/* same */): Expr<void>;
@@ -65,7 +80,7 @@ export interface PinoLogger {
 }
 
 export interface PinoMethods {
-  log: PinoLogger;
+  pino: PinoLogger;
 }
 ```
 
@@ -121,7 +136,7 @@ export interface PinoClient {
 | Category | Operations |
 |----------|-----------|
 | **Maps cleanly** | `trace`, `debug`, `info`, `warn`, `error`, `fatal`, `child` — pure fire-and-forget with structured data |
-| **Needs deviation** | None |
+| **Needs deviation** | Single-arg `Expr` always treated as message — use 2-arg form for dynamic merge objects |
 | **Can't model** | Transports (runtime stream config), `destination()` (file descriptors), `flush()` (async stream control), redaction (compile-time transform), `isLevelEnabled()` (runtime level check), `silent` level |
 
 ## Plugin size
