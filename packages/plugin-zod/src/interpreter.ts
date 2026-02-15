@@ -48,6 +48,99 @@ function applyStringChecks(schema: z.ZodString, checks: CheckDescriptor[]): z.Zo
 }
 
 /**
+ * Build a Zod string-format schema from a format descriptor.
+ * Maps format type strings to the corresponding Zod format constructors.
+ */
+function buildStringFormat(
+  format: Record<string, unknown>,
+  errorFn?: (iss: unknown) => string,
+): z.ZodString {
+  const errOpt = errorFn ? { error: errorFn } : {};
+  switch (format.type) {
+    case "email":
+      return z.email(errOpt) as unknown as z.ZodString;
+    case "uuid":
+      return z.uuid(
+        format.version != null
+          ? {
+              ...errOpt,
+              version: format.version as "v1" | "v2" | "v3" | "v4" | "v5" | "v6" | "v7" | "v8",
+            }
+          : errOpt,
+      ) as unknown as z.ZodString;
+    case "uuidv4":
+      return z.uuidv4(errOpt) as unknown as z.ZodString;
+    case "uuidv7":
+      return z.uuidv7(errOpt) as unknown as z.ZodString;
+    case "guid":
+      return z.guid(errOpt) as unknown as z.ZodString;
+    case "url":
+      return z.url(errOpt) as unknown as z.ZodString;
+    case "httpUrl":
+      return z.httpUrl(errOpt) as unknown as z.ZodString;
+    case "hostname":
+      return z.hostname(errOpt) as unknown as z.ZodString;
+    case "emoji":
+      return z.emoji(errOpt) as unknown as z.ZodString;
+    case "base64":
+      return z.base64(errOpt) as unknown as z.ZodString;
+    case "base64url":
+      return z.base64url(errOpt) as unknown as z.ZodString;
+    case "hex":
+      return z.hex(errOpt) as unknown as z.ZodString;
+    case "jwt":
+      return z.jwt(
+        format.alg != null ? { ...errOpt, alg: format.alg as string } : errOpt,
+      ) as unknown as z.ZodString;
+    case "nanoid":
+      return z.nanoid(errOpt) as unknown as z.ZodString;
+    case "cuid":
+      return z.cuid(errOpt) as unknown as z.ZodString;
+    case "cuid2":
+      return z.cuid2(errOpt) as unknown as z.ZodString;
+    case "ulid":
+      return z.ulid(errOpt) as unknown as z.ZodString;
+    case "ipv4":
+      return z.ipv4(errOpt) as unknown as z.ZodString;
+    case "ipv6":
+      return z.ipv6(errOpt) as unknown as z.ZodString;
+    case "mac":
+      return z.mac(errOpt) as unknown as z.ZodString;
+    case "cidrv4":
+      return z.cidrv4(errOpt) as unknown as z.ZodString;
+    case "cidrv6":
+      return z.cidrv6(errOpt) as unknown as z.ZodString;
+    case "hash":
+      return z.hash(
+        format.algorithm as "md5" | "sha1" | "sha256" | "sha384" | "sha512",
+        errOpt,
+      ) as unknown as z.ZodString;
+    case "e164":
+      return z.e164(errOpt) as unknown as z.ZodString;
+    case "iso.date":
+      return z.iso.date(errOpt) as unknown as z.ZodString;
+    case "iso.time": {
+      const opts: Record<string, unknown> = { ...errOpt };
+      if (format.precision != null) opts.precision = format.precision;
+      if (format.offset != null) opts.offset = format.offset;
+      if (format.local != null) opts.local = format.local;
+      return z.iso.time(opts as any) as unknown as z.ZodString;
+    }
+    case "iso.datetime": {
+      const opts: Record<string, unknown> = { ...errOpt };
+      if (format.precision != null) opts.precision = format.precision;
+      if (format.offset != null) opts.offset = format.offset;
+      if (format.local != null) opts.local = format.local;
+      return z.iso.datetime(opts as any) as unknown as z.ZodString;
+    }
+    case "iso.duration":
+      return z.iso.duration(errOpt) as unknown as z.ZodString;
+    default:
+      throw new Error(`Zod interpreter: unknown string format "${format.type}"`);
+  }
+}
+
+/**
  * Build a Zod schema from a schema AST node (generator version).
  * Yields recurse effects for value-carrying wrappers (default, prefault, catch).
  * Simple schema types and non-value wrappers are handled synchronously.
@@ -57,7 +150,12 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
     case "zod/string": {
       const checks = (node.checks as CheckDescriptor[]) ?? [];
       const errorFn = toZodError(node.error as ErrorConfig | undefined);
-      const base = errorFn ? z.string({ error: errorFn }) : z.string();
+      const format = node.format as Record<string, unknown> | undefined;
+      const base = format
+        ? buildStringFormat(format, errorFn)
+        : errorFn
+          ? z.string({ error: errorFn })
+          : z.string();
       return applyStringChecks(base, checks);
     }
 

@@ -354,3 +354,121 @@ describe("zodInterpreter: refinements (#135)", () => {
     expect(valid.success).toBe(true);
   });
 });
+
+describe("zodInterpreter: string format constructors (#138)", () => {
+  it("email() validates email addresses", async () => {
+    const prog = app(($) => $.zod.email().safeParse($.input.value));
+    const valid = (await run(prog, { value: "user@example.com" })) as any;
+    const invalid = (await run(prog, { value: "not-an-email" })) as any;
+    expect(valid.success).toBe(true);
+    expect(valid.data).toBe("user@example.com");
+    expect(invalid.success).toBe(false);
+  });
+
+  it("uuid() validates UUIDs", async () => {
+    const prog = app(($) => $.zod.uuid().safeParse($.input.value));
+    const valid = (await run(prog, { value: "550e8400-e29b-41d4-a716-446655440000" })) as any;
+    const invalid = (await run(prog, { value: "not-a-uuid" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("url() validates URLs", async () => {
+    const prog = app(($) => $.zod.url().safeParse($.input.value));
+    const valid = (await run(prog, { value: "https://example.com" })) as any;
+    const invalid = (await run(prog, { value: "not a url" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("ipv4() validates IPv4 addresses", async () => {
+    const prog = app(($) => $.zod.ipv4().safeParse($.input.value));
+    const valid = (await run(prog, { value: "192.168.1.1" })) as any;
+    const invalid = (await run(prog, { value: "999.999.999.999" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("base64() validates base64 strings", async () => {
+    const prog = app(($) => $.zod.base64().safeParse($.input.value));
+    const valid = (await run(prog, { value: "aGVsbG8=" })) as any;
+    const invalid = (await run(prog, { value: "not base64!!!" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("hex() validates hex strings", async () => {
+    const prog = app(($) => $.zod.hex().safeParse($.input.value));
+    const valid = (await run(prog, { value: "deadbeef" })) as any;
+    const invalid = (await run(prog, { value: "xyz123" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("iso.date() validates ISO dates", async () => {
+    const prog = app(($) => $.zod.iso.date().safeParse($.input.value));
+    const valid = (await run(prog, { value: "2024-01-15" })) as any;
+    const invalid = (await run(prog, { value: "01-15-2024" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("iso.datetime() validates ISO datetimes", async () => {
+    const prog = app(($) => $.zod.iso.datetime().safeParse($.input.value));
+    const valid = (await run(prog, { value: "2024-01-15T10:30:00Z" })) as any;
+    const invalid = (await run(prog, { value: "not-a-datetime" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("hash() validates hash strings", async () => {
+    const prog = app(($) => $.zod.hash("sha256").safeParse($.input.value));
+    const valid = (await run(prog, {
+      value: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    })) as any;
+    const invalid = (await run(prog, { value: "not-a-hash" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("format with error config", async () => {
+    const prog = app(($) => $.zod.email("Invalid email!").safeParse($.input.value));
+    const result = (await run(prog, { value: "bad" })) as any;
+    expect(result.success).toBe(false);
+    expect(result.error.message).toContain("Invalid email!");
+  });
+
+  it("format with string checks (min/max)", async () => {
+    const prog = app(($) => $.zod.email().min(10).safeParse($.input.value));
+    const tooShort = (await run(prog, { value: "a@b.co" })) as any;
+    const valid = (await run(prog, { value: "user@example.com" })) as any;
+    expect(tooShort.success).toBe(false);
+    expect(valid.success).toBe(true);
+  });
+
+  it("format with optional wrapper", async () => {
+    const prog = app(($) => $.zod.email().optional().safeParse($.input.value));
+    const undef = (await run(prog, { value: undefined })) as any;
+    const valid = (await run(prog, { value: "user@example.com" })) as any;
+    const invalid = (await run(prog, { value: "bad" })) as any;
+    expect(undef.success).toBe(true);
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("ulid() validates ULID strings", async () => {
+    const prog = app(($) => $.zod.ulid().safeParse($.input.value));
+    const valid = (await run(prog, { value: "01ARZ3NDEKTSV4RRFFQ69G5FAV" })) as any;
+    const invalid = (await run(prog, { value: "not-a-ulid" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+
+  it("hostname() validates hostnames", async () => {
+    const prog = app(($) => $.zod.hostname().safeParse($.input.value));
+    const valid = (await run(prog, { value: "example.com" })) as any;
+    const invalid = (await run(prog, { value: "not a hostname!" })) as any;
+    expect(valid.success).toBe(true);
+    expect(invalid.success).toBe(false);
+  });
+});
