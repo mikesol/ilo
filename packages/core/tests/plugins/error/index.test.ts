@@ -1,9 +1,9 @@
+import { postgres } from "@mvfm/plugin-postgres";
 import { describe, expect, it } from "vitest";
 import { mvfm } from "../../../src/core";
 import { error } from "../../../src/plugins/error";
 import { num } from "../../../src/plugins/num";
 import { ord } from "../../../src/plugins/ord";
-import { postgres } from "@mvfm/plugin-postgres";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { foldAST, mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
 import { fal } from "../../src/1.9.1";
 import { falInterpreter } from "../../src/1.9.1/interpreter";
-import { num } from "@mvfm/core";
-import { str } from "@mvfm/core";
 
 const app = mvfm(num, str, fal({ credentials: "key_test_123" }));
 const fragments = [falInterpreter, coreInterpreter];

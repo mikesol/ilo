@@ -1,27 +1,27 @@
 import * as http from "node:http";
+import type { InterpreterFragment, StepContext } from "@mvfm/core";
+import {
+  coreInterpreter,
+  eq,
+  eqInterpreter,
+  mvfm,
+  num,
+  numInterpreter,
+  ord,
+  ordInterpreter,
+  runAST,
+  semiring,
+  str,
+  strInterpreter,
+} from "@mvfm/core";
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import type { InterpreterFragment, StepContext } from "@mvfm/core";
-import { mvfm, runAST } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { eq } from "@mvfm/core";
-import { eqInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
-import { numInterpreter } from "@mvfm/core";
-import { ord } from "@mvfm/core";
-import { ordInterpreter } from "@mvfm/core";
 import { postgres as pgPlugin } from "../../src/3.4.8";
 import { wrapPostgresJs } from "../../src/3.4.8/client-postgres-js";
 import { clientHandler } from "../../src/3.4.8/handler.client";
-import {
-  serverEvaluate,
-  serverHandler,
-} from "../../src/3.4.8/handler.server";
+import { serverEvaluate, serverHandler } from "../../src/3.4.8/handler.server";
 import { postgresInterpreter } from "../../src/3.4.8/interpreter";
-import { semiring } from "@mvfm/core";
-import { str } from "@mvfm/core";
-import { strInterpreter } from "@mvfm/core";
 
 let container: StartedPostgreSqlContainer;
 let sql: ReturnType<typeof postgres>;

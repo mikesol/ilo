@@ -1,0 +1,2006 @@
+{
+  "metadata": {
+    "toolPackage": "@microsoft/api-extractor",
+    "toolVersion": "7.56.3",
+    "schemaVersion": 1011,
+    "oldestForwardsCompatibleVersion": 1001,
+    "tsdocConfig": {
+      "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
+      "noStandardTags": true,
+      "tagDefinitions": [
+        {
+          "tagName": "@alpha",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@beta",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@defaultValue",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@decorator",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@deprecated",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@eventProperty",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@example",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@experimental",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@inheritDoc",
+          "syntaxKind": "inline"
+        },
+        {
+          "tagName": "@internal",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@label",
+          "syntaxKind": "inline"
+        },
+        {
+          "tagName": "@link",
+          "syntaxKind": "inline",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@override",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@packageDocumentation",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@param",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@privateRemarks",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@public",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@readonly",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@remarks",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@returns",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@sealed",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@see",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@throws",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@typeParam",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@virtual",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@jsx",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@jsxRuntime",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@jsxFrag",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@jsxImportSource",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@betaDocumentation",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@internalRemarks",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@preapproved",
+          "syntaxKind": "modifier"
+        }
+      ],
+      "supportForTags": {
+        "@alpha": true,
+        "@beta": true,
+        "@defaultValue": true,
+        "@decorator": true,
+        "@deprecated": true,
+        "@eventProperty": true,
+        "@example": true,
+        "@experimental": true,
+        "@inheritDoc": true,
+        "@internal": true,
+        "@label": true,
+        "@link": true,
+        "@override": true,
+        "@packageDocumentation": true,
+        "@param": true,
+        "@privateRemarks": true,
+        "@public": true,
+        "@readonly": true,
+        "@remarks": true,
+        "@returns": true,
+        "@sealed": true,
+        "@see": true,
+        "@throws": true,
+        "@typeParam": true,
+        "@virtual": true,
+        "@betaDocumentation": true,
+        "@internalRemarks": true,
+        "@preapproved": true
+      },
+      "reportUnsupportedHtmlElements": false
+    }
+  },
+  "kind": "Package",
+  "canonicalReference": "@mvfm/plugin-slack!",
+  "docComment": "",
+  "name": "@mvfm/plugin-slack",
+  "preserveMemberOrder": false,
+  "members": [
+    {
+      "kind": "EntryPoint",
+      "canonicalReference": "@mvfm/plugin-slack!",
+      "name": "",
+      "preserveMemberOrder": false,
+      "members": [
+        {
+          "kind": "Function",
+          "canonicalReference": "@mvfm/plugin-slack!clientHandler:function(1)",
+          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare function clientHandler(options: "
+            },
+            {
+              "kind": "Reference",
+              "text": "ClientHandlerOptions",
+              "canonicalReference": "@mvfm/plugin-slack!ClientHandlerOptions:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "StepHandler",
+              "canonicalReference": "@mvfm/core!StepHandler:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "ClientHandlerState",
+              "canonicalReference": "@mvfm/plugin-slack!ClientHandlerState:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ">"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/handler.client.d.ts",
+          "returnTypeTokenRange": {
+            "startIndex": 3,
+            "endIndex": 7
+          },
+          "releaseTag": "Public",
+          "overloadIndex": 1,
+          "parameters": [
+            {
+              "parameterName": "options",
+              "parameterTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isOptional": false
+            }
+          ],
+          "name": "clientHandler"
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/plugin-slack!ClientHandlerOptions:interface",
+          "docComment": "/**\n * Options for configuring the client-side handler.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface ClientHandlerOptions "
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/handler.client.d.ts",
+          "releaseTag": "Public",
+          "name": "ClientHandlerOptions",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/plugin-slack!ClientHandlerOptions#baseUrl:member",
+              "docComment": "/**\n * Base URL of the server endpoint (e.g., \"https://api.example.com\").\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "baseUrl: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "baseUrl",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/plugin-slack!ClientHandlerOptions#contractHash:member",
+              "docComment": "/**\n * Contract hash from the program, used for verification.\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "contractHash: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "contractHash",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/plugin-slack!ClientHandlerOptions#fetch:member",
+              "docComment": "/**\n * Custom fetch implementation (defaults to global fetch).\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "fetch?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "globalThis.fetch",
+                  "canonicalReference": "!fetch:function"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "fetch",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/plugin-slack!ClientHandlerOptions#headers:member",
+              "docComment": "/**\n * Additional headers to include in requests.\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "headers?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, string>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "headers",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/plugin-slack!ClientHandlerState:interface",
+          "docComment": "/**\n * State tracked by the client handler across steps.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface ClientHandlerState "
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/handler.client.d.ts",
+          "releaseTag": "Public",
+          "name": "ClientHandlerState",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/plugin-slack!ClientHandlerState#stepIndex:member",
+              "docComment": "/**\n * The current step index, incremented after each effect.\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "stepIndex: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "stepIndex",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "Function",
+          "canonicalReference": "@mvfm/plugin-slack!serverEvaluate:function(1)",
+          "docComment": "/**\n * Creates a unified evaluation function that evaluates an AST against a Slack client using the provided interpreter fragments.\n *\n * Convenience wrapper composing fragments + {@link serverHandler} via `runAST`.\n *\n * @param client - The {@link SlackClient} to execute against.\n *\n * @param fragments - Generator interpreter fragments for evaluating sub-expressions.\n *\n * @returns An async function that evaluates an AST node to its result.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare function serverEvaluate(client: "
+            },
+            {
+              "kind": "Reference",
+              "text": "SlackClient",
+              "canonicalReference": "@mvfm/plugin-slack!SlackClient:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", fragments: "
+            },
+            {
+              "kind": "Reference",
+              "text": "InterpreterFragment",
+              "canonicalReference": "@mvfm/core!InterpreterFragment:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[]"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Content",
+              "text": "(root: "
+            },
+            {
+              "kind": "Reference",
+              "text": "ASTNode",
+              "canonicalReference": "@mvfm/core!ASTNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/handler.server.d.ts",
+          "returnTypeTokenRange": {
+            "startIndex": 6,
+            "endIndex": 11
+          },
+          "releaseTag": "Public",
+          "overloadIndex": 1,
+          "parameters": [
+            {
+              "parameterName": "client",
+              "parameterTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isOptional": false
+            },
+            {
+              "parameterName": "fragments",
+              "parameterTypeTokenRange": {
+                "startIndex": 3,
+                "endIndex": 5
+              },
+              "isOptional": false
+            }
+          ],
+          "name": "serverEvaluate"
+        },
+        {
+          "kind": "Function",
+          "canonicalReference": "@mvfm/plugin-slack!serverHandler:function(1)",
+          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes Slack effects against a real Slack client.\n *\n * Handles `slack/api_call` effects by delegating to `client.apiCall(method, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link SlackClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare function serverHandler(client: "
+            },
+            {
+              "kind": "Reference",
+              "text": "SlackClient",
+              "canonicalReference": "@mvfm/plugin-slack!SlackClient:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "StepHandler",
+              "canonicalReference": "@mvfm/core!StepHandler:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/handler.server.d.ts",
+          "returnTypeTokenRange": {
+            "startIndex": 3,
+            "endIndex": 5
+          },
+          "releaseTag": "Public",
+          "overloadIndex": 1,
+          "parameters": [
+            {
+              "parameterName": "client",
+              "parameterTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isOptional": false
+            }
+          ],
+          "name": "serverHandler"
+        },
+        {
+          "kind": "Function",
+          "canonicalReference": "@mvfm/plugin-slack!slack:function(1)",
+          "docComment": "/**\n * Slack plugin factory. Namespace: `slack/`.\n *\n * Creates a plugin that exposes chat, conversations, users, reactions, and files resource methods for building parameterized Slack API call AST nodes.\n *\n * @param config - A {@link SlackConfig} with a token.\n *\n * @returns A {@link PluginDefinition} for the slack plugin.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare function slack(config: "
+            },
+            {
+              "kind": "Reference",
+              "text": "SlackConfig",
+              "canonicalReference": "@mvfm/plugin-slack!SlackConfig:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "PluginDefinition",
+              "canonicalReference": "@mvfm/core!PluginDefinition:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "SlackMethods",
+              "canonicalReference": "@mvfm/plugin-slack!SlackMethods:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ">"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/index.d.ts",
+          "returnTypeTokenRange": {
+            "startIndex": 3,
+            "endIndex": 7
+          },
+          "releaseTag": "Public",
+          "overloadIndex": 1,
+          "parameters": [
+            {
+              "parameterName": "config",
+              "parameterTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isOptional": false
+            }
+          ],
+          "name": "slack"
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/plugin-slack!SlackClient:interface",
+          "docComment": "/**\n * Abstract Slack client interface consumed by the slack handler.\n *\n * Abstracts over the actual `@slack/web-api` `WebClient` so handlers can be tested with mock clients. Mirrors the `WebClient.apiCall()` signature.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface SlackClient "
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/interpreter.d.ts",
+          "releaseTag": "Public",
+          "name": "SlackClient",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "MethodSignature",
+              "canonicalReference": "@mvfm/plugin-slack!SlackClient#apiCall:member(1)",
+              "docComment": "/**\n * Execute a Slack API request and return the parsed response.\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "apiCall(method: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", params?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Promise",
+                  "canonicalReference": "!Promise:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<unknown>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "returnTypeTokenRange": {
+                "startIndex": 6,
+                "endIndex": 8
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "method",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  },
+                  "isOptional": false
+                },
+                {
+                  "parameterName": "params",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 3,
+                    "endIndex": 5
+                  },
+                  "isOptional": true
+                }
+              ],
+              "name": "apiCall"
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/plugin-slack!SlackConfig:interface",
+          "docComment": "/**\n * Configuration for the slack plugin.\n *\n * Requires a bot or user token (`xoxb-...` or `xoxp-...`).\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface SlackConfig "
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/index.d.ts",
+          "releaseTag": "Public",
+          "name": "SlackConfig",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/plugin-slack!SlackConfig#token:member",
+              "docComment": "/**\n * Slack bot or user token (e.g. `xoxb-...` or `xoxp-...`).\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "token: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "token",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "Variable",
+          "canonicalReference": "@mvfm/plugin-slack!slackInterpreter:var",
+          "docComment": "/**\n * Generator-based interpreter fragment for slack plugin nodes.\n *\n * Yields `slack/api_call` effects for all 25 operations across 5 resource groups (chat, conversations, users, reactions, files). Each effect contains the Slack API method string and optional params, matching the `WebClient.apiCall()` calling convention.\n *\n * All 25 methods follow the same uniform pattern: look up the API method from `NODE_TO_METHOD`, recurse into params if non-null, and yield a single `slack/api_call` effect.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "slackInterpreter: "
+            },
+            {
+              "kind": "Reference",
+              "text": "InterpreterFragment",
+              "canonicalReference": "@mvfm/core!InterpreterFragment:interface"
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/interpreter.d.ts",
+          "isReadonly": true,
+          "releaseTag": "Public",
+          "name": "slackInterpreter",
+          "variableTypeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/plugin-slack!SlackMethods:interface",
+          "docComment": "/**\n * Slack operations added to the DSL context by the slack plugin.\n *\n * Mirrors the `@slack/web-api` SDK resource API: chat, conversations, users, reactions, and files. Each resource group exposes methods that produce namespaced AST nodes.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface SlackMethods "
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/index.d.ts",
+          "releaseTag": "Public",
+          "name": "SlackMethods",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/plugin-slack!SlackMethods#slack:member",
+              "docComment": "/**\n * Slack API operations, namespaced under `$.slack`.\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "slack: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "{\n        chat: {\n            postMessage(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            update(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            delete(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            postEphemeral(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            scheduleMessage(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            getPermalink(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n        };\n        conversations: {\n            list(params?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            info(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            create(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            invite(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            history(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            members(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            open(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            replies(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n        };\n        users: {\n            info(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            list(params?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            lookupByEmail(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            conversations(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n        };\n        reactions: {\n            add(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            get(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            list(params?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            remove(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n        };\n        files: {\n            list(params?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            info(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n            delete(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>> | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expr",
+                  "canonicalReference": "@mvfm/core!Expr:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>;\n        };\n    }"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "slack",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 252
+              }
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "Function",
+          "canonicalReference": "@mvfm/plugin-slack!wrapSlackWebClient:function(1)",
+          "docComment": "/**\n * Wraps a `@slack/web-api` `WebClient` instance into the abstract {@link SlackClient} interface consumed by the slack handler.\n *\n * This adapter decouples the handler from the concrete SDK, allowing tests to substitute mock clients while production code uses the real `WebClient`.\n *\n * @param client - The `@slack/web-api` `WebClient` instance to wrap.\n *\n * @returns A {@link SlackClient} that delegates to the underlying `WebClient`\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare function wrapSlackWebClient(client: "
+            },
+            {
+              "kind": "Reference",
+              "text": "WebClient",
+              "canonicalReference": "@slack/web-api!WebClient:class"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "SlackClient",
+              "canonicalReference": "@mvfm/plugin-slack!SlackClient:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/7.14.0/client-slack-web-api.d.ts",
+          "returnTypeTokenRange": {
+            "startIndex": 3,
+            "endIndex": 4
+          },
+          "releaseTag": "Public",
+          "overloadIndex": 1,
+          "parameters": [
+            {
+              "parameterName": "client",
+              "parameterTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isOptional": false
+            }
+          ],
+          "name": "wrapSlackWebClient"
+        }
+      ]
+    }
+  ]
+}

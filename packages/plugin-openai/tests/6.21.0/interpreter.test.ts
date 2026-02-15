@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { foldAST, mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
 import { openai } from "../../src/6.21.0";
 import { openaiInterpreter } from "../../src/6.21.0/interpreter";
-import { str } from "@mvfm/core";
 
 const app = mvfm(num, str, openai({ apiKey: "sk-test-123" }));
 const fragments = [openaiInterpreter, coreInterpreter];

@@ -1,8 +1,6 @@
+import { mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
 import { fal } from "../../src/1.9.1";
-import { num } from "@mvfm/core";
-import { str } from "@mvfm/core";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

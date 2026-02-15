@@ -1,8 +1,6 @@
+import { mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
 import { cloudflareKv } from "../../src/4.20260213.0";
-import { num } from "@mvfm/core";
-import { str } from "@mvfm/core";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

@@ -1,15 +1,10 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
+import { coreInterpreter, mvfm, num, numInterpreter, str, strInterpreter } from "@mvfm/core";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
 import { fetch as fetchPlugin } from "../../src/whatwg";
 import { wrapFetch } from "../../src/whatwg/client-fetch";
 import { serverEvaluate } from "../../src/whatwg/handler.server";
 import { fetchInterpreter } from "../../src/whatwg/interpreter";
-import { num } from "@mvfm/core";
-import { numInterpreter } from "@mvfm/core";
-import { str } from "@mvfm/core";
-import { strInterpreter } from "@mvfm/core";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

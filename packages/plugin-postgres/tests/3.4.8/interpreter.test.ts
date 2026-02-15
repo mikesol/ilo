@@ -1,25 +1,27 @@
+import {
+  coreInterpreter,
+  eq,
+  eqInterpreter,
+  error,
+  errorInterpreter,
+  fiber,
+  fiberInterpreter,
+  mvfm,
+  num,
+  numInterpreter,
+  ord,
+  ordInterpreter,
+  semiring,
+  str,
+  strInterpreter,
+} from "@mvfm/core";
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { eq } from "@mvfm/core";
-import { eqInterpreter } from "@mvfm/core";
-import { error } from "@mvfm/core";
-import { errorInterpreter } from "@mvfm/core";
-import { fiber } from "@mvfm/core";
-import { fiberInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
-import { numInterpreter } from "@mvfm/core";
-import { ord } from "@mvfm/core";
-import { ordInterpreter } from "@mvfm/core";
 import { postgres as pgPlugin } from "../../src/3.4.8";
 import { wrapPostgresJs } from "../../src/3.4.8/client-postgres-js";
 import { serverEvaluate } from "../../src/3.4.8/handler.server";
 import { postgresInterpreter } from "../../src/3.4.8/interpreter";
-import { semiring } from "@mvfm/core";
-import { str } from "@mvfm/core";
-import { strInterpreter } from "@mvfm/core";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

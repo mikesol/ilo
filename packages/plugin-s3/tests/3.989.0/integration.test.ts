@@ -7,18 +7,13 @@ import {
   ListObjectsV2Command,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
+import { coreInterpreter, mvfm, num, numInterpreter, str, strInterpreter } from "@mvfm/core";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
-import { numInterpreter } from "@mvfm/core";
 import { s3 as s3Plugin } from "../../src/3.989.0";
 import { wrapAwsSdk } from "../../src/3.989.0/client-aws-sdk";
 import { serverEvaluate } from "../../src/3.989.0/handler.server";
 import { s3Interpreter } from "../../src/3.989.0/interpreter";
-import { str } from "@mvfm/core";
-import { strInterpreter } from "@mvfm/core";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

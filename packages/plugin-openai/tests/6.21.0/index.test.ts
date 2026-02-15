@@ -1,8 +1,6 @@
+import { mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { num } from "@mvfm/core";
 import { openai } from "../../src/6.21.0";
-import { str } from "@mvfm/core";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

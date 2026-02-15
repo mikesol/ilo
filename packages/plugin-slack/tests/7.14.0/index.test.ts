@@ -1,8 +1,6 @@
+import { mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { num } from "@mvfm/core";
 import { slack } from "../../src/7.14.0";
-import { str } from "@mvfm/core";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

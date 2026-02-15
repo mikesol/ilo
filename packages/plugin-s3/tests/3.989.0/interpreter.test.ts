@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { foldAST, mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
 import { s3 } from "../../src/3.989.0";
 import { s3Interpreter } from "../../src/3.989.0/interpreter";
-import { str } from "@mvfm/core";
 
 const app = mvfm(num, str, s3({ region: "us-east-1" }));
 const fragments = [s3Interpreter, coreInterpreter];

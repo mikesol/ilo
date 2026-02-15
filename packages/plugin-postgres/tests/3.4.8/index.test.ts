@@ -1,8 +1,6 @@
+import { mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { num } from "@mvfm/core";
 import { postgres } from "../../src/3.4.8";
-import { str } from "@mvfm/core";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

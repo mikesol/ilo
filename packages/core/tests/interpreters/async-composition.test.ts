@@ -1,3 +1,9 @@
+import {
+  postgres as pgPlugin,
+  postgresInterpreter,
+  serverEvaluate,
+  wrapPostgresJs,
+} from "@mvfm/plugin-postgres";
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -13,7 +19,6 @@ import { num } from "../../src/plugins/num";
 import { numInterpreter } from "../../src/plugins/num/interpreter";
 import { ord } from "../../src/plugins/ord";
 import { ordInterpreter } from "../../src/plugins/ord/interpreter";
-import { postgres as pgPlugin, wrapPostgresJs, serverEvaluate, postgresInterpreter } from "@mvfm/plugin-postgres";
 import { semiring } from "../../src/plugins/semiring";
 import { str } from "../../src/plugins/str";
 import { strInterpreter } from "../../src/plugins/str/interpreter";

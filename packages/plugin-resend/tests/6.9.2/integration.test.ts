@@ -1,15 +1,10 @@
 import http from "node:http";
+import { coreInterpreter, mvfm, num, numInterpreter, str, strInterpreter } from "@mvfm/core";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
-import { numInterpreter } from "@mvfm/core";
 import { resend as resendPlugin } from "../../src/6.9.2";
 import { serverEvaluate } from "../../src/6.9.2/handler.server";
 import type { ResendClient } from "../../src/6.9.2/interpreter";
 import { resendInterpreter } from "../../src/6.9.2/interpreter";
-import { str } from "@mvfm/core";
-import { strInterpreter } from "@mvfm/core";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

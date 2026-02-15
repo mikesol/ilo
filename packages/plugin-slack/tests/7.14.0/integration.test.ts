@@ -1,18 +1,20 @@
+import {
+  coreInterpreter,
+  error,
+  errorInterpreter,
+  fiber,
+  fiberInterpreter,
+  mvfm,
+  num,
+  numInterpreter,
+  str,
+  strInterpreter,
+} from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { error } from "@mvfm/core";
-import { errorInterpreter } from "@mvfm/core";
-import { fiber } from "@mvfm/core";
-import { fiberInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
-import { numInterpreter } from "@mvfm/core";
 import { slack as slackPlugin } from "../../src/7.14.0";
 import { serverEvaluate } from "../../src/7.14.0/handler.server";
 import type { SlackClient } from "../../src/7.14.0/interpreter";
 import { slackInterpreter } from "../../src/7.14.0/interpreter";
-import { str } from "@mvfm/core";
-import { strInterpreter } from "@mvfm/core";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

@@ -1,19 +1,21 @@
 import * as http from "node:http";
+import {
+  coreInterpreter,
+  error,
+  errorInterpreter,
+  fiber,
+  fiberInterpreter,
+  mvfm,
+  num,
+  numInterpreter,
+  str,
+  strInterpreter,
+} from "@mvfm/core";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { error } from "@mvfm/core";
-import { errorInterpreter } from "@mvfm/core";
-import { fiber } from "@mvfm/core";
-import { fiberInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
-import { numInterpreter } from "@mvfm/core";
 import { openai as openaiPlugin } from "../../src/6.21.0";
 import { serverEvaluate } from "../../src/6.21.0/handler.server";
 import type { OpenAIClient } from "../../src/6.21.0/interpreter";
 import { openaiInterpreter } from "../../src/6.21.0/interpreter";
-import { str } from "@mvfm/core";
-import { strInterpreter } from "@mvfm/core";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

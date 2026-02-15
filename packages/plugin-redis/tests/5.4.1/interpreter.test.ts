@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { foldAST, mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
 import { redis } from "../../src/5.4.1";
 import { redisInterpreter } from "../../src/5.4.1/interpreter";
-import { str } from "@mvfm/core";
 
 const app = mvfm(num, str, redis({ host: "127.0.0.1", port: 6379 }));
 const fragments = [redisInterpreter, coreInterpreter];

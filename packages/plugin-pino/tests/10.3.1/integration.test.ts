@@ -1,14 +1,11 @@
 import { Writable } from "node:stream";
+import { coreInterpreter, mvfm, num, str } from "@mvfm/core";
 import pinoLib from "pino";
 import { describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
 import { pino } from "../../src/10.3.1";
 import { wrapPino } from "../../src/10.3.1/client-pino";
 import { serverEvaluate } from "../../src/10.3.1/handler.server";
 import { pinoInterpreter } from "../../src/10.3.1/interpreter";
-import { str } from "@mvfm/core";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

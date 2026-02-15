@@ -1,8 +1,5 @@
+import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { foldAST, mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
-import { str } from "@mvfm/core";
 import { stripe } from "../../src/2025-04-30.basil";
 import { stripeInterpreter } from "../../src/2025-04-30.basil/interpreter";
 

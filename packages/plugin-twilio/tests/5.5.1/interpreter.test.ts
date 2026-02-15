@@ -1,8 +1,5 @@
+import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { foldAST, mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
-import { str } from "@mvfm/core";
 import { twilio } from "../../src/5.5.1";
 import { twilioInterpreter } from "../../src/5.5.1/interpreter";
 

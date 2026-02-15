@@ -1,3 +1,4 @@
+import { postgres } from "@mvfm/plugin-postgres";
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type { Expr } from "../src";
 import {
@@ -12,7 +13,6 @@ import {
   show,
   str,
 } from "../src";
-import { postgres } from "@mvfm/plugin-postgres";
 
 const app = mvfm(num, str, semiring);
 

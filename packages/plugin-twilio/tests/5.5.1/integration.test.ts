@@ -1,10 +1,5 @@
+import { coreInterpreter, mvfm, num, numInterpreter, str, strInterpreter } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
-import { numInterpreter } from "@mvfm/core";
-import { str } from "@mvfm/core";
-import { strInterpreter } from "@mvfm/core";
 import { twilio as twilioPlugin } from "../../src/5.5.1";
 import { serverEvaluate } from "../../src/5.5.1/handler.server";
 import type { TwilioClient } from "../../src/5.5.1/interpreter";

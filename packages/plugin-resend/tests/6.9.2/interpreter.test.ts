@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { foldAST, mvfm } from "@mvfm/core";
-import { coreInterpreter } from "@mvfm/core";
-import { num } from "@mvfm/core";
 import { resend } from "../../src/6.9.2";
 import { resendInterpreter } from "../../src/6.9.2/interpreter";
-import { str } from "@mvfm/core";
 
 const app = mvfm(num, str, resend({ apiKey: "re_test_123" }));
 const fragments = [resendInterpreter, coreInterpreter];
