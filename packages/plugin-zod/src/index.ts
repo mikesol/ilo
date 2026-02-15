@@ -1,10 +1,13 @@
-import type { PluginDefinition } from "@mvfm/core";
+import type { Expr, PluginDefinition } from "@mvfm/core";
+import type { ZodSchemaBuilder, ZodWrappedBuilder } from "./base";
 import { ZodStringBuilder } from "./string";
+import { buildPreprocess, buildStandaloneTransform, type ZodTransformBuilder } from "./transform";
 
 // Re-export types, builders, and interpreter for consumers
 export { ZodSchemaBuilder, ZodWrappedBuilder } from "./base";
 export { zodInterpreter } from "./interpreter";
 export { ZodStringBuilder } from "./string";
+export { ZodTransformBuilder } from "./transform";
 export type {
   CheckDescriptor,
   ErrorConfig,
@@ -37,14 +40,14 @@ export interface ZodNamespace {
   /** Create a string schema builder. */
   string(errorOrOpts?: string | { error?: string }): ZodStringBuilder;
 
-  // ---- Stubs for future schema types ----
-  // Each issue (#102-#120) adds its factory method here.
-  // number(errorOrOpts?): ZodNumberBuilder;
-  // bigint(errorOrOpts?): ZodBigIntBuilder;
-  // boolean(errorOrOpts?): ZodBooleanBuilder;
-  // object(shape): ZodObjectBuilder;
-  // array(element): ZodArrayBuilder;
-  // ... etc.
+  /** Create a standalone transform that accepts any input and produces typed output. */
+  transform<T>(fn: (val: Expr<unknown>) => Expr<T>): ZodTransformBuilder<T>;
+
+  /** Create a preprocess wrapper that transforms input before validating with the given schema. */
+  preprocess<T>(
+    fn: (val: Expr<unknown>) => Expr<unknown>,
+    schema: ZodSchemaBuilder<T>,
+  ): ZodWrappedBuilder<T>;
 }
 
 /**
@@ -69,6 +72,11 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
     // Schema types — each issue adds its kinds here
     "zod/string", // #100
 
+    // Transform/pipe/preprocess (#118)
+    "zod/transform",
+    "zod/pipe",
+    "zod/preprocess",
+
     // Wrappers (#99)
     "zod/optional",
     "zod/nullable",
@@ -87,6 +95,15 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
         string(errorOrOpts?: string | { error?: string }): ZodStringBuilder {
           const error = typeof errorOrOpts === "string" ? errorOrOpts : errorOrOpts?.error;
           return new ZodStringBuilder(ctx, [], [], error);
+        },
+        transform<T>(fn: (val: Expr<unknown>) => Expr<T>): ZodTransformBuilder<T> {
+          return buildStandaloneTransform(ctx, fn);
+        },
+        preprocess<T>(
+          fn: (val: Expr<unknown>) => Expr<unknown>,
+          schema: ZodSchemaBuilder<T>,
+        ): ZodWrappedBuilder<T> {
+          return buildPreprocess(ctx, fn, schema);
         },
       },
     };
