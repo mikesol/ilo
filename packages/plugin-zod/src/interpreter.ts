@@ -12,6 +12,7 @@ import { literalInterpreter } from "./literal";
 import { numberInterpreter } from "./number";
 import { createObjectInterpreter } from "./object";
 import { primitivesInterpreter } from "./primitives";
+import { createRecordInterpreter } from "./record";
 import { stringInterpreter } from "./string";
 import type { ErrorConfig, RefinementDescriptor } from "./types";
 import { createUnionInterpreter } from "./union";
@@ -31,7 +32,7 @@ const leafHandlers: SchemaInterpreterMap = {
   ...primitivesInterpreter,
 };
 
-// Recursive handlers (array, object, union, intersection) need buildSchemaGen for inner schemas.
+// Recursive handlers (array, object, union, intersection, record) need buildSchemaGen for inner schemas.
 // Initialized lazily on first use to break the definition-order cycle.
 let schemaHandlers: SchemaInterpreterMap | undefined;
 
@@ -44,6 +45,7 @@ function getHandlers(): SchemaInterpreterMap {
       ...createArrayInterpreter(buildSchemaGen),
       ...createUnionInterpreter(buildSchemaGen),
       ...createIntersectionInterpreter(buildSchemaGen),
+      ...createRecordInterpreter(buildSchemaGen),
     };
   }
   return schemaHandlers;
@@ -103,6 +105,7 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       }
       return tuple;
     }
+
     default:
       throw new Error(`Zod interpreter: unknown schema kind "${node.kind}"`);
   }
