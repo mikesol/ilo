@@ -124,4 +124,25 @@ describe("ZodSchemaBuilder base class", () => {
       value: 100,
     });
   });
+
+  it("parseAsync() produces zod/parse_async AST node", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => {
+      return $.zod.string().parseAsync($.input);
+    });
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.kind).toBe("zod/parse_async");
+    expect(ast.result.schema.kind).toBe("zod/string");
+    expect(ast.result.input).toBeDefined();
+  });
+
+  it("safeParseAsync() produces zod/safe_parse_async AST node", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => {
+      return $.zod.string().safeParseAsync($.input);
+    });
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.kind).toBe("zod/safe_parse_async");
+    expect(ast.result.schema.kind).toBe("zod/string");
+  });
 });
