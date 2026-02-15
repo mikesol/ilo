@@ -11,7 +11,10 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "resolveJsonModule": true,
-    "composite": true
+    "composite": true,
+    "paths": {
+      "@mvfm/core": ["../core/dist/index.d.ts"]
+    }
   },
   "include": ["src/**/*"],
   "references": [{ "path": "../core" }]
