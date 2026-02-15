@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@mvfm/core": "workspace:*",
-    "@aws-sdk/client-s3": "^3.989.0"
+    "@aws-sdk/client-s3": "^3.989.0",
+    "testcontainers": "^10.0.0"
   }
 }

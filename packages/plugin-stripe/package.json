@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@mvfm/core": "workspace:*",
-    "stripe": "^20.3.1"
+    "stripe": "^20.3.1",
+    "testcontainers": "^10.0.0"
   }
 }

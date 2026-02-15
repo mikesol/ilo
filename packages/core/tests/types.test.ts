@@ -7,12 +7,12 @@ import {
   mvfm,
   num,
   ord,
-  postgres,
   semigroup,
   semiring,
   show,
   str,
 } from "../src";
+import { postgres } from "@mvfm/plugin-postgres";
 
 const app = mvfm(num, str, semiring);
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { mvfm } from "../../../src/core";
 import { fiber } from "../../../src/plugins/fiber";
 import { num } from "../../../src/plugins/num";
-import { postgres } from "../../../src/plugins/postgres/3.4.8";
+import { postgres } from "@mvfm/plugin-postgres";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

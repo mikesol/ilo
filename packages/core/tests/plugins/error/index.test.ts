@@ -3,7 +3,7 @@ import { mvfm } from "../../../src/core";
 import { error } from "../../../src/plugins/error";
 import { num } from "../../../src/plugins/num";
 import { ord } from "../../../src/plugins/ord";
-import { postgres } from "../../../src/plugins/postgres/3.4.8";
+import { postgres } from "@mvfm/plugin-postgres";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(
