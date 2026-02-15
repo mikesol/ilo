@@ -2,7 +2,7 @@
 
 *Extensible tagless final DSL for deterministic, verifiable TypeScript programs.*
 
-*Toki Pona "mvfm": tool. A tool that builds tools — composable, inspectable, inert until interpreted.*
+*MVFM stands for Maximum Viable Free Monad. Its fixed point is a free monad covering all TypeScript operations and all npm packages.*
 
 ---
 
