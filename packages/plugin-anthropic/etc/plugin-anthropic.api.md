@@ -5,9 +5,12 @@
 ```ts
 
 import type Anthropic from '@anthropic-ai/sdk';
+import type { ASTNode } from '@mvfm/core';
+import type { Expr } from '@mvfm/core';
+import type { InterpreterFragment } from '@mvfm/core';
+import type { PluginDefinition } from '@mvfm/core';
+import type { StepHandler } from '@mvfm/core';
 
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function anthropic(config: AnthropicConfig): PluginDefinition<AnthropicMethods>;
 
@@ -22,8 +25,6 @@ export interface AnthropicConfig {
     baseURL?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "InterpreterFragment" needs to be exported by the entry point index.d.ts
-//
 // @public
 export const anthropicInterpreter: InterpreterFragment;
 
@@ -48,8 +49,6 @@ export interface AnthropicMethods {
     };
 }
 
-// Warning: (ae-forgotten-export) The symbol "StepHandler" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState>;
 
@@ -66,8 +65,6 @@ export interface ClientHandlerState {
     stepIndex: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ASTNode" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function serverEvaluate(client: AnthropicClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
 
@@ -76,10 +73,6 @@ export function serverHandler(client: AnthropicClient): StepHandler<void>;
 
 // @public
 export function wrapAnthropicSdk(client: Anthropic): AnthropicClient;
-
-// Warnings were encountered during analysis:
-//
-// dist/0.74.0/index.d.ts:15:13 - (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

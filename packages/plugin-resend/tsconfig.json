@@ -10,12 +10,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "resolveJsonModule": true,
-    "composite": true,
-    "paths": {
-      "@mvfm/core": ["../core/dist/index.d.ts"]
-    }
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
-  "references": [{ "path": "../core" }]
+  "include": ["src/**/*"]
 }

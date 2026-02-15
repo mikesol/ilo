@@ -4,8 +4,12 @@
 
 ```ts
 
-// Warning: (ae-forgotten-export) The symbol "StepHandler" needs to be exported by the entry point index.d.ts
-//
+import type { ASTNode } from '@mvfm/core';
+import type { Expr } from '@mvfm/core';
+import type { InterpreterFragment } from '@mvfm/core';
+import type { PluginDefinition } from '@mvfm/core';
+import type { StepHandler } from '@mvfm/core';
+
 // @public
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState>;
 
@@ -22,8 +26,6 @@ export interface ClientHandlerState {
     stepIndex: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function redis(config?: RedisConfig | string): PluginDefinition<RedisMethods>;
 
@@ -43,8 +45,6 @@ export interface RedisConfig {
     username?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "InterpreterFragment" needs to be exported by the entry point index.d.ts
-//
 // @public
 export const redisInterpreter: InterpreterFragment;
 
@@ -91,8 +91,6 @@ export interface RedisMethods {
     };
 }
 
-// Warning: (ae-forgotten-export) The symbol "ASTNode" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function serverEvaluate(client: RedisClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
 
@@ -103,10 +101,6 @@ export function serverHandler(client: RedisClient): StepHandler<void>;
 export function wrapIoredis(redis: {
     call(command: string, ...args: unknown[]): Promise<unknown>;
 }): RedisClient;
-
-// Warnings were encountered during analysis:
-//
-// dist/5.4.1/index.d.ts:12:9 - (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

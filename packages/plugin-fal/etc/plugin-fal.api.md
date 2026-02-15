@@ -4,10 +4,13 @@
 
 ```ts
 
+import type { ASTNode } from '@mvfm/core';
+import type { Expr } from '@mvfm/core';
 import type { FalClient as FalClient_2 } from '@fal-ai/client';
+import type { InterpreterFragment } from '@mvfm/core';
+import type { PluginDefinition } from '@mvfm/core';
+import type { StepHandler } from '@mvfm/core';
 
-// Warning: (ae-forgotten-export) The symbol "StepHandler" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState>;
 
@@ -24,8 +27,6 @@ export interface ClientHandlerState {
     stepIndex: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function fal(config: FalConfig): PluginDefinition<FalMethods>;
 
@@ -44,8 +45,6 @@ export interface FalConfig {
     credentials: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "InterpreterFragment" needs to be exported by the entry point index.d.ts
-//
 // @public
 export const falInterpreter: InterpreterFragment;
 
@@ -73,8 +72,6 @@ export type FalRunOptions = {
     input?: Expr<Record<string, unknown>> | Record<string, unknown>;
 };
 
-// Warning: (ae-forgotten-export) The symbol "ASTNode" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function serverEvaluate(client: FalClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
 
@@ -83,10 +80,6 @@ export function serverHandler(client: FalClient): StepHandler<void>;
 
 // @public
 export function wrapFalSdk(client: FalClient_2): FalClient;
-
-// Warnings were encountered during analysis:
-//
-// dist/1.9.1/index.d.ts:20:9 - (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

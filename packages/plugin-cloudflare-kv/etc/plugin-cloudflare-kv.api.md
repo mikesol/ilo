@@ -4,8 +4,12 @@
 
 ```ts
 
-// Warning: (ae-forgotten-export) The symbol "StepHandler" needs to be exported by the entry point index.d.ts
-//
+import type { ASTNode } from '@mvfm/core';
+import type { Expr } from '@mvfm/core';
+import type { InterpreterFragment } from '@mvfm/core';
+import type { PluginDefinition } from '@mvfm/core';
+import type { StepHandler } from '@mvfm/core';
+
 // @public
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState>;
 
@@ -22,8 +26,6 @@ export interface ClientHandlerState {
     stepIndex: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function cloudflareKv(config: CloudflareKvConfig): PluginDefinition<CloudflareKvMethods>;
 
@@ -56,8 +58,6 @@ export interface CloudflareKvConfig {
     namespaceId: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "InterpreterFragment" needs to be exported by the entry point index.d.ts
-//
 // @public
 export const cloudflareKvInterpreter: InterpreterFragment;
 
@@ -133,8 +133,6 @@ export interface KvPutOptions {
     metadata?: unknown;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ASTNode" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function serverEvaluate(client: CloudflareKvClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
 
@@ -143,10 +141,6 @@ export function serverHandler(client: CloudflareKvClient): StepHandler<void>;
 
 // @public
 export function wrapKVNamespace(kv: KVNamespaceLike): CloudflareKvClient;
-
-// Warnings were encountered during analysis:
-//
-// dist/4.20260213.0/index.d.ts:23:9 - (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
