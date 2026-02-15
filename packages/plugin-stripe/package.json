@@ -1,0 +1,30 @@
+{
+  "name": "@mvfm/plugin-stripe",
+  "version": "0.0.1",
+  "description": "Stripe plugin for mvfm",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "biome check --error-on-warnings src tests && tsc -p tsconfig.json && api-extractor run --local",
+    "test": "vitest run",
+    "size": "size-limit"
+  },
+  "files": ["dist", "etc"],
+  "peerDependencies": {
+    "@mvfm/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@mvfm/core": "workspace:*",
+    "stripe": "^20.3.1",
+    "testcontainers": "^10.0.0"
+  }
+}
