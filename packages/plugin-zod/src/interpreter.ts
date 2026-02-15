@@ -92,6 +92,39 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       return inner.catch(value);
     }
 
+    case "zod/map": {
+      const keySchema = yield* buildSchemaGen(node.key as ASTNode);
+      const valueSchema = yield* buildSchemaGen(node.value as ASTNode);
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+      return z.map(keySchema as z.ZodString, valueSchema, errOpt);
+    }
+
+    case "zod/set": {
+      const valueSchema = yield* buildSchemaGen(node.value as ASTNode);
+      const checks = (node.checks as CheckDescriptor[]) ?? [];
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+      let s = z.set(valueSchema, errOpt);
+      for (const check of checks) {
+        const cErr = checkErrorOpt(check);
+        switch (check.kind) {
+          case "min_size":
+            s = s.min(check.value as number, cErr);
+            break;
+          case "max_size":
+            s = s.max(check.value as number, cErr);
+            break;
+          case "size":
+            s = s.size(check.value as number, cErr);
+            break;
+          default:
+            throw new Error(`Zod interpreter: unknown set check "${check.kind}"`);
+        }
+      }
+      return s;
+    }
+
     // Additional schema types will be added by colocated interpreter issues
     default:
       throw new Error(`Zod interpreter: unknown schema kind "${node.kind}"`);
