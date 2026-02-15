@@ -44,6 +44,29 @@ export { boolean } from "./plugins/boolean";
 export { booleanInterpreter } from "./plugins/boolean/interpreter";
 export type { BoundedFor } from "./plugins/bounded";
 export { bounded } from "./plugins/bounded";
+// ---- cloudflare-kv plugin ----
+export type {
+  CloudflareKvConfig,
+  CloudflareKvMethods,
+  KvGet,
+  KvListOptions,
+  KvListResult,
+  KvPutOptions,
+} from "./plugins/cloudflare-kv/4.20260213.0";
+export { cloudflareKv } from "./plugins/cloudflare-kv/4.20260213.0";
+export type { KVNamespaceLike } from "./plugins/cloudflare-kv/4.20260213.0/client-cf-kv";
+export { wrapKVNamespace } from "./plugins/cloudflare-kv/4.20260213.0/client-cf-kv";
+export type {
+  ClientHandlerOptions as CloudflareKvClientHandlerOptions,
+  ClientHandlerState as CloudflareKvClientHandlerState,
+} from "./plugins/cloudflare-kv/4.20260213.0/handler.client";
+export { clientHandler as cloudflareKvClientHandler } from "./plugins/cloudflare-kv/4.20260213.0/handler.client";
+export {
+  serverEvaluate as cloudflareKvServerEvaluate,
+  serverHandler as cloudflareKvServerHandler,
+} from "./plugins/cloudflare-kv/4.20260213.0/handler.server";
+export type { CloudflareKvClient } from "./plugins/cloudflare-kv/4.20260213.0/interpreter";
+export { cloudflareKvInterpreter } from "./plugins/cloudflare-kv/4.20260213.0/interpreter";
 export type { ControlMethods } from "./plugins/control";
 export { control } from "./plugins/control";
 export type { EqFor } from "./plugins/eq";
@@ -52,6 +75,21 @@ export { eqInterpreter } from "./plugins/eq/interpreter";
 export type { ErrorMethods } from "./plugins/error";
 export { error } from "./plugins/error";
 export { errorInterpreter } from "./plugins/error/interpreter";
+// ---- fal plugin ----
+export type { FalConfig, FalMethods, FalQueueOptions, FalRunOptions } from "./plugins/fal/1.9.1";
+export { fal } from "./plugins/fal/1.9.1";
+export { wrapFalSdk } from "./plugins/fal/1.9.1/client-fal-sdk";
+export type {
+  ClientHandlerOptions as FalClientHandlerOptions,
+  ClientHandlerState as FalClientHandlerState,
+} from "./plugins/fal/1.9.1/handler.client";
+export { clientHandler as falClientHandler } from "./plugins/fal/1.9.1/handler.client";
+export {
+  serverEvaluate as falServerEvaluate,
+  serverHandler as falServerHandler,
+} from "./plugins/fal/1.9.1/handler.server";
+export type { FalClient } from "./plugins/fal/1.9.1/interpreter";
+export { falInterpreter } from "./plugins/fal/1.9.1/interpreter";
 export type { FiberMethods } from "./plugins/fiber";
 export { fiber } from "./plugins/fiber";
 export { fiberInterpreter } from "./plugins/fiber/interpreter";
@@ -62,6 +100,20 @@ export { monoid } from "./plugins/monoid";
 export type { NumMethods } from "./plugins/num";
 export { num } from "./plugins/num";
 export { numInterpreter } from "./plugins/num/interpreter";
+export type { OpenAIConfig, OpenAIMethods } from "./plugins/openai/6.21.0";
+export { openai } from "./plugins/openai/6.21.0";
+export { wrapOpenAISdk } from "./plugins/openai/6.21.0/client-openai-sdk";
+export type {
+  ClientHandlerOptions as OpenAIClientHandlerOptions,
+  ClientHandlerState as OpenAIClientHandlerState,
+} from "./plugins/openai/6.21.0/handler.client";
+export { clientHandler as openaiClientHandler } from "./plugins/openai/6.21.0/handler.client";
+export {
+  serverEvaluate as openaiServerEvaluate,
+  serverHandler as openaiServerHandler,
+} from "./plugins/openai/6.21.0/handler.server";
+export type { OpenAIClient } from "./plugins/openai/6.21.0/interpreter";
+export { openaiInterpreter } from "./plugins/openai/6.21.0/interpreter";
 export type { OrdFor } from "./plugins/ord";
 export { ord } from "./plugins/ord";
 export { ordInterpreter } from "./plugins/ord/interpreter";
@@ -95,6 +147,20 @@ export {
   findCursorBatch,
   postgresInterpreter,
 } from "./plugins/postgres/3.4.8/interpreter";
+export type { RedisConfig, RedisMethods } from "./plugins/redis/5.4.1";
+export { redis } from "./plugins/redis/5.4.1";
+export { wrapIoredis } from "./plugins/redis/5.4.1/client-ioredis";
+export type {
+  ClientHandlerOptions as RedisClientHandlerOptions,
+  ClientHandlerState as RedisClientHandlerState,
+} from "./plugins/redis/5.4.1/handler.client";
+export { clientHandler as redisClientHandler } from "./plugins/redis/5.4.1/handler.client";
+export {
+  serverEvaluate as redisServerEvaluate,
+  serverHandler as redisServerHandler,
+} from "./plugins/redis/5.4.1/handler.server";
+export type { RedisClient } from "./plugins/redis/5.4.1/interpreter";
+export { redisInterpreter } from "./plugins/redis/5.4.1/interpreter";
 export type { ResendConfig, ResendMethods } from "./plugins/resend/6.9.2";
 export { resend } from "./plugins/resend/6.9.2";
 export { wrapResendSdk } from "./plugins/resend/6.9.2/client-resend-sdk";
@@ -109,6 +175,20 @@ export {
 } from "./plugins/resend/6.9.2/handler.server";
 export type { ResendClient } from "./plugins/resend/6.9.2/interpreter";
 export { resendInterpreter } from "./plugins/resend/6.9.2/interpreter";
+export type { S3Config, S3Methods } from "./plugins/s3/3.989.0";
+export { s3 } from "./plugins/s3/3.989.0";
+export { wrapAwsSdk } from "./plugins/s3/3.989.0/client-aws-sdk";
+export type {
+  ClientHandlerOptions as S3ClientHandlerOptions,
+  ClientHandlerState as S3ClientHandlerState,
+} from "./plugins/s3/3.989.0/handler.client";
+export { clientHandler as s3ClientHandler } from "./plugins/s3/3.989.0/handler.client";
+export {
+  serverEvaluate as s3ServerEvaluate,
+  serverHandler as s3ServerHandler,
+} from "./plugins/s3/3.989.0/handler.server";
+export type { S3Client } from "./plugins/s3/3.989.0/interpreter";
+export { s3Interpreter } from "./plugins/s3/3.989.0/interpreter";
 export type { SemigroupFor } from "./plugins/semigroup";
 export { semigroup } from "./plugins/semigroup";
 export type { SemiringFor } from "./plugins/semiring";
