@@ -1,6 +1,6 @@
+import type { InferSchema } from "@mvfm/core";
+import { array, nullable } from "@mvfm/core";
 import { describe, expect, expectTypeOf, it } from "vitest";
-import type { InferSchema } from "../packages/core/src/schema";
-import { array, nullable } from "../packages/core/src/schema";
 
 describe("schema helpers", () => {
   it("array() returns tagged object", () => {

@@ -1,9 +1,5 @@
+import { boolean, eq, heytingAlgebra, ilo, num } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../src/core";
-import { boolean } from "../../../src/plugins/boolean";
-import { eq } from "../../../src/plugins/eq";
-import { heytingAlgebra } from "../../../src/plugins/heyting-algebra";
-import { num } from "../../../src/plugins/num";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(JSON.stringify(ast, (k, v) => (k === "__id" ? undefined : v)));

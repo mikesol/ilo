@@ -1,0 +1,40 @@
+{
+  "name": "@mvfm/plugin-s3",
+  "version": "0.0.1",
+  "description": "Ilo s3 plugin",
+  "type": "module",
+  "sideEffects": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./interpreter": {
+      "types": "./dist/interpreter.d.ts",
+      "default": "./dist/interpreter.js"
+    },
+    "./handler.client": {
+      "types": "./dist/handler.client.d.ts",
+      "default": "./dist/handler.client.js"
+    },
+    "./handler.server": {
+      "types": "./dist/handler.server.d.ts",
+      "default": "./dist/handler.server.js"
+    },
+    "./client-aws-sdk": {
+      "types": "./dist/client-aws-sdk.d.ts",
+      "default": "./dist/client-aws-sdk.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "biome check src && tsc -p tsconfig.json && api-extractor run --local --config api-extractor.json",
+    "test": "vitest run --root ../.. tests/plugins/s3"
+  },
+  "dependencies": {
+    "@mvfm/core": "workspace:*",
+    "@aws-sdk/client-s3": "^3.989.0"
+  }
+}

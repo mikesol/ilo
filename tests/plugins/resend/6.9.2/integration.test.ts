@@ -1,15 +1,10 @@
 import http from "node:http";
+import { coreInterpreter, ilo, num, numInterpreter, str, strInterpreter } from "@mvfm/core";
+import { resend as resendPlugin } from "@mvfm/plugin-resend";
+import { serverEvaluate } from "@mvfm/plugin-resend/handler.server";
+import type { ResendClient } from "@mvfm/plugin-resend/interpreter";
+import { resendInterpreter } from "@mvfm/plugin-resend/interpreter";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { num } from "../../../../src/plugins/num";
-import { numInterpreter } from "../../../../src/plugins/num/interpreter";
-import { resend as resendPlugin } from "../../../../src/plugins/resend/6.9.2";
-import { serverEvaluate } from "../../../../src/plugins/resend/6.9.2/handler.server";
-import type { ResendClient } from "../../../../src/plugins/resend/6.9.2/interpreter";
-import { resendInterpreter } from "../../../../src/plugins/resend/6.9.2/interpreter";
-import { str } from "../../../../src/plugins/str";
-import { strInterpreter } from "../../../../src/plugins/str/interpreter";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

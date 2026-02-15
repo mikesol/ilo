@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { anthropic } from "@mvfm/plugin-anthropic";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { anthropic } from "../../../../src/plugins/anthropic/0.74.0";
-import { num } from "../../../../src/plugins/num";
-import { str } from "../../../../src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

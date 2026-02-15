@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { resend } from "@mvfm/plugin-resend";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { num } from "../../../../src/plugins/num";
-import { resend } from "../../../../src/plugins/resend/6.9.2";
-import { str } from "../../../../src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

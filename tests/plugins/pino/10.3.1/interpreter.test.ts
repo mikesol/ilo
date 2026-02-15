@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, ilo, num, str } from "@mvfm/core";
+import { pino } from "@mvfm/plugin-pino";
+import { pinoInterpreter } from "@mvfm/plugin-pino/interpreter";
 import { describe, expect, it } from "vitest";
-import { foldAST, ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { num } from "../../../../src/plugins/num";
-import { pino } from "../../../../src/plugins/pino/10.3.1";
-import { pinoInterpreter } from "../../../../src/plugins/pino/10.3.1/interpreter";
-import { str } from "../../../../src/plugins/str";
 
 const app = ilo(num, str, pino({ level: "info" }));
 const fragments = [pinoInterpreter, coreInterpreter];

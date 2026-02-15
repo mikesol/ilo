@@ -1,5 +1,4 @@
-import { describe, expect, expectTypeOf, it } from "vitest";
-import type { Expr } from "../packages/core/src";
+import type { Expr } from "@mvfm/core";
 import {
   boolean,
   eq,
@@ -7,12 +6,13 @@ import {
   ilo,
   num,
   ord,
-  postgres,
   semigroup,
   semiring,
   show,
   str,
-} from "../packages/core/src";
+} from "@mvfm/core";
+import { postgres } from "@mvfm/plugin-postgres";
+import { describe, expect, expectTypeOf, it } from "vitest";
 
 const app = ilo(num, str, semiring);
 

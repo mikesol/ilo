@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { slack } from "@mvfm/plugin-slack";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { num } from "../../../../src/plugins/num";
-import { slack } from "../../../../src/plugins/slack/7.14.0";
-import { str } from "../../../../src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

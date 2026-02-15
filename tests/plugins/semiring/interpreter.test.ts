@@ -1,9 +1,12 @@
+import {
+  composeInterpreters,
+  coreInterpreter,
+  ilo,
+  num,
+  numInterpreter,
+  semiring,
+} from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { composeInterpreters, ilo } from "../../../src/core";
-import { coreInterpreter } from "../../../src/interpreters/core";
-import { num } from "../../../src/plugins/num";
-import { numInterpreter } from "../../../src/plugins/num/interpreter";
-import { semiring } from "../../../src/plugins/semiring";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

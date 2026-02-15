@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { redis } from "@mvfm/plugin-redis";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { num } from "../../../../src/plugins/num";
-import { redis } from "../../../../src/plugins/redis/5.4.1";
-import { str } from "../../../../src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

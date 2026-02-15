@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, ilo, num, str } from "@mvfm/core";
+import { redis } from "@mvfm/plugin-redis";
+import { redisInterpreter } from "@mvfm/plugin-redis/interpreter";
 import { describe, expect, it } from "vitest";
-import { foldAST, ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { num } from "../../../../src/plugins/num";
-import { redis } from "../../../../src/plugins/redis/5.4.1";
-import { redisInterpreter } from "../../../../src/plugins/redis/5.4.1/interpreter";
-import { str } from "../../../../src/plugins/str";
 
 const app = ilo(num, str, redis({ host: "127.0.0.1", port: 6379 }));
 const fragments = [redisInterpreter, coreInterpreter];

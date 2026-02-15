@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, ilo, num, str } from "@mvfm/core";
+import { resend } from "@mvfm/plugin-resend";
+import { resendInterpreter } from "@mvfm/plugin-resend/interpreter";
 import { describe, expect, it } from "vitest";
-import { foldAST, ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { num } from "../../../../src/plugins/num";
-import { resend } from "../../../../src/plugins/resend/6.9.2";
-import { resendInterpreter } from "../../../../src/plugins/resend/6.9.2/interpreter";
-import { str } from "../../../../src/plugins/str";
 
 const app = ilo(num, str, resend({ apiKey: "re_test_123" }));
 const fragments = [resendInterpreter, coreInterpreter];

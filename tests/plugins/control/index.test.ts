@@ -1,10 +1,5 @@
+import { control, ilo, num, ord, semiring, st } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../src/core";
-import { control } from "../../../src/plugins/control";
-import { num } from "../../../src/plugins/num";
-import { ord } from "../../../src/plugins/ord";
-import { semiring } from "../../../src/plugins/semiring";
-import { st } from "../../../src/plugins/st";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(JSON.stringify(ast, (k, v) => (k === "__id" ? undefined : v)));

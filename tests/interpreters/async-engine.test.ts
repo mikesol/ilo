@@ -1,6 +1,6 @@
+import type { ASTNode, InterpreterFragment, StepEffect } from "@mvfm/core";
+import { composeInterpreters } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import type { ASTNode, InterpreterFragment, StepEffect } from "../../packages/core/src/core";
-import { composeInterpreters } from "../../packages/core/src/core";
 
 describe("async engine: composeInterpreters", () => {
   it("returns a function that returns a Promise", async () => {

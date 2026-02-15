@@ -7,18 +7,13 @@ import {
   ListObjectsV2Command,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
+import { coreInterpreter, ilo, num, numInterpreter, str, strInterpreter } from "@mvfm/core";
+import { s3 as s3Plugin } from "@mvfm/plugin-s3";
+import { wrapAwsSdk } from "@mvfm/plugin-s3/client-aws-sdk";
+import { serverEvaluate } from "@mvfm/plugin-s3/handler.server";
+import { s3Interpreter } from "@mvfm/plugin-s3/interpreter";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { num } from "../../../../src/plugins/num";
-import { numInterpreter } from "../../../../src/plugins/num/interpreter";
-import { s3 as s3Plugin } from "../../../../src/plugins/s3/3.989.0";
-import { wrapAwsSdk } from "../../../../src/plugins/s3/3.989.0/client-aws-sdk";
-import { serverEvaluate } from "../../../../src/plugins/s3/3.989.0/handler.server";
-import { s3Interpreter } from "../../../../src/plugins/s3/3.989.0/interpreter";
-import { str } from "../../../../src/plugins/str";
-import { strInterpreter } from "../../../../src/plugins/str/interpreter";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

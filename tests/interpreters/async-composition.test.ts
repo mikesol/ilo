@@ -1,25 +1,27 @@
+import {
+  coreInterpreter,
+  eq,
+  eqInterpreter,
+  error,
+  errorInterpreter,
+  fiber,
+  fiberInterpreter,
+  ilo,
+  num,
+  numInterpreter,
+  ord,
+  ordInterpreter,
+  semiring,
+  str,
+  strInterpreter,
+} from "@mvfm/core";
+import { postgres as pgPlugin } from "@mvfm/plugin-postgres";
+import { wrapPostgresJs } from "@mvfm/plugin-postgres/client-postgres-js";
+import { serverEvaluate } from "@mvfm/plugin-postgres/handler.server";
+import { postgresInterpreter } from "@mvfm/plugin-postgres/interpreter";
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { ilo } from "../../packages/core/src/core";
-import { coreInterpreter } from "../../packages/core/src/interpreters/core";
-import { eq } from "../../packages/core/src/plugins/eq";
-import { eqInterpreter } from "../../packages/core/src/plugins/eq/interpreter";
-import { error } from "../../packages/core/src/plugins/error";
-import { errorInterpreter } from "../../packages/core/src/plugins/error/interpreter";
-import { fiber } from "../../packages/core/src/plugins/fiber";
-import { fiberInterpreter } from "../../packages/core/src/plugins/fiber/interpreter";
-import { num } from "../../packages/core/src/plugins/num";
-import { numInterpreter } from "../../packages/core/src/plugins/num/interpreter";
-import { ord } from "../../packages/core/src/plugins/ord";
-import { ordInterpreter } from "../../packages/core/src/plugins/ord/interpreter";
-import { postgres as pgPlugin } from "../../packages/core/src/plugins/postgres/3.4.8";
-import { wrapPostgresJs } from "../../packages/core/src/plugins/postgres/3.4.8/client-postgres-js";
-import { serverEvaluate } from "../../packages/core/src/plugins/postgres/3.4.8/handler.server";
-import { postgresInterpreter } from "../../packages/core/src/plugins/postgres/3.4.8/interpreter";
-import { semiring } from "../../packages/core/src/plugins/semiring";
-import { str } from "../../packages/core/src/plugins/str";
-import { strInterpreter } from "../../packages/core/src/plugins/str/interpreter";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

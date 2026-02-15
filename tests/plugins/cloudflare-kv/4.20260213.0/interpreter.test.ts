@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, ilo, num, str } from "@mvfm/core";
+import { cloudflareKv } from "@mvfm/plugin-cloudflare-kv";
+import { cloudflareKvInterpreter } from "@mvfm/plugin-cloudflare-kv/interpreter";
 import { describe, expect, it } from "vitest";
-import { foldAST, ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { cloudflareKv } from "../../../../src/plugins/cloudflare-kv/4.20260213.0";
-import { cloudflareKvInterpreter } from "../../../../src/plugins/cloudflare-kv/4.20260213.0/interpreter";
-import { num } from "../../../../src/plugins/num";
-import { str } from "../../../../src/plugins/str";
 
 const app = ilo(num, str, cloudflareKv({ namespaceId: "MY_KV" }));
 const fragments = [cloudflareKvInterpreter, coreInterpreter];

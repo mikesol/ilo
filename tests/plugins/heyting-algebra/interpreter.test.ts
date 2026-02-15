@@ -1,12 +1,15 @@
+import {
+  boolean,
+  booleanInterpreter,
+  composeInterpreters,
+  coreInterpreter,
+  eq,
+  heytingAlgebra,
+  ilo,
+  num,
+  numInterpreter,
+} from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { composeInterpreters, ilo } from "../../../src/core";
-import { coreInterpreter } from "../../../src/interpreters/core";
-import { boolean } from "../../../src/plugins/boolean";
-import { booleanInterpreter } from "../../../src/plugins/boolean/interpreter";
-import { eq } from "../../../src/plugins/eq";
-import { heytingAlgebra } from "../../../src/plugins/heyting-algebra";
-import { num } from "../../../src/plugins/num";
-import { numInterpreter } from "../../../src/plugins/num/interpreter";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

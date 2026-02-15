@@ -1,14 +1,9 @@
+import { coreInterpreter, ilo, num, numInterpreter, str, strInterpreter } from "@mvfm/core";
+import { twilio as twilioPlugin } from "@mvfm/plugin-twilio";
+import { serverEvaluate } from "@mvfm/plugin-twilio/handler.server";
+import type { TwilioClient } from "@mvfm/plugin-twilio/interpreter";
+import { twilioInterpreter } from "@mvfm/plugin-twilio/interpreter";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { num } from "../../../../src/plugins/num";
-import { numInterpreter } from "../../../../src/plugins/num/interpreter";
-import { str } from "../../../../src/plugins/str";
-import { strInterpreter } from "../../../../src/plugins/str/interpreter";
-import { twilio as twilioPlugin } from "../../../../src/plugins/twilio/5.5.1";
-import { serverEvaluate } from "../../../../src/plugins/twilio/5.5.1/handler.server";
-import type { TwilioClient } from "../../../../src/plugins/twilio/5.5.1/interpreter";
-import { twilioInterpreter } from "../../../../src/plugins/twilio/5.5.1/interpreter";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

@@ -1,27 +1,27 @@
 import * as http from "node:http";
+import type { InterpreterFragment, StepContext } from "@mvfm/core";
+import {
+  coreInterpreter,
+  eq,
+  eqInterpreter,
+  ilo,
+  num,
+  numInterpreter,
+  ord,
+  ordInterpreter,
+  runAST,
+  semiring,
+  str,
+  strInterpreter,
+} from "@mvfm/core";
+import { postgres as pgPlugin } from "@mvfm/plugin-postgres";
+import { wrapPostgresJs } from "@mvfm/plugin-postgres/client-postgres-js";
+import { clientHandler } from "@mvfm/plugin-postgres/handler.client";
+import { serverEvaluate, serverHandler } from "@mvfm/plugin-postgres/handler.server";
+import { postgresInterpreter } from "@mvfm/plugin-postgres/interpreter";
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import type { InterpreterFragment, StepContext } from "../../../../src/core";
-import { ilo, runAST } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { eq } from "../../../../src/plugins/eq";
-import { eqInterpreter } from "../../../../src/plugins/eq/interpreter";
-import { num } from "../../../../src/plugins/num";
-import { numInterpreter } from "../../../../src/plugins/num/interpreter";
-import { ord } from "../../../../src/plugins/ord";
-import { ordInterpreter } from "../../../../src/plugins/ord/interpreter";
-import { postgres as pgPlugin } from "../../../../src/plugins/postgres/3.4.8";
-import { wrapPostgresJs } from "../../../../src/plugins/postgres/3.4.8/client-postgres-js";
-import { clientHandler } from "../../../../src/plugins/postgres/3.4.8/handler.client";
-import {
-  serverEvaluate,
-  serverHandler,
-} from "../../../../src/plugins/postgres/3.4.8/handler.server";
-import { postgresInterpreter } from "../../../../src/plugins/postgres/3.4.8/interpreter";
-import { semiring } from "../../../../src/plugins/semiring";
-import { str } from "../../../../src/plugins/str";
-import { strInterpreter } from "../../../../src/plugins/str/interpreter";
 
 let container: StartedPostgreSqlContainer;
 let sql: ReturnType<typeof postgres>;

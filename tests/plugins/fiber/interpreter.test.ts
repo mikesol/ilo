@@ -1,14 +1,17 @@
+import {
+  array,
+  composeInterpreters,
+  coreInterpreter,
+  error,
+  errorInterpreter,
+  fiber,
+  fiberInterpreter,
+  ilo,
+  num,
+  numInterpreter,
+  semiring,
+} from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { composeInterpreters, ilo } from "../../../src/core";
-import { coreInterpreter } from "../../../src/interpreters/core";
-import { error } from "../../../src/plugins/error";
-import { errorInterpreter } from "../../../src/plugins/error/interpreter";
-import { fiber } from "../../../src/plugins/fiber";
-import { fiberInterpreter } from "../../../src/plugins/fiber/interpreter";
-import { num } from "../../../src/plugins/num";
-import { numInterpreter } from "../../../src/plugins/num/interpreter";
-import { semiring } from "../../../src/plugins/semiring";
-import { array } from "../../../src/schema";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

@@ -1,4 +1,3 @@
-import { describe, expect, it } from "vitest";
 import type {
   ASTNode,
   InterpreterFragment,
@@ -7,8 +6,9 @@ import type {
   StepContext,
   StepEffect,
   StepHandler,
-} from "../packages/core/src/core";
-import { adaptLegacy, foldAST, runAST, Stepper } from "../packages/core/src/core";
+} from "@mvfm/core";
+import { adaptLegacy, foldAST, runAST, Stepper } from "@mvfm/core";
+import { describe, expect, it } from "vitest";
 
 // ---- Helpers ---------------------------------------------------
 
@@ -432,7 +432,7 @@ describe("foldAST", () => {
 describe("composeInterpreters: backward compat with generator fragments", () => {
   it("accepts generator fragments alongside legacy fragments", async () => {
     // Import the actual composeInterpreters
-    const { composeInterpreters } = await import("../packages/core/src/core");
+    const { composeInterpreters } = await import("@mvfm/core");
     const coreGen = makeCoreGenFragment();
     const numGen = makeNumGenFragment();
 
@@ -449,8 +449,8 @@ describe("composeInterpreters: backward compat with generator fragments", () => 
   });
 
   it("mixes legacy and generator fragments", async () => {
-    const { composeInterpreters } = await import("../packages/core/src/core");
-    const { coreInterpreter } = await import("../packages/core/src/interpreters/core");
+    const { composeInterpreters } = await import("@mvfm/core");
+    const { coreInterpreter } = await import("@mvfm/core");
     const numGen = makeNumGenFragment();
 
     // coreInterpreter is legacy, numGen is generator

@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, ilo, num, str } from "@mvfm/core";
+import { slack } from "@mvfm/plugin-slack";
+import { slackInterpreter } from "@mvfm/plugin-slack/interpreter";
 import { describe, expect, it } from "vitest";
-import { foldAST, ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { num } from "../../../../src/plugins/num";
-import { slack } from "../../../../src/plugins/slack/7.14.0";
-import { slackInterpreter } from "../../../../src/plugins/slack/7.14.0/interpreter";
-import { str } from "../../../../src/plugins/str";
 
 const app = ilo(num, str, slack({ token: "xoxb-test-token" }));
 const fragments = [slackInterpreter, coreInterpreter];

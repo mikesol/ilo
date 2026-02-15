@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { pino } from "@mvfm/plugin-pino";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { num } from "../../../../src/plugins/num";
-import { pino } from "../../../../src/plugins/pino/10.3.1";
-import { str } from "../../../../src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

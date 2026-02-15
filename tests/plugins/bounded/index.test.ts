@@ -1,6 +1,5 @@
+import { boolean, num } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { boolean } from "../../../src/plugins/boolean";
-import { num } from "../../../src/plugins/num";
 
 describe("bounded: trait declarations", () => {
   it("num declares bounded trait", () => {

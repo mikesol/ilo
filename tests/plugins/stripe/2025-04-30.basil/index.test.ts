@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { stripe } from "@mvfm/plugin-stripe";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { num } from "../../../../src/plugins/num";
-import { str } from "../../../../src/plugins/str";
-import { stripe } from "../../../../src/plugins/stripe/2025-04-30.basil";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

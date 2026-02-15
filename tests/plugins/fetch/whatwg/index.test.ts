@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { fetch } from "@mvfm/plugin-fetch";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { fetch } from "../../../../src/plugins/fetch/whatwg";
-import { num } from "../../../../src/plugins/num";
-import { str } from "../../../../src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, ilo, num, str } from "@mvfm/core";
+import { twilio } from "@mvfm/plugin-twilio";
+import { twilioInterpreter } from "@mvfm/plugin-twilio/interpreter";
 import { describe, expect, it } from "vitest";
-import { foldAST, ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { num } from "../../../../src/plugins/num";
-import { str } from "../../../../src/plugins/str";
-import { twilio } from "../../../../src/plugins/twilio/5.5.1";
-import { twilioInterpreter } from "../../../../src/plugins/twilio/5.5.1/interpreter";
 
 const app = ilo(num, str, twilio({ accountSid: "AC_test_123", authToken: "auth_test_456" }));
 const fragments = [twilioInterpreter, coreInterpreter];

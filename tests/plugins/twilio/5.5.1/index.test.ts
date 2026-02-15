@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { twilio } from "@mvfm/plugin-twilio";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { num } from "../../../../src/plugins/num";
-import { str } from "../../../../src/plugins/str";
-import { twilio } from "../../../../src/plugins/twilio/5.5.1";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

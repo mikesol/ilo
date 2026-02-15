@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { fal } from "@mvfm/plugin-fal";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { fal } from "../../../../src/plugins/fal/1.9.1";
-import { num } from "../../../../src/plugins/num";
-import { str } from "../../../../src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

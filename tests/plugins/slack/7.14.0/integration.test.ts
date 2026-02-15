@@ -1,18 +1,20 @@
+import {
+  coreInterpreter,
+  error,
+  errorInterpreter,
+  fiber,
+  fiberInterpreter,
+  ilo,
+  num,
+  numInterpreter,
+  str,
+  strInterpreter,
+} from "@mvfm/core";
+import { slack as slackPlugin } from "@mvfm/plugin-slack";
+import { serverEvaluate } from "@mvfm/plugin-slack/handler.server";
+import type { SlackClient } from "@mvfm/plugin-slack/interpreter";
+import { slackInterpreter } from "@mvfm/plugin-slack/interpreter";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { error } from "../../../../src/plugins/error";
-import { errorInterpreter } from "../../../../src/plugins/error/interpreter";
-import { fiber } from "../../../../src/plugins/fiber";
-import { fiberInterpreter } from "../../../../src/plugins/fiber/interpreter";
-import { num } from "../../../../src/plugins/num";
-import { numInterpreter } from "../../../../src/plugins/num/interpreter";
-import { slack as slackPlugin } from "../../../../src/plugins/slack/7.14.0";
-import { serverEvaluate } from "../../../../src/plugins/slack/7.14.0/handler.server";
-import type { SlackClient } from "../../../../src/plugins/slack/7.14.0/interpreter";
-import { slackInterpreter } from "../../../../src/plugins/slack/7.14.0/interpreter";
-import { str } from "../../../../src/plugins/str";
-import { strInterpreter } from "../../../../src/plugins/str/interpreter";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

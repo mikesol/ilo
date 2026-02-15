@@ -1,19 +1,21 @@
 import * as http from "node:http";
+import {
+  coreInterpreter,
+  error,
+  errorInterpreter,
+  fiber,
+  fiberInterpreter,
+  ilo,
+  num,
+  numInterpreter,
+  str,
+  strInterpreter,
+} from "@mvfm/core";
+import { openai as openaiPlugin } from "@mvfm/plugin-openai";
+import { serverEvaluate } from "@mvfm/plugin-openai/handler.server";
+import type { OpenAIClient } from "@mvfm/plugin-openai/interpreter";
+import { openaiInterpreter } from "@mvfm/plugin-openai/interpreter";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { error } from "../../../../src/plugins/error";
-import { errorInterpreter } from "../../../../src/plugins/error/interpreter";
-import { fiber } from "../../../../src/plugins/fiber";
-import { fiberInterpreter } from "../../../../src/plugins/fiber/interpreter";
-import { num } from "../../../../src/plugins/num";
-import { numInterpreter } from "../../../../src/plugins/num/interpreter";
-import { openai as openaiPlugin } from "../../../../src/plugins/openai/6.21.0";
-import { serverEvaluate } from "../../../../src/plugins/openai/6.21.0/handler.server";
-import type { OpenAIClient } from "../../../../src/plugins/openai/6.21.0/interpreter";
-import { openaiInterpreter } from "../../../../src/plugins/openai/6.21.0/interpreter";
-import { str } from "../../../../src/plugins/str";
-import { strInterpreter } from "../../../../src/plugins/str/interpreter";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

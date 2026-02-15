@@ -1,20 +1,22 @@
+import {
+  coreInterpreter,
+  error,
+  errorInterpreter,
+  fiber,
+  fiberInterpreter,
+  ilo,
+  num,
+  numInterpreter,
+  str,
+  strInterpreter,
+} from "@mvfm/core";
+import { stripe as stripePlugin } from "@mvfm/plugin-stripe";
+import { wrapStripeSdk } from "@mvfm/plugin-stripe/client-stripe-sdk";
+import { serverEvaluate } from "@mvfm/plugin-stripe/handler.server";
+import { stripeInterpreter } from "@mvfm/plugin-stripe/interpreter";
 import Stripe from "stripe";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { error } from "../../../../src/plugins/error";
-import { errorInterpreter } from "../../../../src/plugins/error/interpreter";
-import { fiber } from "../../../../src/plugins/fiber";
-import { fiberInterpreter } from "../../../../src/plugins/fiber/interpreter";
-import { num } from "../../../../src/plugins/num";
-import { numInterpreter } from "../../../../src/plugins/num/interpreter";
-import { str } from "../../../../src/plugins/str";
-import { strInterpreter } from "../../../../src/plugins/str/interpreter";
-import { stripe as stripePlugin } from "../../../../src/plugins/stripe/2025-04-30.basil";
-import { wrapStripeSdk } from "../../../../src/plugins/stripe/2025-04-30.basil/client-stripe-sdk";
-import { serverEvaluate } from "../../../../src/plugins/stripe/2025-04-30.basil/handler.server";
-import { stripeInterpreter } from "../../../../src/plugins/stripe/2025-04-30.basil/interpreter";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { cloudflareKv } from "@mvfm/plugin-cloudflare-kv";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { cloudflareKv } from "../../../../src/plugins/cloudflare-kv/4.20260213.0";
-import { num } from "../../../../src/plugins/num";
-import { str } from "../../../../src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

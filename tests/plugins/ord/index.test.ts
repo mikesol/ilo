@@ -1,7 +1,5 @@
+import { ilo, num, ord } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../src/core";
-import { num } from "../../../src/plugins/num";
-import { ord } from "../../../src/plugins/ord";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(JSON.stringify(ast, (k, v) => (k === "__id" ? undefined : v)));

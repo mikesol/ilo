@@ -1,32 +1,72 @@
 [
   {
-    "name": "Minimal pure-logic (num + eq)",
-    "path": "dist/index.js",
-    "import": "{ num, eq }",
-    "limit": "1 kB"
+    "name": "@mvfm/core",
+    "path": "packages/core/dist/index.js",
+    "limit": "8 kB"
   },
   {
-    "name": "Medium prelude (num + str + eq + boolean + control)",
-    "path": "dist/index.js",
-    "import": "{ num, str, eq, boolean, control }",
-    "limit": "1.75 kB"
+    "name": "@mvfm/plugin-anthropic",
+    "path": "packages/plugin-anthropic/dist/index.js",
+    "limit": "400 B"
   },
   {
-    "name": "External service (postgres)",
-    "path": "dist/index.js",
-    "import": "{ postgres, postgresInterpreter }",
-    "limit": "1.25 kB"
+    "name": "@mvfm/plugin-cloudflare-kv",
+    "path": "packages/plugin-cloudflare-kv/dist/index.js",
+    "limit": "350 B"
   },
   {
-    "name": "External service (stripe)",
-    "path": "dist/index.js",
-    "import": "{ stripe, stripeInterpreter }",
-    "limit": "750 B"
+    "name": "@mvfm/plugin-fal",
+    "path": "packages/plugin-fal/dist/index.js",
+    "limit": "350 B"
   },
   {
-    "name": "Full bundle",
-    "path": "dist/index.js",
-    "import": "*",
-    "limit": "11 kB"
+    "name": "@mvfm/plugin-fetch",
+    "path": "packages/plugin-fetch/dist/index.js",
+    "limit": "350 B"
+  },
+  {
+    "name": "@mvfm/plugin-openai",
+    "path": "packages/plugin-openai/dist/index.js",
+    "limit": "400 B"
+  },
+  {
+    "name": "@mvfm/plugin-pino",
+    "path": "packages/plugin-pino/dist/index.js",
+    "limit": "450 B"
+  },
+  {
+    "name": "@mvfm/plugin-postgres",
+    "path": "packages/plugin-postgres/dist/index.js",
+    "limit": "700 B"
+  },
+  {
+    "name": "@mvfm/plugin-redis",
+    "path": "packages/plugin-redis/dist/index.js",
+    "limit": "1.1 kB"
+  },
+  {
+    "name": "@mvfm/plugin-resend",
+    "path": "packages/plugin-resend/dist/index.js",
+    "limit": "400 B"
+  },
+  {
+    "name": "@mvfm/plugin-s3",
+    "path": "packages/plugin-s3/dist/index.js",
+    "limit": "300 B"
+  },
+  {
+    "name": "@mvfm/plugin-slack",
+    "path": "packages/plugin-slack/dist/index.js",
+    "limit": "650 B"
+  },
+  {
+    "name": "@mvfm/plugin-stripe",
+    "path": "packages/plugin-stripe/dist/index.js",
+    "limit": "400 B"
+  },
+  {
+    "name": "@mvfm/plugin-twilio",
+    "path": "packages/plugin-twilio/dist/index.js",
+    "limit": "350 B"
   }
 ]

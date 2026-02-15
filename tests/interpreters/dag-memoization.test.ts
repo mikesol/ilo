@@ -1,13 +1,13 @@
-import { describe, expect, it } from "vitest";
 import {
   type ASTNode,
   composeInterpreters,
+  coreInterpreter,
+  errorInterpreter,
+  fiberInterpreter,
   type InterpreterFragment,
   type StepEffect,
-} from "../../packages/core/src/core";
-import { coreInterpreter } from "../../packages/core/src/interpreters/core";
-import { errorInterpreter } from "../../packages/core/src/plugins/error/interpreter";
-import { fiberInterpreter } from "../../packages/core/src/plugins/fiber/interpreter";
+} from "@mvfm/core";
+import { describe, expect, it } from "vitest";
 
 function createTrackingFragment(): {
   fragment: InterpreterFragment;

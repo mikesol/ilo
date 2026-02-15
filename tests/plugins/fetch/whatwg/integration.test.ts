@@ -1,15 +1,10 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
+import { coreInterpreter, ilo, num, numInterpreter, str, strInterpreter } from "@mvfm/core";
+import { fetch as fetchPlugin } from "@mvfm/plugin-fetch";
+import { wrapFetch } from "@mvfm/plugin-fetch/client-fetch";
+import { serverEvaluate } from "@mvfm/plugin-fetch/handler.server";
+import { fetchInterpreter } from "@mvfm/plugin-fetch/interpreter";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { fetch as fetchPlugin } from "../../../../src/plugins/fetch/whatwg";
-import { wrapFetch } from "../../../../src/plugins/fetch/whatwg/client-fetch";
-import { serverEvaluate } from "../../../../src/plugins/fetch/whatwg/handler.server";
-import { fetchInterpreter } from "../../../../src/plugins/fetch/whatwg/interpreter";
-import { num } from "../../../../src/plugins/num";
-import { numInterpreter } from "../../../../src/plugins/num/interpreter";
-import { str } from "../../../../src/plugins/str";
-import { strInterpreter } from "../../../../src/plugins/str/interpreter";
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

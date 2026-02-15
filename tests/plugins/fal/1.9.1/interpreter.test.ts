@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, ilo, num, str } from "@mvfm/core";
+import { fal } from "@mvfm/plugin-fal";
+import { falInterpreter } from "@mvfm/plugin-fal/interpreter";
 import { describe, expect, it } from "vitest";
-import { foldAST, ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { fal } from "../../../../src/plugins/fal/1.9.1";
-import { falInterpreter } from "../../../../src/plugins/fal/1.9.1/interpreter";
-import { num } from "../../../../src/plugins/num";
-import { str } from "../../../../src/plugins/str";
 
 const app = ilo(num, str, fal({ credentials: "key_test_123" }));
 const fragments = [falInterpreter, coreInterpreter];

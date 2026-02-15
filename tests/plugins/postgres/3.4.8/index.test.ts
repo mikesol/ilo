@@ -1,8 +1,6 @@
+import { ilo, num, str } from "@mvfm/core";
+import { postgres } from "@mvfm/plugin-postgres";
 import { describe, expect, it } from "vitest";
-import { ilo } from "../../../../src/core";
-import { num } from "../../../../src/plugins/num";
-import { postgres } from "../../../../src/plugins/postgres/3.4.8";
-import { str } from "../../../../src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

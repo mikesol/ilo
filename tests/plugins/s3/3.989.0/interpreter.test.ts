@@ -1,10 +1,7 @@
+import { coreInterpreter, foldAST, ilo, num, str } from "@mvfm/core";
+import { s3 } from "@mvfm/plugin-s3";
+import { s3Interpreter } from "@mvfm/plugin-s3/interpreter";
 import { describe, expect, it } from "vitest";
-import { foldAST, ilo } from "../../../../src/core";
-import { coreInterpreter } from "../../../../src/interpreters/core";
-import { num } from "../../../../src/plugins/num";
-import { s3 } from "../../../../src/plugins/s3/3.989.0";
-import { s3Interpreter } from "../../../../src/plugins/s3/3.989.0/interpreter";
-import { str } from "../../../../src/plugins/str";
 
 const app = ilo(num, str, s3({ region: "us-east-1" }));
 const fragments = [s3Interpreter, coreInterpreter];
