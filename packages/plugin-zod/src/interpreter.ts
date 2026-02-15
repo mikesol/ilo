@@ -61,6 +61,40 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       return applyStringChecks(base, checks);
     }
 
+    case "zod/object": {
+      const shape = (node.shape as Record<string, ASTNode>) ?? {};
+      const mode = (node.mode as string) ?? "strip";
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+
+      // Build each shape field's schema
+      const builtShape: Record<string, z.ZodType> = {};
+      for (const [key, fieldNode] of Object.entries(shape)) {
+        builtShape[key] = yield* buildSchemaGen(fieldNode);
+      }
+
+      // Create object based on mode
+      let obj: z.ZodType;
+      switch (mode) {
+        case "strict":
+          obj = z.strictObject(builtShape, errOpt);
+          break;
+        case "loose":
+          obj = z.looseObject(builtShape, errOpt);
+          break;
+        default:
+          obj = z.object(builtShape, errOpt);
+      }
+
+      // Apply catchall if present
+      if (node.catchall) {
+        const catchallSchema = yield* buildSchemaGen(node.catchall as ASTNode);
+        obj = (obj as any).catchall(catchallSchema);
+      }
+
+      return obj;
+    }
+
     // Simple wrappers (no value field)
     case "zod/optional":
       return (yield* buildSchemaGen(node.inner as ASTNode)).optional();
