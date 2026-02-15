@@ -92,6 +92,22 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       return inner.catch(value);
     }
 
+    case "zod/tuple": {
+      const itemNodes = (node.items as ASTNode[]) ?? [];
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+      const builtItems: z.ZodType[] = [];
+      for (const itemNode of itemNodes) {
+        builtItems.push(yield* buildSchemaGen(itemNode));
+      }
+      let tuple: z.ZodType = z.tuple(builtItems as [z.ZodType, ...z.ZodType[]], errOpt);
+      if (node.rest) {
+        const restSchema = yield* buildSchemaGen(node.rest as ASTNode);
+        tuple = (tuple as any).rest(restSchema);
+      }
+      return tuple;
+    }
+
     // Additional schema types will be added by colocated interpreter issues
     default:
       throw new Error(`Zod interpreter: unknown schema kind "${node.kind}"`);
