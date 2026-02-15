@@ -45,11 +45,14 @@ export const booleanInterpreter: InterpreterFragment;
 // @public
 export type BooleanMethods = {};
 
+// Warning: (ae-incompatible-release-tags) The symbol "bounded" is marked as @public, but its signature references "TypeclassSlot" which is marked as @internal
+//
 // @public
-export const bounded: PluginDefinition<BoundedMethods>;
+export const bounded: PluginDefinition<TypeclassSlot<"bounded">>;
 
 // @public
-export type BoundedMethods = {};
+export interface BoundedFor<_T> {
+}
 
 // @public
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState>;
@@ -226,11 +229,14 @@ export interface MissingTraitError<_TraitName extends string, Hint extends strin
     readonly __error: Hint;
 }
 
+// Warning: (ae-incompatible-release-tags) The symbol "monoid" is marked as @public, but its signature references "TypeclassSlot" which is marked as @internal
+//
 // @public
-export const monoid: PluginDefinition<MonoidMethods>;
+export const monoid: PluginDefinition<TypeclassSlot<"monoid">>;
 
 // @public
-export type MonoidMethods = {};
+export interface MonoidFor<_T> {
+}
 
 // @public
 export function nullable(of: SchemaType): NullableSchema;
@@ -391,6 +397,93 @@ export interface RecurseFn {
     (node: ASTNode): Promise<unknown>;
     fresh(): RecurseFn;
 }
+
+// @public
+export function redis(config?: RedisConfig | string): PluginDefinition<RedisMethods>;
+
+// @public
+export interface RedisClient {
+    command(command: string, ...args: unknown[]): Promise<unknown>;
+}
+
+// @public
+export function redisClientHandler(options: RedisClientHandlerOptions): StepHandler<RedisClientHandlerState>;
+
+// @public
+export interface RedisClientHandlerOptions {
+    baseUrl: string;
+    contractHash: string;
+    fetch?: typeof globalThis.fetch;
+    headers?: Record<string, string>;
+}
+
+// @public
+export interface RedisClientHandlerState {
+    stepIndex: number;
+}
+
+// @public
+export interface RedisConfig {
+    connectionName?: string;
+    db?: number;
+    host?: string;
+    keyPrefix?: string;
+    password?: string;
+    port?: number;
+    username?: string;
+}
+
+// @public
+export const redisInterpreter: InterpreterFragment;
+
+// @public
+export interface RedisMethods {
+    redis: {
+        get(key: Expr<string> | string): Expr<string | null>;
+        set(key: Expr<string> | string, value: Expr<string | number> | string | number, ...args: (Expr<string | number> | string | number)[]): Expr<string | null>;
+        incr(key: Expr<string> | string): Expr<number>;
+        incrby(key: Expr<string> | string, increment: Expr<number> | number): Expr<number>;
+        decr(key: Expr<string> | string): Expr<number>;
+        decrby(key: Expr<string> | string, decrement: Expr<number> | number): Expr<number>;
+        mget(...keys: (Expr<string> | string)[]): Expr<(string | null)[]>;
+        mset(mapping: Expr<Record<string, string | number>> | Record<string, string | number>): Expr<"OK">;
+        append(key: Expr<string> | string, value: Expr<string | number> | string | number): Expr<number>;
+        getrange(key: Expr<string> | string, start: Expr<number> | number, end: Expr<number> | number): Expr<string>;
+        setrange(key: Expr<string> | string, offset: Expr<number> | number, value: Expr<string | number> | string | number): Expr<number>;
+        del(...keys: (Expr<string> | string)[]): Expr<number>;
+        exists(...keys: (Expr<string> | string)[]): Expr<number>;
+        expire(key: Expr<string> | string, seconds: Expr<number> | number): Expr<number>;
+        pexpire(key: Expr<string> | string, milliseconds: Expr<number> | number): Expr<number>;
+        ttl(key: Expr<string> | string): Expr<number>;
+        pttl(key: Expr<string> | string): Expr<number>;
+        hget(key: Expr<string> | string, field: Expr<string> | string): Expr<string | null>;
+        hset(key: Expr<string> | string, mapping: Expr<Record<string, string | number>> | Record<string, string | number>): Expr<number>;
+        hmget(key: Expr<string> | string, ...fields: (Expr<string> | string)[]): Expr<(string | null)[]>;
+        hgetall(key: Expr<string> | string): Expr<Record<string, string>>;
+        hdel(key: Expr<string> | string, ...fields: (Expr<string> | string)[]): Expr<number>;
+        hexists(key: Expr<string> | string, field: Expr<string> | string): Expr<number>;
+        hlen(key: Expr<string> | string): Expr<number>;
+        hkeys(key: Expr<string> | string): Expr<string[]>;
+        hvals(key: Expr<string> | string): Expr<string[]>;
+        hincrby(key: Expr<string> | string, field: Expr<string> | string, increment: Expr<number> | number): Expr<number>;
+        lpush(key: Expr<string> | string, ...elements: (Expr<string | number> | string | number)[]): Expr<number>;
+        rpush(key: Expr<string> | string, ...elements: (Expr<string | number> | string | number)[]): Expr<number>;
+        lpop(key: Expr<string> | string, count?: Expr<number> | number): Expr<string | null>;
+        rpop(key: Expr<string> | string, count?: Expr<number> | number): Expr<string | null>;
+        llen(key: Expr<string> | string): Expr<number>;
+        lrange(key: Expr<string> | string, start: Expr<number> | number, stop: Expr<number> | number): Expr<string[]>;
+        lindex(key: Expr<string> | string, index: Expr<number> | number): Expr<string | null>;
+        lset(key: Expr<string> | string, index: Expr<number> | number, element: Expr<string | number> | string | number): Expr<"OK">;
+        lrem(key: Expr<string> | string, count: Expr<number> | number, element: Expr<string | number> | string | number): Expr<number>;
+        linsert(key: Expr<string> | string, position: "BEFORE" | "AFTER", pivot: Expr<string | number> | string | number, element: Expr<string | number> | string | number): Expr<number>;
+    };
+}
+
+// @public
+export function redisServerEvaluate(client: RedisClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
+
+// @public
+export function redisServerHandler(client: RedisClient): StepHandler<void>;
 
 // @public
 export function resolveSchemaType(node: ASTNode, schema?: Record<string, unknown>): string | null;
@@ -614,6 +707,11 @@ export interface TypeclassSlot<Name extends string> {
     // (undocumented)
     readonly __typeclassSlot: Name;
 }
+
+// @public
+export function wrapIoredis(redis: {
+    call(command: string, ...args: unknown[]): Promise<unknown>;
+}): RedisClient;
 
 // Warning: (ae-forgotten-export) The symbol "Sql" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "TransactionSql" needs to be exported by the entry point index.d.ts

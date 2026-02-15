@@ -66,6 +66,20 @@ export {
   findCursorBatch,
   postgresInterpreter,
 } from "./plugins/postgres/3.4.8/interpreter";
+export type { RedisConfig, RedisMethods } from "./plugins/redis/5.4.1";
+export { redis } from "./plugins/redis/5.4.1";
+export { wrapIoredis } from "./plugins/redis/5.4.1/client-ioredis";
+export type {
+  ClientHandlerOptions as RedisClientHandlerOptions,
+  ClientHandlerState as RedisClientHandlerState,
+} from "./plugins/redis/5.4.1/handler.client";
+export { clientHandler as redisClientHandler } from "./plugins/redis/5.4.1/handler.client";
+export {
+  serverEvaluate as redisServerEvaluate,
+  serverHandler as redisServerHandler,
+} from "./plugins/redis/5.4.1/handler.server";
+export type { RedisClient } from "./plugins/redis/5.4.1/interpreter";
+export { redisInterpreter } from "./plugins/redis/5.4.1/interpreter";
 export type { SemigroupFor } from "./plugins/semigroup";
 export { semigroup } from "./plugins/semigroup";
 export type { SemiringFor } from "./plugins/semiring";
