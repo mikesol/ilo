@@ -27,19 +27,60 @@ function checkErrorOpt(check: CheckDescriptor): { error?: (iss: unknown) => stri
 /**
  * Apply check descriptors to a Zod string schema.
  * Each check kind maps to the corresponding Zod method.
+ * Validations produce z.ZodString; transforms produce z.ZodPipe.
  */
-function applyStringChecks(schema: z.ZodString, checks: CheckDescriptor[]): z.ZodString {
-  let s = schema;
+function applyStringChecks(schema: z.ZodString, checks: CheckDescriptor[]): z.ZodType {
+  let s: z.ZodType = schema;
   for (const check of checks) {
     const errOpt = checkErrorOpt(check);
     switch (check.kind) {
+      // Length checks
       case "min_length":
-        s = s.min(check.value as number, errOpt);
+        s = (s as z.ZodString).min(check.value as number, errOpt);
         break;
       case "max_length":
-        s = s.max(check.value as number, errOpt);
+        s = (s as z.ZodString).max(check.value as number, errOpt);
         break;
-      // Additional string checks will be added by #137
+      case "length":
+        s = (s as z.ZodString).length(check.value as number, errOpt);
+        break;
+      // Pattern
+      case "regex":
+        s = (s as z.ZodString).regex(
+          new RegExp(check.pattern as string, (check.flags as string) ?? ""),
+          errOpt,
+        );
+        break;
+      // Substring checks
+      case "starts_with":
+        s = (s as z.ZodString).startsWith(check.value as string, errOpt);
+        break;
+      case "ends_with":
+        s = (s as z.ZodString).endsWith(check.value as string, errOpt);
+        break;
+      case "includes":
+        s = (s as z.ZodString).includes(check.value as string, errOpt);
+        break;
+      // Case checks
+      case "uppercase":
+        s = (s as z.ZodString).regex(/^[^a-z]*$/, errOpt);
+        break;
+      case "lowercase":
+        s = (s as z.ZodString).regex(/^[^A-Z]*$/, errOpt);
+        break;
+      // Transforms
+      case "trim":
+        s = (s as z.ZodString).trim();
+        break;
+      case "to_lower_case":
+        s = (s as z.ZodString).toLowerCase();
+        break;
+      case "to_upper_case":
+        s = (s as z.ZodString).toUpperCase();
+        break;
+      case "normalize":
+        s = (s as z.ZodString).normalize(check.form as string);
+        break;
       default:
         throw new Error(`Zod interpreter: unknown string check "${check.kind}"`);
     }
@@ -58,7 +99,7 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       const checks = (node.checks as CheckDescriptor[]) ?? [];
       const errorFn = toZodError(node.error as ErrorConfig | undefined);
       const base = errorFn ? z.string({ error: errorFn }) : z.string();
-      return applyStringChecks(base, checks);
+      return applyStringChecks(base, checks) as z.ZodType;
     }
 
     // Simple wrappers (no value field)
