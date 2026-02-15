@@ -92,6 +92,12 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       return inner.catch(value);
     }
 
+    case "zod/intersection": {
+      const leftSchema = yield* buildSchemaGen(node.left as ASTNode);
+      const rightSchema = yield* buildSchemaGen(node.right as ASTNode);
+      return z.intersection(leftSchema, rightSchema);
+    }
+
     // Additional schema types will be added by colocated interpreter issues
     default:
       throw new Error(`Zod interpreter: unknown schema kind "${node.kind}"`);
