@@ -354,3 +354,86 @@ describe("zodInterpreter: refinements (#135)", () => {
     expect(valid.success).toBe(true);
   });
 });
+
+describe("zodInterpreter: object schemas (#146)", () => {
+  it("object validates shape fields", async () => {
+    const prog = app(($) => $.zod.object({ name: $.zod.string() }).parse($.input.value));
+    const result = await run(prog, { value: { name: "Jo" } });
+    expect(result).toEqual({ name: "Jo" });
+  });
+
+  it("object rejects missing required fields", async () => {
+    const prog = app(($) => $.zod.object({ name: $.zod.string() }).safeParse($.input.value));
+    const result = (await run(prog, { value: {} })) as any;
+    expect(result.success).toBe(false);
+  });
+
+  it("object strips unknown keys by default", async () => {
+    const prog = app(($) => $.zod.object({ name: $.zod.string() }).parse($.input.value));
+    const result = await run(prog, { value: { name: "Jo", extra: true } });
+    expect(result).toEqual({ name: "Jo" });
+  });
+
+  it("strictObject rejects unknown keys", async () => {
+    const prog = app(($) => $.zod.strictObject({ name: $.zod.string() }).safeParse($.input.value));
+    const result = (await run(prog, { value: { name: "Jo", extra: true } })) as any;
+    expect(result.success).toBe(false);
+  });
+
+  it("looseObject passes unknown keys through", async () => {
+    const prog = app(($) => $.zod.looseObject({ name: $.zod.string() }).parse($.input.value));
+    const result = (await run(prog, { value: { name: "Jo", extra: true } })) as any;
+    expect(result).toEqual({ name: "Jo", extra: true });
+  });
+
+  it("object with string checks on fields", async () => {
+    const prog = app(($) => $.zod.object({ name: $.zod.string().min(3) }).safeParse($.input.value));
+    const short = (await run(prog, { value: { name: "Jo" } })) as any;
+    const valid = (await run(prog, { value: { name: "Joe" } })) as any;
+    expect(short.success).toBe(false);
+    expect(valid.success).toBe(true);
+  });
+
+  it("pick() removes omitted fields from validation", async () => {
+    const prog = app(($) =>
+      $.zod
+        .object({ name: $.zod.string(), age: $.zod.string() })
+        .pick({ name: true })
+        .parse($.input.value),
+    );
+    const result = await run(prog, { value: { name: "Jo" } });
+    expect(result).toEqual({ name: "Jo" });
+  });
+
+  it("partial() allows missing fields", async () => {
+    const prog = app(($) =>
+      $.zod.object({ name: $.zod.string() }).partial().safeParse($.input.value),
+    );
+    const empty = (await run(prog, { value: {} })) as any;
+    const full = (await run(prog, { value: { name: "Jo" } })) as any;
+    expect(empty.success).toBe(true);
+    expect(full.success).toBe(true);
+  });
+
+  it("nested objects work", async () => {
+    const prog = app(($) =>
+      $.zod
+        .object({
+          user: $.zod.object({ name: $.zod.string() }),
+        })
+        .parse($.input.value),
+    );
+    const result = await run(prog, { value: { user: { name: "Jo" } } });
+    expect(result).toEqual({ user: { name: "Jo" } });
+  });
+
+  it("object with optional wrapper", async () => {
+    const prog = app(($) =>
+      $.zod.object({ name: $.zod.string() }).optional().safeParse($.input.value),
+    );
+    const undef = (await run(prog, { value: undefined })) as any;
+    const valid = (await run(prog, { value: { name: "Jo" } })) as any;
+    expect(undef.success).toBe(true);
+    expect(valid.success).toBe(true);
+  });
+});

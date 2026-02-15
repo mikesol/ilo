@@ -1,6 +1,6 @@
 import { mvfm } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
-import { ZodStringBuilder, ZodWrappedBuilder, zod } from "../src/index";
+import { ZodObjectBuilder, ZodStringBuilder, ZodWrappedBuilder, zod } from "../src/index";
 
 // Helper: strip __id from AST for snapshot-stable assertions
 function strip(ast: unknown): unknown {
@@ -448,5 +448,105 @@ describe("refinement methods (#98)", () => {
     const ast = strip(prog.ast) as any;
     const refinement = ast.result.schema.refinements[0];
     expect(refinement.error).toBe("overwrite error");
+  });
+});
+
+describe("object schemas (#109)", () => {
+  it("$.zod.object() returns ZodObjectBuilder", () => {
+    const app = mvfm(zod);
+    app(($) => {
+      const builder = $.zod.object({ name: $.zod.string() });
+      expect(builder).toBeInstanceOf(ZodObjectBuilder);
+      return builder.parse($.input);
+    });
+  });
+
+  it("object produces correct AST with shape", () => {
+    const app = mvfm(zod);
+    const prog = app(($) =>
+      $.zod.object({ name: $.zod.string(), age: $.zod.string().min(1) }).parse($.input),
+    );
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.kind).toBe("zod/object");
+    expect(ast.result.schema.mode).toBe("strip");
+    expect(ast.result.schema.shape.name.kind).toBe("zod/string");
+    expect(ast.result.schema.shape.age.kind).toBe("zod/string");
+    expect(ast.result.schema.shape.age.checks).toHaveLength(1);
+  });
+
+  it("strictObject sets mode to strict", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => $.zod.strictObject({ name: $.zod.string() }).parse($.input));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.mode).toBe("strict");
+  });
+
+  it("looseObject sets mode to loose", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => $.zod.looseObject({ name: $.zod.string() }).parse($.input));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.mode).toBe("loose");
+  });
+
+  it("pick() selects specific fields", () => {
+    const app = mvfm(zod);
+    const prog = app(($) =>
+      $.zod
+        .object({ name: $.zod.string(), age: $.zod.string() })
+        .pick({ name: true })
+        .parse($.input),
+    );
+    const ast = strip(prog.ast) as any;
+    expect(Object.keys(ast.result.schema.shape)).toEqual(["name"]);
+  });
+
+  it("omit() removes specific fields", () => {
+    const app = mvfm(zod);
+    const prog = app(($) =>
+      $.zod
+        .object({ name: $.zod.string(), age: $.zod.string() })
+        .omit({ age: true })
+        .parse($.input),
+    );
+    const ast = strip(prog.ast) as any;
+    expect(Object.keys(ast.result.schema.shape)).toEqual(["name"]);
+  });
+
+  it("partial() wraps all fields with optional", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => $.zod.object({ name: $.zod.string() }).partial().parse($.input));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.shape.name.kind).toBe("zod/optional");
+    expect(ast.result.schema.shape.name.inner.kind).toBe("zod/string");
+  });
+
+  it("partial() with mask wraps only specified fields", () => {
+    const app = mvfm(zod);
+    const prog = app(($) =>
+      $.zod
+        .object({ name: $.zod.string(), age: $.zod.string() })
+        .partial({ name: true })
+        .parse($.input),
+    );
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.shape.name.kind).toBe("zod/optional");
+    expect(ast.result.schema.shape.age.kind).toBe("zod/string");
+  });
+
+  it("extend() adds fields to shape", () => {
+    const app = mvfm(zod);
+    const prog = app(($) =>
+      $.zod.object({ name: $.zod.string() }).extend({ age: $.zod.string() }).parse($.input),
+    );
+    const ast = strip(prog.ast) as any;
+    expect(Object.keys(ast.result.schema.shape)).toEqual(["name", "age"]);
+  });
+
+  it("object supports wrappers", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => $.zod.object({ name: $.zod.string() }).optional().parse($.input));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.kind).toBe("zod/optional");
+    expect(ast.result.schema.inner.kind).toBe("zod/object");
   });
 });
