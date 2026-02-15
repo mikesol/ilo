@@ -1,9 +1,12 @@
-import type { PluginDefinition } from "@mvfm/core";
+import type { Expr, PluginDefinition } from "@mvfm/core";
+import type { ZodSchemaBuilder, ZodWrappedBuilder } from "./base";
+import { buildCustom, buildPromise, ZodSimpleBuilder } from "./special";
 import { ZodStringBuilder } from "./string";
 
 // Re-export types, builders, and interpreter for consumers
 export { ZodSchemaBuilder, ZodWrappedBuilder } from "./base";
 export { zodInterpreter } from "./interpreter";
+export { ZodSimpleBuilder } from "./special";
 export { ZodStringBuilder } from "./string";
 export type {
   CheckDescriptor,
@@ -37,14 +40,26 @@ export interface ZodNamespace {
   /** Create a string schema builder. */
   string(errorOrOpts?: string | { error?: string }): ZodStringBuilder;
 
-  // ---- Stubs for future schema types ----
-  // Each issue (#102-#120) adds its factory method here.
-  // number(errorOrOpts?): ZodNumberBuilder;
-  // bigint(errorOrOpts?): ZodBigIntBuilder;
-  // boolean(errorOrOpts?): ZodBooleanBuilder;
-  // object(shape): ZodObjectBuilder;
-  // array(element): ZodArrayBuilder;
-  // ... etc.
+  /** Create an `any` schema that accepts all values. */
+  any(): ZodSimpleBuilder<any>;
+
+  /** Create an `unknown` schema that accepts all values (type-safe). */
+  unknown(): ZodSimpleBuilder<unknown>;
+
+  /** Create a `never` schema that rejects all values. */
+  never(): ZodSimpleBuilder<never>;
+
+  /** Create a `nan` schema that only accepts NaN. */
+  nan(): ZodSimpleBuilder<number>;
+
+  /** Create a `promise` schema that wraps an inner schema. */
+  promise<T>(inner: ZodSchemaBuilder<T>): ZodWrappedBuilder<Promise<T>>;
+
+  /** Create a custom schema with a DSL predicate. */
+  custom<T = unknown>(
+    fn: (val: Expr<unknown>) => Expr<boolean>,
+    errorOrOpts?: string | { error?: string },
+  ): ZodSimpleBuilder<T>;
 }
 
 /**
@@ -69,6 +84,14 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
     // Schema types — each issue adds its kinds here
     "zod/string", // #100
 
+    // Special types (#120)
+    "zod/any",
+    "zod/unknown",
+    "zod/never",
+    "zod/nan",
+    "zod/promise",
+    "zod/custom",
+
     // Wrappers (#99)
     "zod/optional",
     "zod/nullable",
@@ -87,6 +110,27 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
         string(errorOrOpts?: string | { error?: string }): ZodStringBuilder {
           const error = typeof errorOrOpts === "string" ? errorOrOpts : errorOrOpts?.error;
           return new ZodStringBuilder(ctx, [], [], error);
+        },
+        any(): ZodSimpleBuilder<any> {
+          return new ZodSimpleBuilder<any>(ctx, "zod/any");
+        },
+        unknown(): ZodSimpleBuilder<unknown> {
+          return new ZodSimpleBuilder<unknown>(ctx, "zod/unknown");
+        },
+        never(): ZodSimpleBuilder<never> {
+          return new ZodSimpleBuilder<never>(ctx, "zod/never");
+        },
+        nan(): ZodSimpleBuilder<number> {
+          return new ZodSimpleBuilder<number>(ctx, "zod/nan");
+        },
+        promise<T>(inner: ZodSchemaBuilder<T>): ZodWrappedBuilder<Promise<T>> {
+          return buildPromise(ctx, inner);
+        },
+        custom<T = unknown>(
+          fn: (val: Expr<unknown>) => Expr<boolean>,
+          errorOrOpts?: string | { error?: string },
+        ): ZodSimpleBuilder<T> {
+          return buildCustom<T>(ctx, fn, errorOrOpts);
         },
       },
     };

@@ -92,6 +92,22 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       return inner.catch(value);
     }
 
+    // Special types (#157)
+    case "zod/any":
+      return z.any();
+    case "zod/unknown":
+      return z.unknown();
+    case "zod/never":
+      return z.never();
+    case "zod/nan":
+      return z.nan();
+    case "zod/promise":
+      return z.promise(yield* buildSchemaGen(node.inner as ASTNode));
+    case "zod/custom":
+      // Custom predicate is an AST lambda — evaluated post-validation via refinements
+      // For the Zod schema, use z.any() as base and let refinements handle the predicate
+      return z.any();
+
     // Additional schema types will be added by colocated interpreter issues
     default:
       throw new Error(`Zod interpreter: unknown schema kind "${node.kind}"`);
@@ -110,9 +126,19 @@ function parseErrorOpt(node: ASTNode): { error?: (iss: unknown) => string } {
 /**
  * Extract refinements from a schema AST node.
  * Refinements live on the base schema node, not on wrappers.
+ * For `zod/custom` schemas, the predicate is treated as an additional refinement.
  */
 function extractRefinements(schemaNode: ASTNode): RefinementDescriptor[] {
-  return (schemaNode.refinements as RefinementDescriptor[] | undefined) ?? [];
+  const refinements = (schemaNode.refinements as RefinementDescriptor[] | undefined) ?? [];
+  if (schemaNode.kind === "zod/custom" && schemaNode.predicate) {
+    const predRef: RefinementDescriptor = {
+      kind: "refine",
+      fn: schemaNode.predicate as ASTNode,
+      error: typeof schemaNode.error === "string" ? schemaNode.error : "Custom validation failed",
+    };
+    return [predRef, ...refinements];
+  }
+  return refinements;
 }
 
 /**
