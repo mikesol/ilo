@@ -92,6 +92,32 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       return inner.catch(value);
     }
 
+    case "zod/array": {
+      const elementNode = node.element as ASTNode;
+      const elementSchema = yield* buildSchemaGen(elementNode);
+      const checks = (node.checks as CheckDescriptor[]) ?? [];
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+      let arr = z.array(elementSchema, errOpt);
+      for (const check of checks) {
+        const cErr = checkErrorOpt(check);
+        switch (check.kind) {
+          case "min_length":
+            arr = arr.min(check.value as number, cErr);
+            break;
+          case "max_length":
+            arr = arr.max(check.value as number, cErr);
+            break;
+          case "length":
+            arr = arr.length(check.value as number, cErr);
+            break;
+          default:
+            throw new Error(`Zod interpreter: unknown array check "${check.kind}"`);
+        }
+      }
+      return arr;
+    }
+
     // Additional schema types will be added by colocated interpreter issues
     default:
       throw new Error(`Zod interpreter: unknown schema kind "${node.kind}"`);

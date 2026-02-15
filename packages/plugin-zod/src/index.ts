@@ -1,6 +1,8 @@
 import type { PluginDefinition } from "@mvfm/core";
+import { ZodArrayBuilder } from "./array";
 import { ZodStringBuilder } from "./string";
 
+export { ZodArrayBuilder } from "./array";
 // Re-export types, builders, and interpreter for consumers
 export { ZodSchemaBuilder, ZodWrappedBuilder } from "./base";
 export { zodInterpreter } from "./interpreter";
@@ -13,6 +15,11 @@ export type {
   ValidationASTNode,
   WrapperASTNode,
 } from "./types";
+
+/** Helper to extract error string from the common `errorOrOpts` parameter pattern. */
+function parseError(errorOrOpts?: string | { error?: string }): string | undefined {
+  return typeof errorOrOpts === "string" ? errorOrOpts : errorOrOpts?.error;
+}
 
 /**
  * The `$.zod` namespace contributed by the Zod plugin.
@@ -37,15 +44,15 @@ export interface ZodNamespace {
   /** Create a string schema builder. */
   string(errorOrOpts?: string | { error?: string }): ZodStringBuilder;
 
-  // ---- Stubs for future schema types ----
-  // Each issue (#102-#120) adds its factory method here.
-  // number(errorOrOpts?): ZodNumberBuilder;
-  // bigint(errorOrOpts?): ZodBigIntBuilder;
-  // boolean(errorOrOpts?): ZodBooleanBuilder;
-  // object(shape): ZodObjectBuilder;
-  // array(element): ZodArrayBuilder;
-  // ... etc.
+  /** Create an array schema builder with the given element schema. */
+  array<T>(
+    element: ZodSchemaBuilder<T>,
+    errorOrOpts?: string | { error?: string },
+  ): ZodArrayBuilder<T>;
 }
+
+// Import the base type for the array() signature
+import type { ZodSchemaBuilder } from "./base";
 
 /**
  * Zod validation DSL plugin for mvfm.
@@ -68,6 +75,7 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
 
     // Schema types — each issue adds its kinds here
     "zod/string", // #100
+    "zod/array", // #110
 
     // Wrappers (#99)
     "zod/optional",
@@ -85,8 +93,18 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
     return {
       zod: {
         string(errorOrOpts?: string | { error?: string }): ZodStringBuilder {
-          const error = typeof errorOrOpts === "string" ? errorOrOpts : errorOrOpts?.error;
+          const error = parseError(errorOrOpts);
           return new ZodStringBuilder(ctx, [], [], error);
+        },
+
+        array<T>(
+          element: ZodSchemaBuilder<T>,
+          errorOrOpts?: string | { error?: string },
+        ): ZodArrayBuilder<T> {
+          const error = parseError(errorOrOpts);
+          return new ZodArrayBuilder<T>(ctx, [], [], error, {
+            element: element.__schemaNode,
+          });
         },
       },
     };
