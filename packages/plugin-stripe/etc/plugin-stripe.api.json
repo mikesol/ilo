@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-stripe!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -517,7 +517,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-stripe!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes Stripe effects against a real Stripe client.\n *\n * Handles `stripe/api_call` effects by delegating to `client.request(method, path, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link StripeClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes Stripe effects against a real Stripe client.\n *\n * Handles `stripe/api_call` effects by delegating to `client.request(method, path, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link StripeClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -568,7 +568,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-stripe!stripe:function(1)",
-          "docComment": "/**\n * Stripe plugin factory. Namespace: `stripe/`.\n *\n * Creates a plugin that exposes payment intents, customers, and charges resource methods for building parameterized Stripe API call AST nodes.\n *\n * @param config - A {@link StripeConfig} with apiKey and optional apiVersion.\n *\n * @returns A {@link PluginDefinition} for the stripe plugin.\n */\n",
+          "docComment": "/**\n * Stripe plugin factory. Namespace: `stripe/`.\n *\n * Creates a plugin that exposes payment intents, customers, and charges resource methods for building parameterized Stripe API call AST nodes.\n *\n * @param config - A {@link StripeConfig} with apiKey and optional apiVersion.\n *\n * @returns A PluginDefinition for the stripe plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

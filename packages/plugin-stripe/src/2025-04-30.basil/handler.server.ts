@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { StripeClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes Stripe effects
+ * Creates a server-side StepHandler that executes Stripe effects
  * against a real Stripe client.
  *
  * Handles `stripe/api_call` effects by delegating to
  * `client.request(method, path, params)`. Throws on unhandled effect types.
  *
  * @param client - The {@link StripeClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: StripeClient): StepHandler<void> {
   return async (effect, _context, state) => {

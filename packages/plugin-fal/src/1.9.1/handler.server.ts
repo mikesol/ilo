@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { FalClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes fal effects
+ * Creates a server-side StepHandler that executes fal effects
  * against a real fal client.
  *
  * Handles `fal/api_call` and `fal/subscribe` effects by delegating
  * to the appropriate client method. Throws on unhandled effect types.
  *
  * @param client - The {@link FalClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: FalClient): StepHandler<void> {
   return async (effect, _context, state) => {

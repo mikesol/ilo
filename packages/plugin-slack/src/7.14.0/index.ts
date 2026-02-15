@@ -209,7 +209,7 @@ export interface SlackConfig {
  * resource methods for building parameterized Slack API call AST nodes.
  *
  * @param config - A {@link SlackConfig} with a token.
- * @returns A {@link PluginDefinition} for the slack plugin.
+ * @returns A PluginDefinition for the slack plugin.
  */
 export function slack(config: SlackConfig): PluginDefinition<SlackMethods> {
   return {

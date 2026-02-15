@@ -97,7 +97,7 @@ function* buildSQL(node: ASTNode): Generator<StepEffect, BuiltQuery, unknown> {
  * Generator-based interpreter fragment for postgres plugin nodes.
  *
  * Yields effects for database operations (`query`, `begin`, `savepoint`,
- * `cursor`) that are handled by a {@link StepHandler} (e.g. the server
+ * `cursor`) that are handled by a StepHandler (e.g. the server
  * handler or client handler).
  */
 export const postgresInterpreter: InterpreterFragment = {

@@ -130,7 +130,7 @@ export interface CloudflareKvConfig {
  * methods for building Cloudflare KV AST nodes.
  *
  * @param config - A {@link CloudflareKvConfig} with namespaceId.
- * @returns A {@link PluginDefinition} for the cloudflare-kv plugin.
+ * @returns A PluginDefinition for the cloudflare-kv plugin.
  */
 export function cloudflareKv(config: CloudflareKvConfig): PluginDefinition<CloudflareKvMethods> {
   return {

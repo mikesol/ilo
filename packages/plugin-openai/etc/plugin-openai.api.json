@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-openai!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -432,7 +432,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-openai!openai:function(1)",
-          "docComment": "/**\n * OpenAI plugin factory. Namespace: `openai/`.\n *\n * Creates a plugin that exposes chat completions, embeddings, moderations, and legacy completions for building parameterized OpenAI API call AST nodes.\n *\n * @param config - An {@link OpenAIConfig} with apiKey and optional org/project.\n *\n * @returns A {@link PluginDefinition} for the openai plugin.\n */\n",
+          "docComment": "/**\n * OpenAI plugin factory. Namespace: `openai/`.\n *\n * Creates a plugin that exposes chat completions, embeddings, moderations, and legacy completions for building parameterized OpenAI API call AST nodes.\n *\n * @param config - An {@link OpenAIConfig} with apiKey and optional org/project.\n *\n * @returns A PluginDefinition for the openai plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1183,7 +1183,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-openai!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes OpenAI effects against a real OpenAI client.\n *\n * Handles `openai/api_call` effects by delegating to `client.request(method, path, body)`. Throws on unhandled effect types.\n *\n * @param client - The {@link OpenAIClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes OpenAI effects against a real OpenAI client.\n *\n * Handles `openai/api_call` effects by delegating to `client.request(method, path, body)`. Throws on unhandled effect types.\n *\n * @param client - The {@link OpenAIClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

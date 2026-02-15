@@ -23,7 +23,7 @@ export interface ClientHandlerState {
 }
 
 /**
- * Creates a client-side {@link StepHandler} that sends effects as JSON
+ * Creates a client-side StepHandler that sends effects as JSON
  * to a remote server endpoint for execution.
  *
  * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with
@@ -31,7 +31,7 @@ export interface ClientHandlerState {
  * is expected to return `{ result: unknown }` in the response body.
  *
  * @param options - Configuration for the client handler.
- * @returns A {@link StepHandler} that tracks step indices.
+ * @returns A StepHandler that tracks step indices.
  */
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState> {
   const { baseUrl, contractHash, headers = {} } = options;

@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-redis!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends effects as JSON to a remote server endpoint for execution.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -432,7 +432,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-redis!redis:function(1)",
-          "docComment": "/**\n * Redis plugin factory. Namespace: `redis/`.\n *\n * Creates a plugin that exposes string, key, hash, and list command methods for building parameterized Redis AST nodes.\n *\n * @param config - A {@link RedisConfig} object or Redis URL string.\n *\n * @returns A {@link PluginDefinition} for the redis plugin.\n */\n",
+          "docComment": "/**\n * Redis plugin factory. Namespace: `redis/`.\n *\n * Creates a plugin that exposes string, key, hash, and list command methods for building parameterized Redis AST nodes.\n *\n * @param config - A {@link RedisConfig} object or Redis URL string.\n *\n * @returns A PluginDefinition for the redis plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1931,7 +1931,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-redis!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes Redis effects against a real Redis client.\n *\n * Handles `redis/command` effects by delegating to `client.command(command, ...args)`. Throws on unhandled effect types.\n *\n * @param client - The {@link RedisClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes Redis effects against a real Redis client.\n *\n * Handles `redis/command` effects by delegating to `client.command(command, ...args)`. Throws on unhandled effect types.\n *\n * @param client - The {@link RedisClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-resend!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -432,7 +432,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-resend!resend:function(1)",
-          "docComment": "/**\n * Resend plugin factory. Namespace: `resend/`.\n *\n * Creates a plugin that exposes email sending, batch sending, and contact management methods for building parameterized Resend API call AST nodes.\n *\n * @param config - A {@link ResendConfig} with apiKey.\n *\n * @returns A {@link PluginDefinition} for the resend plugin.\n */\n",
+          "docComment": "/**\n * Resend plugin factory. Namespace: `resend/`.\n *\n * Creates a plugin that exposes email sending, batch sending, and contact management methods for building parameterized Resend API call AST nodes.\n *\n * @param config - A {@link ResendConfig} with apiKey.\n *\n * @returns A PluginDefinition for the resend plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1025,7 +1025,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-resend!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes Resend effects against a real Resend client.\n *\n * Handles `resend/api_call` effects by delegating to `client.request(method, path, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link ResendClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes Resend effects against a real Resend client.\n *\n * Handles `resend/api_call` effects by delegating to `client.request(method, path, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link ResendClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

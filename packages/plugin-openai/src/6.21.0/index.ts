@@ -136,7 +136,7 @@ export interface OpenAIConfig {
  * OpenAI API call AST nodes.
  *
  * @param config - An {@link OpenAIConfig} with apiKey and optional org/project.
- * @returns A {@link PluginDefinition} for the openai plugin.
+ * @returns A PluginDefinition for the openai plugin.
  */
 export function openai(config: OpenAIConfig): PluginDefinition<OpenAIMethods> {
   return {

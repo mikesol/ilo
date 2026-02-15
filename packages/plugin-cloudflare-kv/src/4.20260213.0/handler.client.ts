@@ -23,14 +23,14 @@ export interface ClientHandlerState {
 }
 
 /**
- * Creates a client-side {@link StepHandler} that sends Cloudflare KV
+ * Creates a client-side StepHandler that sends Cloudflare KV
  * effects as JSON to a remote server endpoint for execution.
  *
  * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with
  * the contract hash, step index, path, and effect payload.
  *
  * @param options - Configuration for the client handler.
- * @returns A {@link StepHandler} that tracks step indices.
+ * @returns A StepHandler that tracks step indices.
  */
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState> {
   const { baseUrl, contractHash, headers = {} } = options;

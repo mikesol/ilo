@@ -16,7 +16,7 @@ export interface AnthropicClient {
  *
  * Yields `anthropic/api_call` effects for all 9 operations. Each effect
  * contains the HTTP method, API path, and optional params matching the
- * Anthropic REST API conventions (as defined by @anthropic-ai/sdk).
+ * Anthropic REST API conventions (as defined by \@anthropic-ai/sdk).
  */
 export const anthropicInterpreter: InterpreterFragment = {
   pluginName: "anthropic",

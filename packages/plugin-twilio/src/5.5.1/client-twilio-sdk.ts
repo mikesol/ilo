@@ -22,7 +22,7 @@ interface TwilioSdkClient {
  * For GET/DELETE requests, params are encoded as query string parameters
  * on the URI.
  *
- * @param client - A Twilio SDK client instance conforming to {@link TwilioSdkClient}.
+ * @param client - A Twilio SDK client instance conforming to TwilioSdkClient.
  * @returns A {@link TwilioClient} adapter.
  */
 export function wrapTwilioSdk(client: TwilioSdkClient): TwilioClient {

@@ -115,7 +115,7 @@ export interface ResendConfig {
  * call AST nodes.
  *
  * @param config - A {@link ResendConfig} with apiKey.
- * @returns A {@link PluginDefinition} for the resend plugin.
+ * @returns A PluginDefinition for the resend plugin.
  */
 export function resend(config: ResendConfig): PluginDefinition<ResendMethods> {
   return {

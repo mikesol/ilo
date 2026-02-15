@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-anthropic!anthropic:function(1)",
-          "docComment": "/**\n * Anthropic plugin factory. Namespace: `anthropic/`.\n *\n * Creates a plugin that exposes messages, message batches, and models resource methods for building parameterized Anthropic API call AST nodes.\n *\n * @param config - An {@link AnthropicConfig} with apiKey and optional baseURL.\n *\n * @returns A {@link PluginDefinition} for the anthropic plugin.\n */\n",
+          "docComment": "/**\n * Anthropic plugin factory. Namespace: `anthropic/`.\n *\n * Creates a plugin that exposes messages, message batches, and models resource methods for building parameterized Anthropic API call AST nodes.\n *\n * @param config - An {@link AnthropicConfig} with apiKey and optional baseURL.\n *\n * @returns A PluginDefinition for the anthropic plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -428,7 +428,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "@mvfm/plugin-anthropic!anthropicInterpreter:var",
-          "docComment": "/**\n * Generator-based interpreter fragment for anthropic plugin nodes.\n *\n * Yields `anthropic/api_call` effects for all 9 operations. Each effect contains the HTTP method, API path, and optional params matching the Anthropic REST API conventions (as defined by @anthropic-ai/sdk).\n */\n",
+          "docComment": "/**\n * Generator-based interpreter fragment for anthropic plugin nodes.\n *\n * Yields `anthropic/api_call` effects for all 9 operations. Each effect contains the HTTP method, API path, and optional params matching the Anthropic REST API conventions (as defined by \\@anthropic-ai/sdk).\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -452,7 +452,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "@mvfm/plugin-anthropic!AnthropicMethods:interface",
-          "docComment": "/**\n * Anthropic operations added to the DSL context by the anthropic plugin.\n *\n * Mirrors the @anthropic-ai/sdk resource API: messages (create, countTokens), message batches (create, retrieve, list, delete, cancel), and models (retrieve, list). Each resource exposes methods that produce namespaced AST nodes.\n */\n",
+          "docComment": "/**\n * Anthropic operations added to the DSL context by the anthropic plugin.\n *\n * Mirrors the \\@anthropic-ai/sdk resource API: messages (create, countTokens), message batches (create, retrieve, list, delete, cancel), and models (retrieve, list). Each resource exposes methods that produce namespaced AST nodes.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -830,7 +830,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-anthropic!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1156,7 +1156,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-anthropic!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes Anthropic effects against a real Anthropic client.\n *\n * Handles `anthropic/api_call` effects by delegating to `client.request(method, path, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link AnthropicClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes Anthropic effects against a real Anthropic client.\n *\n * Handles `anthropic/api_call` effects by delegating to `client.request(method, path, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link AnthropicClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

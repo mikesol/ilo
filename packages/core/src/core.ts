@@ -156,7 +156,7 @@ export interface MissingTraitError<_TraitName extends string, Hint extends strin
  * Extended by typeclass plugins via declaration merging.
  * @internal
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+// biome-ignore lint/correctness/noUnusedVariables: T is used by module augmentation
 export interface TypeclassMapping<T> {}
 
 /**
@@ -172,6 +172,7 @@ export interface TypeclassMapping<T> {}
  * };
  * ```
  */
+// biome-ignore lint/correctness/noUnusedVariables: Traits is reserved for trait-based plugin dispatch
 export interface PluginDefinition<T = any, Traits extends Record<string, unknown> = {}> {
   name: string;
   nodeKinds: string[];
@@ -189,7 +190,7 @@ export interface PluginDefinition<T = any, Traits extends Record<string, unknown
 }
 
 /**
- * A plugin export: either a bare {@link PluginDefinition} or a factory
+ * A plugin export: either a bare PluginDefinition or a factory
  * function that returns one (for plugins requiring configuration).
  */
 export type Plugin<T = any, Traits extends Record<string, unknown> = {}> =
@@ -480,7 +481,7 @@ export class Stepper {
  *
  * `runAST` auto-handles `recurse` effects by descending into child
  * nodes. All other effects (IO, custom) are delegated to the provided
- * {@link StepHandler}. The `"__legacy"` effect is handled internally
+ * StepHandler. The `"__legacy"` effect is handled internally
  * for backward compatibility with {@link LegacyInterpreterFragment}s.
  *
  * @typeParam S - User-defined state threaded through the evaluation.

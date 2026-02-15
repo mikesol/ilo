@@ -127,7 +127,7 @@ export interface FalConfig {
  * methods for building parameterized fal API call AST nodes.
  *
  * @param config - A {@link FalConfig} with credentials.
- * @returns A {@link PluginDefinition} for the fal plugin.
+ * @returns A PluginDefinition for the fal plugin.
  */
 export function fal(config: FalConfig): PluginDefinition<FalMethods> {
   return {

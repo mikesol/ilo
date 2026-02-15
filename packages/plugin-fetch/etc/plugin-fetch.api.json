@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-fetch!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -432,7 +432,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-fetch!fetch_2:function(1)",
-          "docComment": "/**\n * Fetch plugin factory. Namespace: `fetch/`.\n *\n * Creates a plugin that exposes `$.fetch(url, init?)` for HTTP requests and response-reading methods `.json()`, `.text()`, `.status()`, `.headers()`.\n *\n * @param config - Optional {@link FetchConfig} with baseUrl and defaultHeaders.\n *\n * @returns A {@link PluginDefinition} for the fetch plugin.\n */\n",
+          "docComment": "/**\n * Fetch plugin factory. Namespace: `fetch/`.\n *\n * Creates a plugin that exposes `$.fetch(url, init?)` for HTTP requests and response-reading methods `.json()`, `.text()`, `.status()`, `.headers()`.\n *\n * @param config - Optional {@link FetchConfig} with baseUrl and defaultHeaders.\n *\n * @returns A PluginDefinition for the fetch plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1263,7 +1263,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-fetch!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes fetch effects against a real fetch client.\n *\n * Handles two effect types: - `fetch/http_request`: executes the HTTP request via `client.request()` - `fetch/read_body`: reads the response body/metadata using the specified mode\n *\n * @param client - The {@link FetchClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes fetch effects against a real fetch client.\n *\n * Handles two effect types: - `fetch/http_request`: executes the HTTP request via `client.request()` - `fetch/read_body`: reads the response body/metadata using the specified mode\n *\n * @param client - The {@link FetchClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

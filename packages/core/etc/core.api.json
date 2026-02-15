@@ -4537,7 +4537,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "@mvfm/core!Plugin_2:type",
-          "docComment": "/**\n * A plugin export: either a bare {@link PluginDefinition} or a factory function that returns one (for plugins requiring configuration).\n */\n",
+          "docComment": "/**\n * A plugin export: either a bare PluginDefinition or a factory function that returns one (for plugins requiring configuration).\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -5511,7 +5511,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/core!runAST:function(1)",
-          "docComment": "/**\n * Evaluate an AST using generator-based fragments with a custom effect handler.\n *\n * `runAST` auto-handles `recurse` effects by descending into child nodes. All other effects (IO, custom) are delegated to the provided {@link StepHandler}. The `\"__legacy\"` effect is handled internally for backward compatibility with {@link LegacyInterpreterFragment}s.\n *\n * @param root - The root AST node to evaluate.\n *\n * @param fragments - Interpreter fragments.\n *\n * @param handler - Handler for non-recurse effects.\n *\n * @param initialState - Initial user state.\n *\n * @typeParam S - User-defined state threaded through the evaluation.\n *\n * @returns The final value and state after evaluation.\n */\n",
+          "docComment": "/**\n * Evaluate an AST using generator-based fragments with a custom effect handler.\n *\n * `runAST` auto-handles `recurse` effects by descending into child nodes. All other effects (IO, custom) are delegated to the provided StepHandler. The `\"__legacy\"` effect is handled internally for backward compatibility with {@link LegacyInterpreterFragment}s.\n *\n * @param root - The root AST node to evaluate.\n *\n * @param fragments - Interpreter fragments.\n *\n * @param handler - Handler for non-recurse effects.\n *\n * @param initialState - Initial user state.\n *\n * @typeParam S - User-defined state threaded through the evaluation.\n *\n * @returns The final value and state after evaluation.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

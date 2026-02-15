@@ -134,7 +134,7 @@ export interface FetchConfig {
  * and response-reading methods `.json()`, `.text()`, `.status()`, `.headers()`.
  *
  * @param config - Optional {@link FetchConfig} with baseUrl and defaultHeaders.
- * @returns A {@link PluginDefinition} for the fetch plugin.
+ * @returns A PluginDefinition for the fetch plugin.
  */
 export function fetch(config?: FetchConfig): PluginDefinition<FetchMethods> {
   const resolvedConfig = config ?? {};

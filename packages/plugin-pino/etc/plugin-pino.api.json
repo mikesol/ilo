@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-pino!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends pino effects as JSON to a remote server endpoint for execution.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends pino effects as JSON to a remote server endpoint for execution.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -432,7 +432,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-pino!pino:function(1)",
-          "docComment": "/**\n * Pino plugin factory. Namespace: `pino/`.\n *\n * Creates a plugin that exposes structured logging methods mirroring the real pino API. Log calls produce AST nodes that yield `pino/log` effects at interpretation time.\n *\n * @param config - A {@link PinoConfig} with optional level and base bindings.\n *\n * @returns A {@link PluginDefinition} for the pino plugin.\n */\n",
+          "docComment": "/**\n * Pino plugin factory. Namespace: `pino/`.\n *\n * Creates a plugin that exposes structured logging methods mirroring the real pino API. Log calls produce AST nodes that yield `pino/log` effects at interpretation time.\n *\n * @param config - A {@link PinoConfig} with optional level and base bindings.\n *\n * @returns A PluginDefinition for the pino plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2566,7 +2566,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-pino!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes pino effects against a real pino client.\n *\n * Handles `pino/log` effects by delegating to `client.log(level, bindings, mergeObject, msg)`.\n *\n * @param client - The {@link PinoClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes pino effects against a real pino client.\n *\n * Handles `pino/log` effects by delegating to `client.log(level, bindings, mergeObject, msg)`.\n *\n * @param client - The {@link PinoClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

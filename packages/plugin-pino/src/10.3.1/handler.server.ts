@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { PinoClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes pino effects
+ * Creates a server-side StepHandler that executes pino effects
  * against a real pino client.
  *
  * Handles `pino/log` effects by delegating to
  * `client.log(level, bindings, mergeObject, msg)`.
  *
  * @param client - The {@link PinoClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: PinoClient): StepHandler<void> {
   return async (effect, _context, state) => {

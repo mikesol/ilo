@@ -239,7 +239,7 @@ function serverEvaluateInternal(
 }
 
 /**
- * Creates a server-side {@link StepHandler} that executes postgres effects
+ * Creates a server-side StepHandler that executes postgres effects
  * against a real database client.
  *
  * Handles the following effect types:
@@ -254,7 +254,7 @@ function serverEvaluateInternal(
  *
  * @param client - The {@link PostgresClient} to execute against.
  * @param fragments - Generator interpreter fragments for evaluating sub-expressions.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(
   client: PostgresClient,

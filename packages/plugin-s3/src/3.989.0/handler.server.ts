@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { S3Client } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes S3 effects
+ * Creates a server-side StepHandler that executes S3 effects
  * against a real S3 client.
  *
  * Handles `s3/command` effects by delegating to
  * `client.execute(command, input)`. Throws on unhandled effect types.
  *
  * @param client - The {@link S3Client} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: S3Client): StepHandler<void> {
   return async (effect, _context, state) => {

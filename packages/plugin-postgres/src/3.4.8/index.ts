@@ -265,7 +265,7 @@ export interface PostgresConfig {
  * transactions, savepoints, and cursors.
  *
  * @param config - A connection string or {@link PostgresConfig} object.
- * @returns A {@link PluginDefinition} for the postgres plugin.
+ * @returns A PluginDefinition for the postgres plugin.
  */
 export function postgres(config?: PostgresConfig | string): PluginDefinition<PostgresMethods> {
   const resolvedConfig: PostgresConfig =

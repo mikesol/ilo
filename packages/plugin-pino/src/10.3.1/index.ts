@@ -128,7 +128,7 @@ const LEVELS = ["trace", "debug", "info", "warn", "error", "fatal"] as const;
  * that yield `pino/log` effects at interpretation time.
  *
  * @param config - A {@link PinoConfig} with optional level and base bindings.
- * @returns A {@link PluginDefinition} for the pino plugin.
+ * @returns A PluginDefinition for the pino plugin.
  */
 export function pino(config: PinoConfig = {}): PluginDefinition<PinoMethods> {
   return {

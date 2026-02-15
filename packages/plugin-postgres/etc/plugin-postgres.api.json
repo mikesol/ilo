@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-postgres!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -522,7 +522,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-postgres!postgres:function(1)",
-          "docComment": "/**\n * Postgres plugin factory. Namespace: `postgres/`.\n *\n * Creates a plugin that exposes a `sql` tagged template for building parameterized queries, plus helpers for identifiers, inserts, updates, transactions, savepoints, and cursors.\n *\n * @param config - A connection string or {@link PostgresConfig} object.\n *\n * @returns A {@link PluginDefinition} for the postgres plugin.\n */\n",
+          "docComment": "/**\n * Postgres plugin factory. Namespace: `postgres/`.\n *\n * Creates a plugin that exposes a `sql` tagged template for building parameterized queries, plus helpers for identifiers, inserts, updates, transactions, savepoints, and cursors.\n *\n * @param config - A connection string or {@link PostgresConfig} object.\n *\n * @returns A PluginDefinition for the postgres plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1200,7 +1200,7 @@
         {
           "kind": "Variable",
           "canonicalReference": "@mvfm/plugin-postgres!postgresInterpreter:var",
-          "docComment": "/**\n * Generator-based interpreter fragment for postgres plugin nodes.\n *\n * Yields effects for database operations (`query`, `begin`, `savepoint`, `cursor`) that are handled by a {@link StepHandler} (e.g. the server handler or client handler).\n */\n",
+          "docComment": "/**\n * Generator-based interpreter fragment for postgres plugin nodes.\n *\n * Yields effects for database operations (`query`, `begin`, `savepoint`, `cursor`) that are handled by a StepHandler (e.g. the server handler or client handler).\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1355,7 +1355,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-postgres!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes postgres effects against a real database client.\n *\n * Handles the following effect types: - `query` -- executes a parameterized SQL query - `begin` -- opens a transaction, evaluates body/queries within it - `savepoint` -- opens a savepoint, evaluates body/queries within it - `cursor` -- streams a query in batches, evaluating the body for each batch\n *\n * For optimal caching behavior (sharing cache across cursor iterations), prefer {@link serverEvaluate} which creates a unified evaluation function. Use `serverHandler` when you need a `StepHandler` for use with `runAST`.\n *\n * @param client - The {@link PostgresClient} to execute against.\n *\n * @param fragments - Generator interpreter fragments for evaluating sub-expressions.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes postgres effects against a real database client.\n *\n * Handles the following effect types: - `query` -- executes a parameterized SQL query - `begin` -- opens a transaction, evaluates body/queries within it - `savepoint` -- opens a savepoint, evaluates body/queries within it - `cursor` -- streams a query in batches, evaluating the body for each batch\n *\n * For optimal caching behavior (sharing cache across cursor iterations), prefer {@link serverEvaluate} which creates a unified evaluation function. Use `serverHandler` when you need a `StepHandler` for use with `runAST`.\n *\n * @param client - The {@link PostgresClient} to execute against.\n *\n * @param fragments - Generator interpreter fragments for evaluating sub-expressions.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

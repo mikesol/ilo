@@ -19,7 +19,7 @@ import { injectLambdaParam } from "./interpreter";
  *
  * @param fragments - Interpreter fragments for evaluating sub-expressions.
  * @param innerHandler - The handler to delegate non-fiber effects to.
- * @returns A composed {@link StepHandler}.
+ * @returns A composed StepHandler.
  */
 export function fiberHandler(
   fragments: InterpreterFragment[],

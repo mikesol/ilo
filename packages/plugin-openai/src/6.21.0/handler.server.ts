@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { OpenAIClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes OpenAI effects
+ * Creates a server-side StepHandler that executes OpenAI effects
  * against a real OpenAI client.
  *
  * Handles `openai/api_call` effects by delegating to
  * `client.request(method, path, body)`. Throws on unhandled effect types.
  *
  * @param client - The {@link OpenAIClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: OpenAIClient): StepHandler<void> {
   return async (effect, _context, state) => {

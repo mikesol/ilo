@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-slack!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -517,7 +517,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-slack!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes Slack effects against a real Slack client.\n *\n * Handles `slack/api_call` effects by delegating to `client.apiCall(method, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link SlackClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes Slack effects against a real Slack client.\n *\n * Handles `slack/api_call` effects by delegating to `client.apiCall(method, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link SlackClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -568,7 +568,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-slack!slack:function(1)",
-          "docComment": "/**\n * Slack plugin factory. Namespace: `slack/`.\n *\n * Creates a plugin that exposes chat, conversations, users, reactions, and files resource methods for building parameterized Slack API call AST nodes.\n *\n * @param config - A {@link SlackConfig} with a token.\n *\n * @returns A {@link PluginDefinition} for the slack plugin.\n */\n",
+          "docComment": "/**\n * Slack plugin factory. Namespace: `slack/`.\n *\n * Creates a plugin that exposes chat, conversations, users, reactions, and files resource methods for building parameterized Slack API call AST nodes.\n *\n * @param config - A {@link SlackConfig} with a token.\n *\n * @returns A PluginDefinition for the slack plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

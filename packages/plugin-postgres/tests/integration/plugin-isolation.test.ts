@@ -1,6 +1,6 @@
 import type { Expr } from "@mvfm/core";
 import { mvfm } from "@mvfm/core";
-import { describe, expect, expectTypeOf, it } from "vitest";
+import { describe, expectTypeOf, it } from "vitest";
 import { postgres } from "../../src/3.4.8";
 
 describe("non-typeclass plugin isolation", () => {

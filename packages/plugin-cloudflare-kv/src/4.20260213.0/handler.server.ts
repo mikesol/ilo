@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { CloudflareKvClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes Cloudflare KV
+ * Creates a server-side StepHandler that executes Cloudflare KV
  * effects against a real KV client.
  *
  * Handles `cloudflare-kv/api_call` effects by delegating to the
  * appropriate client method based on the operation field.
  *
  * @param client - The {@link CloudflareKvClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: CloudflareKvClient): StepHandler<void> {
   return async (effect, _context, state) => {

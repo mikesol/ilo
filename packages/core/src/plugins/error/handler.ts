@@ -17,7 +17,7 @@ import { runAST } from "../../core";
  *
  * @param fragments - Generator interpreter fragments for evaluating sub-expressions.
  * @param innerHandler - The handler to delegate non-error effects to.
- * @returns A composed {@link StepHandler}.
+ * @returns A composed StepHandler.
  */
 export function errorHandler(
   fragments: InterpreterFragment[],

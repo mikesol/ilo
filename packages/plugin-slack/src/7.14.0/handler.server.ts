@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { SlackClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes Slack effects
+ * Creates a server-side StepHandler that executes Slack effects
  * against a real Slack client.
  *
  * Handles `slack/api_call` effects by delegating to
  * `client.apiCall(method, params)`. Throws on unhandled effect types.
  *
  * @param client - The {@link SlackClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: SlackClient): StepHandler<void> {
   return async (effect, _context, state) => {

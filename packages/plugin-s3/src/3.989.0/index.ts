@@ -150,7 +150,7 @@ export interface S3Config {
  * parameterized S3 command AST nodes.
  *
  * @param config - An {@link S3Config} with region and optional credentials.
- * @returns A {@link PluginDefinition} for the s3 plugin.
+ * @returns A PluginDefinition for the s3 plugin.
  *
  * @example
  * ```ts

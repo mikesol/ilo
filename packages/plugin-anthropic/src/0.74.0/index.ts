@@ -53,7 +53,7 @@ import type { Expr, PluginContext, PluginDefinition } from "@mvfm/core";
 /**
  * Anthropic operations added to the DSL context by the anthropic plugin.
  *
- * Mirrors the @anthropic-ai/sdk resource API: messages (create,
+ * Mirrors the \@anthropic-ai/sdk resource API: messages (create,
  * countTokens), message batches (create, retrieve, list, delete,
  * cancel), and models (retrieve, list). Each resource exposes
  * methods that produce namespaced AST nodes.
@@ -122,7 +122,7 @@ export interface AnthropicConfig {
  * resource methods for building parameterized Anthropic API call AST nodes.
  *
  * @param config - An {@link AnthropicConfig} with apiKey and optional baseURL.
- * @returns A {@link PluginDefinition} for the anthropic plugin.
+ * @returns A PluginDefinition for the anthropic plugin.
  */
 export function anthropic(config: AnthropicConfig): PluginDefinition<AnthropicMethods> {
   return {

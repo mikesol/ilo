@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-twilio!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload. The server is expected to return `{ result: unknown }` in the response body.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -517,7 +517,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-twilio!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes Twilio effects against a real Twilio client.\n *\n * Handles `twilio/api_call` effects by delegating to `client.request(method, path, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link TwilioClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes Twilio effects against a real Twilio client.\n *\n * Handles `twilio/api_call` effects by delegating to `client.request(method, path, params)`. Throws on unhandled effect types.\n *\n * @param client - The {@link TwilioClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -568,7 +568,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-twilio!twilio:function(1)",
-          "docComment": "/**\n * Twilio plugin factory. Namespace: `twilio/`.\n *\n * Creates a plugin that exposes messages and calls resource methods for building parameterized Twilio API call AST nodes.\n *\n * @param config - A {@link TwilioConfig} with accountSid and authToken.\n *\n * @returns A {@link PluginDefinition} for the twilio plugin.\n */\n",
+          "docComment": "/**\n * Twilio plugin factory. Namespace: `twilio/`.\n *\n * Creates a plugin that exposes messages and calls resource methods for building parameterized Twilio API call AST nodes.\n *\n * @param config - A {@link TwilioConfig} with accountSid and authToken.\n *\n * @returns A PluginDefinition for the twilio plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1474,7 +1474,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-twilio!wrapTwilioSdk:function(1)",
-          "docComment": "/**\n * Wraps a Twilio SDK client into a {@link TwilioClient}.\n *\n * Uses the SDK's `request()` method to send requests, preserving the SDK's built-in authentication and configuration.\n *\n * For POST requests, params are sent as `data` in the request body. For GET/DELETE requests, params are encoded as query string parameters on the URI.\n *\n * @param client - A Twilio SDK client instance conforming to {@link TwilioSdkClient}.\n *\n * @returns A {@link TwilioClient} adapter.\n */\n",
+          "docComment": "/**\n * Wraps a Twilio SDK client into a {@link TwilioClient}.\n *\n * Uses the SDK's `request()` method to send requests, preserving the SDK's built-in authentication and configuration.\n *\n * For POST requests, params are sent as `data` in the request body. For GET/DELETE requests, params are encoded as query string parameters on the URI.\n *\n * @param client - A Twilio SDK client instance conforming to TwilioSdkClient.\n *\n * @returns A {@link TwilioClient} adapter.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

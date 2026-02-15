@@ -23,11 +23,11 @@ export interface ClientHandlerState {
 }
 
 /**
- * Creates a client-side {@link StepHandler} that sends pino effects as JSON
+ * Creates a client-side StepHandler that sends pino effects as JSON
  * to a remote server endpoint for execution.
  *
  * @param options - Configuration for the client handler.
- * @returns A {@link StepHandler} that tracks step indices.
+ * @returns A StepHandler that tracks step indices.
  */
 export function clientHandler(options: ClientHandlerOptions): StepHandler<ClientHandlerState> {
   const { baseUrl, contractHash, headers = {} } = options;

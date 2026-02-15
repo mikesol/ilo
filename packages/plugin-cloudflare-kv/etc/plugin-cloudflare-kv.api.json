@@ -191,7 +191,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-cloudflare-kv!clientHandler:function(1)",
-          "docComment": "/**\n * Creates a client-side {@link StepHandler} that sends Cloudflare KV effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A {@link StepHandler} that tracks step indices.\n */\n",
+          "docComment": "/**\n * Creates a client-side StepHandler that sends Cloudflare KV effects as JSON to a remote server endpoint for execution.\n *\n * Each effect is sent as a POST request to `{baseUrl}/mvfm/execute` with the contract hash, step index, path, and effect payload.\n *\n * @param options - Configuration for the client handler.\n *\n * @returns A StepHandler that tracks step indices.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -432,7 +432,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-cloudflare-kv!cloudflareKv:function(1)",
-          "docComment": "/**\n * Cloudflare KV plugin factory. Namespace: `cloudflare-kv/`.\n *\n * Creates a plugin that exposes get, put, delete, and list methods for building Cloudflare KV AST nodes.\n *\n * @param config - A {@link CloudflareKvConfig} with namespaceId.\n *\n * @returns A {@link PluginDefinition} for the cloudflare-kv plugin.\n */\n",
+          "docComment": "/**\n * Cloudflare KV plugin factory. Namespace: `cloudflare-kv/`.\n *\n * Creates a plugin that exposes get, put, delete, and list methods for building Cloudflare KV AST nodes.\n *\n * @param config - A {@link CloudflareKvConfig} with namespaceId.\n *\n * @returns A PluginDefinition for the cloudflare-kv plugin.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2091,7 +2091,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-cloudflare-kv!serverHandler:function(1)",
-          "docComment": "/**\n * Creates a server-side {@link StepHandler} that executes Cloudflare KV effects against a real KV client.\n *\n * Handles `cloudflare-kv/api_call` effects by delegating to the appropriate client method based on the operation field.\n *\n * @param client - The {@link CloudflareKvClient} to execute against.\n *\n * @returns A {@link StepHandler} for void state.\n */\n",
+          "docComment": "/**\n * Creates a server-side StepHandler that executes Cloudflare KV effects against a real KV client.\n *\n * Handles `cloudflare-kv/api_call` effects by delegating to the appropriate client method based on the operation field.\n *\n * @param client - The {@link CloudflareKvClient} to execute against.\n *\n * @returns A StepHandler for void state.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",

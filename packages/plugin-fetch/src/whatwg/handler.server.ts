@@ -3,7 +3,7 @@ import { runAST } from "@mvfm/core";
 import type { FetchClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes fetch effects
+ * Creates a server-side StepHandler that executes fetch effects
  * against a real fetch client.
  *
  * Handles two effect types:
@@ -11,7 +11,7 @@ import type { FetchClient } from "./interpreter";
  * - `fetch/read_body`: reads the response body/metadata using the specified mode
  *
  * @param client - The {@link FetchClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: FetchClient): StepHandler<void> {
   return async (effect, _context, state) => {

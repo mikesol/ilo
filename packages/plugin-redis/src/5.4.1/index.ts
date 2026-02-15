@@ -236,7 +236,7 @@ function parseRedisUrl(url: string): RedisConfig {
  * command methods for building parameterized Redis AST nodes.
  *
  * @param config - A {@link RedisConfig} object or Redis URL string.
- * @returns A {@link PluginDefinition} for the redis plugin.
+ * @returns A PluginDefinition for the redis plugin.
  */
 export function redis(config?: RedisConfig | string): PluginDefinition<RedisMethods> {
   const resolvedConfig: RedisConfig =

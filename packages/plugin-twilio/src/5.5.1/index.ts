@@ -143,7 +143,7 @@ export interface TwilioConfig {
  * for building parameterized Twilio API call AST nodes.
  *
  * @param config - A {@link TwilioConfig} with accountSid and authToken.
- * @returns A {@link PluginDefinition} for the twilio plugin.
+ * @returns A PluginDefinition for the twilio plugin.
  */
 export function twilio(config: TwilioConfig): PluginDefinition<TwilioMethods> {
   return {

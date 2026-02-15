@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { TwilioClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes Twilio effects
+ * Creates a server-side StepHandler that executes Twilio effects
  * against a real Twilio client.
  *
  * Handles `twilio/api_call` effects by delegating to
  * `client.request(method, path, params)`. Throws on unhandled effect types.
  *
  * @param client - The {@link TwilioClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: TwilioClient): StepHandler<void> {
   return async (effect, _context, state) => {

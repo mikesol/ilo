@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { ResendClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes Resend effects
+ * Creates a server-side StepHandler that executes Resend effects
  * against a real Resend client.
  *
  * Handles `resend/api_call` effects by delegating to
  * `client.request(method, path, params)`. Throws on unhandled effect types.
  *
  * @param client - The {@link ResendClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: ResendClient): StepHandler<void> {
   return async (effect, _context, state) => {

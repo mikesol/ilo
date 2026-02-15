@@ -140,7 +140,7 @@ export interface StripeConfig {
  * resource methods for building parameterized Stripe API call AST nodes.
  *
  * @param config - A {@link StripeConfig} with apiKey and optional apiVersion.
- * @returns A {@link PluginDefinition} for the stripe plugin.
+ * @returns A PluginDefinition for the stripe plugin.
  */
 export function stripe(config: StripeConfig): PluginDefinition<StripeMethods> {
   return {

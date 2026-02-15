@@ -3,14 +3,14 @@ import { runAST } from "@mvfm/core";
 import type { RedisClient } from "./interpreter";
 
 /**
- * Creates a server-side {@link StepHandler} that executes Redis effects
+ * Creates a server-side StepHandler that executes Redis effects
  * against a real Redis client.
  *
  * Handles `redis/command` effects by delegating to
  * `client.command(command, ...args)`. Throws on unhandled effect types.
  *
  * @param client - The {@link RedisClient} to execute against.
- * @returns A {@link StepHandler} for void state.
+ * @returns A StepHandler for void state.
  */
 export function serverHandler(client: RedisClient): StepHandler<void> {
   return async (effect, _context, state) => {
