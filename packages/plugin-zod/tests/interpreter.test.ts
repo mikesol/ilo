@@ -354,3 +354,51 @@ describe("zodInterpreter: refinements (#135)", () => {
     expect(valid.success).toBe(true);
   });
 });
+
+describe("zodInterpreter: coercion (#143)", () => {
+  it("coerce.string() converts number to string", async () => {
+    const prog = app(($) => $.zod.coerce.string().parse($.input.value));
+    expect(await run(prog, { value: 42 })).toBe("42");
+  });
+
+  it("coerce.string() converts boolean to string", async () => {
+    const prog = app(($) => $.zod.coerce.string().parse($.input.value));
+    expect(await run(prog, { value: true })).toBe("true");
+  });
+
+  it("coerce.string() passes through actual strings", async () => {
+    const prog = app(($) => $.zod.coerce.string().parse($.input.value));
+    expect(await run(prog, { value: "hello" })).toBe("hello");
+  });
+
+  it("coerce.string() with min check after coercion", async () => {
+    const prog = app(($) => $.zod.coerce.string().min(5).safeParse($.input.value));
+    const short = (await run(prog, { value: 42 })) as any;
+    const valid = (await run(prog, { value: 12345 })) as any;
+    expect(short.success).toBe(false); // "42" is 2 chars
+    expect(valid.success).toBe(true); // "12345" is 5 chars
+  });
+
+  it("coerce.string() with safeParse", async () => {
+    const prog = app(($) => $.zod.coerce.string().safeParse($.input.value));
+    const result = (await run(prog, { value: 99 })) as any;
+    expect(result.success).toBe(true);
+    expect(result.data).toBe("99");
+  });
+
+  it("coerce.string() with optional wrapper", async () => {
+    const prog = app(($) => $.zod.coerce.string().optional().safeParse($.input.value));
+    const undef = (await run(prog, { value: undefined })) as any;
+    const coerced = (await run(prog, { value: 42 })) as any;
+    expect(undef.success).toBe(true);
+    expect(undef.data).toBeUndefined();
+    expect(coerced.success).toBe(true);
+    expect(coerced.data).toBe("42");
+  });
+
+  it("non-coerced string rejects numbers", async () => {
+    const prog = app(($) => $.zod.string().safeParse($.input.value));
+    const result = (await run(prog, { value: 42 })) as any;
+    expect(result.success).toBe(false);
+  });
+});

@@ -14,6 +14,22 @@ export type {
   WrapperASTNode,
 } from "./types";
 
+/** Parse error config from the standard `errorOrOpts` param. */
+function parseError(errorOrOpts?: string | { error?: string }): string | undefined {
+  return typeof errorOrOpts === "string" ? errorOrOpts : errorOrOpts?.error;
+}
+
+/**
+ * Coercion namespace within the Zod plugin.
+ * Each method returns the same builder as the base type, but with `coerce: true`
+ * in the extra field so the interpreter uses `z.coerce.*` constructors.
+ */
+export interface ZodCoerceNamespace {
+  /** Coerce input to string via `String(input)`. */
+  string(errorOrOpts?: string | { error?: string }): ZodStringBuilder;
+  // Future coerce types (number, boolean, bigint, date) added by their respective issues
+}
+
 /**
  * The `$.zod` namespace contributed by the Zod plugin.
  *
@@ -23,28 +39,16 @@ export type {
  * Each factory returns a schema builder with chainable methods
  * for adding checks, refinements, and wrappers. Call `.parse()`
  * or `.safeParse()` to produce a validation AST node.
- *
- * @example
- * ```ts
- * const app = mvfm(num, str, zod);
- * const prog = app(schema, $ => {
- *   const result = $.zod.string().min(5).safeParse($.input.name);
- *   return $.cond(result.success, result.data, $.fail("invalid"));
- * });
- * ```
  */
 export interface ZodNamespace {
   /** Create a string schema builder. */
   string(errorOrOpts?: string | { error?: string }): ZodStringBuilder;
 
+  /** Coercion constructors — convert input before validating. */
+  coerce: ZodCoerceNamespace;
+
   // ---- Stubs for future schema types ----
   // Each issue (#102-#120) adds its factory method here.
-  // number(errorOrOpts?): ZodNumberBuilder;
-  // bigint(errorOrOpts?): ZodBigIntBuilder;
-  // boolean(errorOrOpts?): ZodBooleanBuilder;
-  // object(shape): ZodObjectBuilder;
-  // array(element): ZodArrayBuilder;
-  // ... etc.
 }
 
 /**
@@ -85,8 +89,13 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
     return {
       zod: {
         string(errorOrOpts?: string | { error?: string }): ZodStringBuilder {
-          const error = typeof errorOrOpts === "string" ? errorOrOpts : errorOrOpts?.error;
-          return new ZodStringBuilder(ctx, [], [], error);
+          return new ZodStringBuilder(ctx, [], [], parseError(errorOrOpts));
+        },
+
+        coerce: {
+          string(errorOrOpts?: string | { error?: string }): ZodStringBuilder {
+            return new ZodStringBuilder(ctx, [], [], parseError(errorOrOpts), { coerce: true });
+          },
         },
       },
     };

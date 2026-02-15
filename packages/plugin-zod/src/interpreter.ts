@@ -57,8 +57,15 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
     case "zod/string": {
       const checks = (node.checks as CheckDescriptor[]) ?? [];
       const errorFn = toZodError(node.error as ErrorConfig | undefined);
-      const base = errorFn ? z.string({ error: errorFn }) : z.string();
-      return applyStringChecks(base, checks);
+      const coerce = node.coerce === true;
+      const base = coerce
+        ? errorFn
+          ? z.coerce.string({ error: errorFn })
+          : z.coerce.string()
+        : errorFn
+          ? z.string({ error: errorFn })
+          : z.string();
+      return applyStringChecks(base as z.ZodString, checks);
     }
 
     // Simple wrappers (no value field)
