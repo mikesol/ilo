@@ -92,6 +92,28 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       return inner.catch(value);
     }
 
+    case "zod/union": {
+      const optionNodes = (node.options as ASTNode[]) ?? [];
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+      const builtOptions: z.ZodType[] = [];
+      for (const optNode of optionNodes) {
+        builtOptions.push(yield* buildSchemaGen(optNode));
+      }
+      return z.union(builtOptions as [z.ZodType, z.ZodType, ...z.ZodType[]], errOpt);
+    }
+
+    case "zod/xor": {
+      const optionNodes = (node.options as ASTNode[]) ?? [];
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+      const builtOptions: z.ZodType[] = [];
+      for (const optNode of optionNodes) {
+        builtOptions.push(yield* buildSchemaGen(optNode));
+      }
+      return (z as any).xor(builtOptions as [z.ZodType, z.ZodType, ...z.ZodType[]], errOpt);
+    }
+
     // Additional schema types will be added by colocated interpreter issues
     default:
       throw new Error(`Zod interpreter: unknown schema kind "${node.kind}"`);
