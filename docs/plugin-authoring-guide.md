@@ -14,22 +14,32 @@ The distinction matters because external-service plugins have additional require
 
 ## Step 0: Source-Level Analysis (external-service plugins only)
 
-Before writing any plugin code for an external service, you must understand the real library by reading its source — not its documentation.
+Before writing any plugin code for an external service, you MUST understand the real library by reading its source code. Documentation-only analysis is forbidden.
 
-1. **Clone the upstream repo at the exact version tag you are targeting:**
+Step 0 is a hard gate. If Step 0 cannot be completed, implementation MUST STOP.
+
+### Required command-level workflow
+
+1. **Clone the upstream repo at the exact target version into `/tmp`:**
 
    ```bash
    git clone --branch v3.4.8 --depth 1 https://github.com/porsager/postgres.git /tmp/postgres-3.4.8
+   cd /tmp/postgres-3.4.8
+   git rev-parse --short HEAD
    ```
 
-   The version tag becomes the directory name in `src/plugins/<name>/<version>/`. This is not negotiable — the filesystem is the version registry.
+2. **Record source-analysis evidence artifacts in the PR body or checklist:**
+   - Exact clone path (for example `/tmp/postgres-3.4.8`)
+   - Exact target tag/version
+   - Commit hash produced by `git rev-parse --short HEAD`
+   - Notes listing primary files inspected
 
-2. **Read the actual source code.** Not the README. Not the docs site. The implementation.
+3. **Read the actual source code.** Not the README. Not the docs site. The implementation.
    - Find the main entry point and trace the public API surface
    - Read resource definitions, request handling, error types, encoding logic
-   - Identify the underlying protocol: is it pure request-response, or does it have stateful/nested scoping (transactions, cursors, subscriptions)?
+   - Identify the underlying protocol: request-response vs stateful/nested flows
 
-3. **Build an honest assessment matrix.** For every operation in the upstream API, classify it:
+4. **Build an honest assessment matrix.** For every operation in the upstream API, classify it:
 
    | Category | Meaning | Example |
    |----------|---------|---------|
@@ -37,7 +47,14 @@ Before writing any plugin code for an external service, you must understand the 
    | **Needs deviation** | Modelable but mvfm's API must differ from upstream (document why) | postgres.js `sql(identifier)` — mvfm uses `$.sql.id()` because `sql` is already the tagged template |
    | **Can't model** | Fundamentally incompatible with a finite, inspectable AST | postgres.js LISTEN/NOTIFY — push-based, no request-response shape |
 
-4. **Document the assessment** in the plugin's `index.ts` header comment. Every external-service plugin must have an implementation status header and an honest assessment section. See `src/plugins/postgres/3.4.8/index.ts` and `src/plugins/stripe/2025-04-30.basil/index.ts` for the reference format.
+5. **Document the assessment** in the plugin's `index.ts` header comment. Every external-service plugin must have an implementation status header and an honest assessment section. See `src/plugins/postgres/3.4.8/index.ts` and `src/plugins/stripe/2025-04-30.basil/index.ts` for the reference format.
+
+### Failure behavior (hard stop)
+
+- If clone fails, STOP. Do not implement.
+- If the target version cannot be verified from source, STOP. Do not implement.
+- If source files cannot be inspected (permissions/network/repo issues), STOP. Do not implement.
+- If only docs/README were inspected, STOP and redo Step 0 from source.
 
 > **Docs lie. Source doesn't.** An agent that reads the postgres.js README will miss edge cases in `src/types.js` and `src/connection.js`. An agent that reads the Stripe API docs will not discover that `rawRequest()` encodes GET and POST parameters differently. The assessment must come from source.
 
@@ -70,11 +87,45 @@ After completing the assessment matrix, decide how much of the upstream API to p
 
 This tells future authors (and agents) where the plugin is in its lifecycle and how much work remains.
 
+### API parity policy (syntax hugging is default)
+
+External plugin APIs MUST hug the upstream SDK/spec syntax and signatures by default.
+
+- Default rule: implement 1:1 naming, method grouping, parameter shape, and return shape when MVFM constraints allow it.
+- Ergonomic redesigns are forbidden.
+- Deviation is exceptional, not normal.
+- Deviations are allowed only when MVFM constraints make strict parity impossible.
+- Every deviation MUST be documented in both the plugin header and the PR checklist, including:
+  - Upstream API shape
+  - MVFM API shape
+  - Exact mismatch
+  - Why parity was impossible
+
+For each external plugin, include an explicit "API parity/deviation" table in the plugin docs header or adjacent notes.
+
+Examples:
+- Strict parity (expected): upstream `client.paymentIntents.create(params)` maps to `$.stripe.paymentIntents.create(params)`.
+- Justified deviation (exception): upstream `sql(identifier)` maps to `$.sql.id(identifier)` because `$.sql` is already the tagged template entry point.
+
 ---
 
 ## Step 1: Directory Structure
 
 Create the directory layout before writing any code. The layout differs by plugin type. Do not deviate from these structures.
+
+### Monorepo package layout and selective CI execution
+
+External plugins in this monorepo live in separate `@mvfm/plugin-*` packages (for example `@mvfm/plugin-openai`, `@mvfm/plugin-stripe`).
+
+CI selection rules:
+- Run plugin tests when the specific plugin package changes.
+- Run plugin tests when core/runtime changes can affect plugin APIs or interpreter behavior.
+- Do not require unrelated plugin packages to run for docs-only or isolated package-only changes.
+
+Plugin maintainers must keep package boundaries clear:
+- External plugin source and tests should live in that plugin package.
+- Cross-package imports should only use public package exports.
+- If a plugin is intended for top-level consumption, verify it is exported from central package entry points.
 
 ### Mvfm-native plugins
 
@@ -1530,6 +1581,8 @@ Integration tests verify the full stack: AST construction, interpretation, handl
 
 **When required:** Only for external-service plugins. Mvfm-native plugins (num, str, eq, etc.) do not need integration tests because they have no external service to test against.
 
+For external-service plugins, Tier 3 is mandatory. Missing `integration.test.ts` (or an explicitly justified equivalent) is an ERROR.
+
 **What to test:**
 - Each operation succeeds against the real service
 - Response shapes match expected formats
@@ -1649,6 +1702,27 @@ Mvfm-native plugins do not talk to external services, so there is nothing to int
 | PostgreSQL | testcontainers `PostgreSqlContainer` | Full PostgreSQL instance, stateful |
 
 When writing integration tests for a new external-service plugin, find the service's official mock container or test image. If none exists, consider whether a lightweight HTTP mock server is sufficient. The goal is to test the real protocol — serialization, encoding, error handling — not just happy-path responses.
+
+### Integration testing hierarchy and secret gating
+
+Use this strict test-source hierarchy for external plugins:
+1. Real service with CI secrets/tokens
+2. Official mock/container published by the service/vendor
+3. High-fidelity fixtures captured from real API behavior
+4. Synthetic stubs (exceptional only)
+
+| Strategy | Allowed | Typical use | Required evidence |
+|---|---|---|---|
+| Real service + CI secrets | Preferred | Stable APIs with manageable token usage | CI secret names + command output |
+| Official mock/container | Preferred fallback | Services with vendor-maintained mocks | Mock/container image + coverage notes |
+| High-fidelity fixtures | Conditional | Hard-to-run APIs with reproducible payloads | Fixture provenance and capture notes |
+| Synthetic stubs | Exceptional | Last resort only | Explicit exception rationale |
+
+Rules:
+- Prefer real-service integration in CI when feasible (OpenAI, Anthropic, Cloudflare, etc.).
+- If real-service tests are required for the plugin but required secrets are missing in CI or local dev, STOP and add secrets before continuing implementation.
+- Synthetic stubs are exceptional and require explicit written justification in PR artifacts.
+- When fixtures are used, include provenance: capture method/source and why higher-fidelity options were infeasible.
 
 ---
 
@@ -1993,6 +2067,30 @@ export interface PostgresMethods {
 ```
 
 The pattern: describe what it does, link to related types with `{@link}`, document every parameter, document the return value. For interfaces, document each field.
+
+### Interpreted type-shape rigor (external plugins)
+
+Interpreter/client-facing return types MUST not be weaker than upstream SDK/API types unless explicitly justified.
+
+Rules:
+- It is an ERROR to downgrade precise upstream response shapes to broad placeholders without necessity.
+- Ideal: reuse SDK-provided request/response types directly for public plugin surfaces.
+- AST payload types may be generic where needed, but interpreted values should remain SDK-accurate.
+- Any unavoidable weakening must be documented with exact mismatch and rationale.
+
+Anti-pattern examples:
+- Returning `Record<string, unknown>` when upstream provides a concrete response interface.
+- Erasing union literals/enums into `string` or `unknown` without necessity.
+- Collapsing structured error types to `Error` when SDK error types are available.
+
+Pre-merge requirement: include type-parity notes in the external plugin checklist.
+
+### Pre-merge checklist for external plugins
+
+Before opening or merging an external plugin PR, complete:
+- `docs/external-plugin-pr-checklist.md`
+
+This checklist is mandatory evidence, not optional guidance.
 
 ---
 
