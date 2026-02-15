@@ -184,25 +184,91 @@ export abstract class ZodSchemaBuilder<T> {
     );
   }
 
-  // ---- Refinement methods (implemented by #98) ----
-  // Stubs declared here. #98 will enhance these.
+  // ---- Refinement methods (#98) ----
 
   /**
-   * Add a custom refinement predicate.
-   * The predicate callback receives an Expr<T> and must return Expr<boolean>.
-   * @stub Implemented by #98
+   * Build a refinement descriptor from a predicate callback.
+   * Creates a lambda param placeholder, invokes the callback to capture
+   * the AST expression, and stores it as a refinement descriptor.
+   */
+  private _buildRefinement(
+    kind: RefinementDescriptor["kind"],
+    fn: (val: Expr<T>) => Expr<unknown> | undefined,
+    opts?: { error?: string; abort?: boolean; path?: string[]; when?: ASTNode },
+  ): RefinementDescriptor {
+    const paramNode: ASTNode = { kind: "core/lambda_param", name: "refine_val" };
+    const paramProxy = this._ctx.expr<T>(paramNode);
+    const result = fn(paramProxy);
+    const bodyNode = result && this._ctx.isExpr(result) ? result.__node : paramNode;
+
+    const refinement: RefinementDescriptor = {
+      kind,
+      fn: { kind: "core/lambda", param: paramNode, body: bodyNode },
+    };
+    if (opts?.error !== undefined) refinement.error = opts.error;
+    if (opts?.abort !== undefined) refinement.abort = opts.abort;
+    if (opts?.path !== undefined) refinement.path = opts.path;
+    if (opts?.when !== undefined) refinement.when = opts.when;
+    return refinement;
+  }
+
+  /**
+   * Add a custom refinement predicate. The callback receives an `Expr<T>`
+   * placeholder and must return an `Expr<boolean>` built from DSL operations.
+   *
+   * @example
+   * ```ts
+   * $.zod.string().refine(val => $.gt($.str.len(val), 8), { error: "Too short!" })
+   * ```
    */
   refine(
-    _predicate: (val: Expr<T>) => Expr<boolean>,
-    _opts?: {
-      error?: string;
-      abort?: boolean;
-      path?: string[];
-      when?: ASTNode;
-    },
-  ): ZodSchemaBuilder<T> {
-    // Stub — #98 replaces with real implementation
-    return this._clone();
+    predicate: (val: Expr<T>) => Expr<boolean>,
+    opts?: { error?: string; abort?: boolean; path?: string[]; when?: ASTNode },
+  ): this {
+    const refinement = this._buildRefinement("refine", predicate, opts);
+    return this._clone({
+      refinements: [...this._refinements, refinement],
+    }) as this;
+  }
+
+  /**
+   * Multi-issue refinement. The callback receives a value placeholder
+   * and a refinement context for adding multiple issues.
+   * @stub Context API will be enhanced when interpreter is built (#121)
+   */
+  superRefine(
+    fn: (val: Expr<T>) => Expr<unknown> | undefined,
+    opts?: { error?: string; abort?: boolean; when?: ASTNode },
+  ): this {
+    const refinement = this._buildRefinement("super_refine", fn, opts);
+    return this._clone({
+      refinements: [...this._refinements, refinement],
+    }) as this;
+  }
+
+  /**
+   * Low-level check API. The callback receives a value placeholder
+   * and returns a boolean expression.
+   */
+  check(
+    fn: (val: Expr<T>) => Expr<boolean>,
+    opts?: { error?: string; abort?: boolean; path?: string[]; when?: ASTNode },
+  ): this {
+    const refinement = this._buildRefinement("check", fn, opts);
+    return this._clone({
+      refinements: [...this._refinements, refinement],
+    }) as this;
+  }
+
+  /**
+   * Mutating refinement — the callback transforms the value.
+   * Returns a new builder with the overwrite refinement added.
+   */
+  overwrite(fn: (val: Expr<T>) => Expr<T>, opts?: { error?: string; when?: ASTNode }): this {
+    const refinement = this._buildRefinement("overwrite", fn, opts);
+    return this._clone({
+      refinements: [...this._refinements, refinement],
+    }) as this;
   }
 
   // ---- Wrapper methods (#99) ----
