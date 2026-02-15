@@ -61,6 +61,20 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       return applyStringChecks(base, checks);
     }
 
+    case "zod/enum": {
+      const values = node.values as [string, ...string[]];
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+      return z.enum(values, errOpt);
+    }
+
+    case "zod/native_enum": {
+      const entries = node.entries as Record<string, string | number>;
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+      return z.nativeEnum(entries, errOpt);
+    }
+
     // Simple wrappers (no value field)
     case "zod/optional":
       return (yield* buildSchemaGen(node.inner as ASTNode)).optional();
