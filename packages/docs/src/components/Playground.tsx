@@ -24,13 +24,8 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
     };
 
     try {
-      // Dynamic import of the bundled core — Astro/Vite will resolve this
       const core = await import("@mvfm/core");
-      const fn = new Function(
-        "console",
-        ...Object.keys(core),
-        code
-      );
+      const fn = new Function("console", ...Object.keys(core), code);
       fn(fakeConsole, ...Object.values(core));
       setOutput(logs.join("\n"));
     } catch (e: unknown) {
@@ -39,27 +34,14 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
   }, [code]);
 
   return (
-    <div style={{ marginTop: "40px" }}>
+    <div className="mt-10">
       <textarea
         ref={textareaRef}
         value={code}
         onChange={(e) => setCode(e.target.value)}
         spellCheck={false}
-        style={{
-          width: "100%",
-          minHeight: "180px",
-          fontFamily: "'SF Mono', 'Fira Code', 'Fira Mono', Menlo, monospace",
-          fontSize: "13px",
-          lineHeight: "1.6",
-          padding: "16px",
-          border: "1px solid #e0e0e0",
-          borderRadius: "0",
-          background: "#fafafa",
-          color: "#333",
-          resize: "vertical",
-          outline: "none",
-          tabSize: 2,
-        }}
+        className="w-full min-h-[180px] font-mono text-[13px] leading-relaxed p-4 bg-base-900 text-base-200 border border-base-800 rounded-none resize-y outline-none focus:border-base-600 transition-colors"
+        style={{ tabSize: 2 }}
         onKeyDown={(e) => {
           if (e.key === "Tab") {
             e.preventDefault();
@@ -77,49 +59,20 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
           }
         }}
       />
-      <button
-        onClick={run}
-        type="button"
-        style={{
-          marginTop: "8px",
-          padding: "6px 16px",
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontSize: "12px",
-          letterSpacing: "0.05em",
-          background: "#000",
-          color: "#fff",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        RUN
-      </button>
-      <span
-        style={{
-          marginLeft: "12px",
-          fontSize: "11px",
-          color: "#999",
-        }}
-      >
-        ⌘+Enter
-      </span>
-      {output && (
-        <pre
-          style={{
-            marginTop: "16px",
-            padding: "16px",
-            background: "#fafafa",
-            border: "1px solid #e0e0e0",
-            fontFamily:
-              "'SF Mono', 'Fira Code', 'Fira Mono', Menlo, monospace",
-            fontSize: "12px",
-            lineHeight: "1.5",
-            color: "#333",
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-word",
-            overflow: "auto",
-          }}
+      <div className="mt-2 flex items-center gap-3">
+        <button
+          onClick={run}
+          type="button"
+          className="px-4 py-1.5 text-xs tracking-widest font-medium bg-base-50 text-base-950 hover:bg-base-200 transition-colors cursor-pointer"
         >
+          RUN
+        </button>
+        <span className="text-[11px] text-base-600">
+          Ctrl+Enter
+        </span>
+      </div>
+      {output && (
+        <pre className="mt-4 p-4 bg-base-900 border border-base-800 font-mono text-xs leading-relaxed text-base-300 whitespace-pre-wrap break-words overflow-auto">
           {output}
         </pre>
       )}

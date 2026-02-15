@@ -15,24 +15,9 @@ console.log(JSON.stringify(ast, (k, v) => k === "__id" ? undefined : v, 2));`;
 ---
 
 <Base title="core/do — MVFM">
-  <div class="detail">
-    <h1>core/do</h1>
-    <p class="meta">Sequential composition. All arguments but the last are steps. The last is the return value.</p>
+  <div class="pt-4">
+    <h1 class="text-lg font-bold text-base-50 tracking-tight">core/do</h1>
+    <p class="mt-1 text-xs text-base-500">Sequential composition. All arguments but the last are steps. The last is the return value.</p>
     <Playground code={example} client:visible />
   </div>
 </Base>
-
-<style>
-  .detail h1 {
-    font-size: 18px;
-    font-weight: bold;
-    color: #e03;
-    letter-spacing: 0.02em;
-  }
-
-  .detail .meta {
-    margin-top: 4px;
-    font-size: 13px;
-    color: #e03;
-  }
-</style>
