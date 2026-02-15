@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
-import type { Expr } from "../src";
+import type { Expr } from "../packages/core/src";
 import {
   boolean,
   eq,
@@ -12,7 +12,7 @@ import {
   semiring,
   show,
   str,
-} from "../src";
+} from "../packages/core/src";
 
 const app = ilo(num, str, semiring);
 

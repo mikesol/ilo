@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { composeInterpreters, ilo } from "../../src/core";
-import { coreInterpreter } from "../../src/interpreters/core";
+import { composeInterpreters, ilo } from "../../packages/core/src/core";
+import { coreInterpreter } from "../../packages/core/src/interpreters/core";
 
 // Helper to inject input data into core/input nodes throughout an AST
 function injectInput(node: any, input: Record<string, unknown>): any {

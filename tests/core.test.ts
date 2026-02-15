@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import type { PluginDefinition } from "../src/core";
-import { ilo } from "../src/core";
-import { boolean } from "../src/plugins/boolean";
-import { eq } from "../src/plugins/eq";
-import { heytingAlgebra } from "../src/plugins/heyting-algebra";
-import { num } from "../src/plugins/num";
-import { semiring } from "../src/plugins/semiring";
-import { str } from "../src/plugins/str";
+import type { PluginDefinition } from "../packages/core/src/core";
+import { ilo } from "../packages/core/src/core";
+import { boolean } from "../packages/core/src/plugins/boolean";
+import { eq } from "../packages/core/src/plugins/eq";
+import { heytingAlgebra } from "../packages/core/src/plugins/heyting-algebra";
+import { num } from "../packages/core/src/plugins/num";
+import { semiring } from "../packages/core/src/plugins/semiring";
+import { str } from "../packages/core/src/plugins/str";
 
 // Helper: strip __id from AST for snapshot-stable assertions
 function strip(ast: unknown): unknown {

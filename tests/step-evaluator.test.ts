@@ -7,8 +7,8 @@ import type {
   StepContext,
   StepEffect,
   StepHandler,
-} from "../src/core";
-import { adaptLegacy, foldAST, runAST, Stepper } from "../src/core";
+} from "../packages/core/src/core";
+import { adaptLegacy, foldAST, runAST, Stepper } from "../packages/core/src/core";
 
 // ---- Helpers ---------------------------------------------------
 
@@ -432,7 +432,7 @@ describe("foldAST", () => {
 describe("composeInterpreters: backward compat with generator fragments", () => {
   it("accepts generator fragments alongside legacy fragments", async () => {
     // Import the actual composeInterpreters
-    const { composeInterpreters } = await import("../src/core");
+    const { composeInterpreters } = await import("../packages/core/src/core");
     const coreGen = makeCoreGenFragment();
     const numGen = makeNumGenFragment();
 
@@ -449,8 +449,8 @@ describe("composeInterpreters: backward compat with generator fragments", () => 
   });
 
   it("mixes legacy and generator fragments", async () => {
-    const { composeInterpreters } = await import("../src/core");
-    const { coreInterpreter } = await import("../src/interpreters/core");
+    const { composeInterpreters } = await import("../packages/core/src/core");
+    const { coreInterpreter } = await import("../packages/core/src/interpreters/core");
     const numGen = makeNumGenFragment();
 
     // coreInterpreter is legacy, numGen is generator

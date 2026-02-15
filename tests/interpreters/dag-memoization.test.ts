@@ -4,10 +4,10 @@ import {
   composeInterpreters,
   type InterpreterFragment,
   type StepEffect,
-} from "../../src/core";
-import { coreInterpreter } from "../../src/interpreters/core";
-import { errorInterpreter } from "../../src/plugins/error/interpreter";
-import { fiberInterpreter } from "../../src/plugins/fiber/interpreter";
+} from "../../packages/core/src/core";
+import { coreInterpreter } from "../../packages/core/src/interpreters/core";
+import { errorInterpreter } from "../../packages/core/src/plugins/error/interpreter";
+import { fiberInterpreter } from "../../packages/core/src/plugins/fiber/interpreter";
 
 function createTrackingFragment(): {
   fragment: InterpreterFragment;

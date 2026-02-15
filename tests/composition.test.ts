@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { ilo } from "../src/core";
-import { error } from "../src/plugins/error";
-import { fiber } from "../src/plugins/fiber";
-import { num } from "../src/plugins/num";
-import { ord } from "../src/plugins/ord";
-import { postgres } from "../src/plugins/postgres/3.4.8";
-import { semiring } from "../src/plugins/semiring";
-import { str } from "../src/plugins/str";
+import { ilo } from "../packages/core/src/core";
+import { error } from "../packages/core/src/plugins/error";
+import { fiber } from "../packages/core/src/plugins/fiber";
+import { num } from "../packages/core/src/plugins/num";
+import { ord } from "../packages/core/src/plugins/ord";
+import { postgres } from "../packages/core/src/plugins/postgres/3.4.8";
+import { semiring } from "../packages/core/src/plugins/semiring";
+import { str } from "../packages/core/src/plugins/str";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(

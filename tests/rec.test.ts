@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { ilo } from "../src/core";
-import { eq } from "../src/plugins/eq";
-import { num } from "../src/plugins/num";
-import { semiring } from "../src/plugins/semiring";
+import { ilo } from "../packages/core/src/core";
+import { eq } from "../packages/core/src/plugins/eq";
+import { num } from "../packages/core/src/plugins/num";
+import { semiring } from "../packages/core/src/plugins/semiring";
 
 function strip(ast: unknown): unknown {
   return JSON.parse(JSON.stringify(ast, (k, v) => (k === "__id" ? undefined : v)));
