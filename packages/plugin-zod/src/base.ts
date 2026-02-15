@@ -126,14 +126,9 @@ export abstract class ZodSchemaBuilder<T> {
     }) as this;
   }
 
-  // ---- Parsing operations (implemented by #96) ----
-  // Stubs declared here so TypeScript knows about them.
-  // #96 will provide the actual implementation.
+  // ---- Parsing operations (#96) ----
 
-  /**
-   * Validate input and return data or throw. Produces `zod/parse` AST node.
-   * @stub Implemented by #96
-   */
+  /** Validate input and return data or throw. Produces `zod/parse` AST node. */
   parse(input: Expr<unknown> | unknown): Expr<T> {
     return this._ctx.expr<T>({
       kind: "zod/parse",
@@ -142,13 +137,30 @@ export abstract class ZodSchemaBuilder<T> {
     });
   }
 
-  /**
-   * Validate input and return result object. Produces `zod/safe_parse` AST node.
-   * @stub Implemented by #96
-   */
+  /** Validate input and return result object. Produces `zod/safe_parse` AST node. */
   safeParse(input: Expr<unknown> | unknown): Expr<{ success: boolean; data: T; error: unknown }> {
     return this._ctx.expr<{ success: boolean; data: T; error: unknown }>({
       kind: "zod/safe_parse",
+      schema: this._buildSchemaNode(),
+      input: this._ctx.lift(input).__node,
+    });
+  }
+
+  /** Async variant of `parse`. Produces `zod/parse_async` AST node. */
+  parseAsync(input: Expr<unknown> | unknown): Expr<Promise<T>> {
+    return this._ctx.expr<Promise<T>>({
+      kind: "zod/parse_async",
+      schema: this._buildSchemaNode(),
+      input: this._ctx.lift(input).__node,
+    });
+  }
+
+  /** Async variant of `safeParse`. Produces `zod/safe_parse_async` AST node. */
+  safeParseAsync(
+    input: Expr<unknown> | unknown,
+  ): Expr<Promise<{ success: boolean; data: T; error: unknown }>> {
+    return this._ctx.expr<Promise<{ success: boolean; data: T; error: unknown }>>({
+      kind: "zod/safe_parse_async",
       schema: this._buildSchemaNode(),
       input: this._ctx.lift(input).__node,
     });
