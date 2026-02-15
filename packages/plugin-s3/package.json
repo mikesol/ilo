@@ -1,0 +1,29 @@
+{
+  "name": "@mvfm/plugin-s3",
+  "version": "0.0.1",
+  "description": "S3 plugin for mvfm",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "biome check src tests && tsc -p tsconfig.json && api-extractor run --local",
+    "test": "vitest run",
+    "size": "size-limit"
+  },
+  "files": ["dist", "etc"],
+  "peerDependencies": {
+    "@mvfm/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@mvfm/core": "workspace:*",
+    "@aws-sdk/client-s3": "^3.989.0"
+  }
+}

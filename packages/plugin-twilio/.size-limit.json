@@ -1,0 +1,7 @@
+[
+  {
+    "name": "@mvfm/plugin-twilio",
+    "path": "dist/index.js",
+    "limit": "1.5 kB"
+  }
+]
