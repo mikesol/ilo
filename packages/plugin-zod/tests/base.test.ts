@@ -450,3 +450,47 @@ describe("refinement methods (#98)", () => {
     expect(refinement.error).toBe("overwrite error");
   });
 });
+
+describe("coercion constructors (#106)", () => {
+  it("$.zod.coerce.string() produces zod/string node with coerce flag", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => $.zod.coerce.string().parse($.input));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.kind).toBe("zod/string");
+    expect(ast.result.schema.coerce).toBe(true);
+  });
+
+  it("coerced string still supports checks", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => $.zod.coerce.string().min(3).max(10).parse($.input));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.coerce).toBe(true);
+    expect(ast.result.schema.checks).toHaveLength(2);
+    expect(ast.result.schema.checks[0].kind).toBe("min_length");
+    expect(ast.result.schema.checks[1].kind).toBe("max_length");
+  });
+
+  it("coerced string supports wrappers", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => $.zod.coerce.string().optional().parse($.input));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.kind).toBe("zod/optional");
+    expect(ast.result.schema.inner.kind).toBe("zod/string");
+    expect(ast.result.schema.inner.coerce).toBe(true);
+  });
+
+  it("coerced string accepts error config", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => $.zod.coerce.string("Must be coercible").parse($.input));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.coerce).toBe(true);
+    expect(ast.result.schema.error).toBe("Must be coercible");
+  });
+
+  it("non-coerced string does not have coerce flag", () => {
+    const app = mvfm(zod);
+    const prog = app(($) => $.zod.string().parse($.input));
+    const ast = strip(prog.ast) as any;
+    expect(ast.result.schema.coerce).toBeUndefined();
+  });
+});
