@@ -92,6 +92,22 @@ function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknow
       return inner.catch(value);
     }
 
+    case "zod/record": {
+      const keySchema = yield* buildSchemaGen(node.key as ASTNode);
+      const valueSchema = yield* buildSchemaGen(node.value as ASTNode);
+      const mode = (node.mode as string) ?? "strict";
+      const errorFn = toZodError(node.error as ErrorConfig | undefined);
+      const errOpt = errorFn ? { error: errorFn } : {};
+      switch (mode) {
+        case "partial":
+          return (z as any).partialRecord(keySchema, valueSchema, errOpt);
+        case "loose":
+          return (z as any).looseRecord(keySchema, valueSchema, errOpt);
+        default:
+          return z.record(keySchema as z.ZodString, valueSchema, errOpt);
+      }
+    }
+
     // Additional schema types will be added by colocated interpreter issues
     default:
       throw new Error(`Zod interpreter: unknown schema kind "${node.kind}"`);
