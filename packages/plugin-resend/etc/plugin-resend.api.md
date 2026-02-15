@@ -34,6 +34,11 @@ export interface ClientHandlerState {
     stepIndex: number;
 }
 
+// Warning: (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type ExprOrValue<T> = Expr<T> | T;
+
 // Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -85,11 +90,6 @@ export function serverHandler(client: ResendClient): StepHandler<void>;
 //
 // @public
 export function wrapResendSdk(resend: ResendSdk): ResendClient;
-
-// Warnings were encountered during analysis:
-//
-// dist/6.9.2/index.d.ts:16:13 - (ae-forgotten-export) The symbol "ExprOrValue" needs to be exported by the entry point index.d.ts
-// dist/6.9.2/index.d.ts:16:13 - (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

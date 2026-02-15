@@ -430,6 +430,50 @@
           "extendsTokenRanges": []
         },
         {
+          "kind": "TypeAlias",
+          "canonicalReference": "@mvfm/plugin-resend!ExprOrValue:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type ExprOrValue<T> = "
+            },
+            {
+              "kind": "Reference",
+              "text": "Expr",
+              "canonicalReference": "@mvfm/plugin-resend!~Expr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<T> | T"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/6.9.2/index.d.ts",
+          "releaseTag": "Public",
+          "name": "ExprOrValue",
+          "typeParameters": [
+            {
+              "typeParameterName": "T",
+              "constraintTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              },
+              "defaultTypeTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              }
+            }
+          ],
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 3
+          }
+        },
+        {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-resend!resend:function(1)",
           "docComment": "/**\n * Resend plugin factory. Namespace: `resend/`.\n *\n * Creates a plugin that exposes email sending, batch sending, and contact management methods for building parameterized Resend API call AST nodes.\n *\n * @param config - A {@link ResendConfig} with apiKey.\n *\n * @returns A PluginDefinition for the resend plugin.\n */\n",
@@ -689,7 +733,7 @@
                 {
                   "kind": "Reference",
                   "text": "ExprOrValue",
-                  "canonicalReference": "@mvfm/plugin-resend!~ExprOrValue:type"
+                  "canonicalReference": "@mvfm/plugin-resend!ExprOrValue:type"
                 },
                 {
                   "kind": "Content",
@@ -752,7 +796,7 @@
                 {
                   "kind": "Reference",
                   "text": "ExprOrValue",
-                  "canonicalReference": "@mvfm/plugin-resend!~ExprOrValue:type"
+                  "canonicalReference": "@mvfm/plugin-resend!ExprOrValue:type"
                 },
                 {
                   "kind": "Content",
@@ -788,7 +832,7 @@
                 {
                   "kind": "Reference",
                   "text": "ExprOrValue",
-                  "canonicalReference": "@mvfm/plugin-resend!~ExprOrValue:type"
+                  "canonicalReference": "@mvfm/plugin-resend!ExprOrValue:type"
                 },
                 {
                   "kind": "Content",

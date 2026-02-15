@@ -64,7 +64,7 @@ import type {
   RemoveContactsResponseSuccess,
 } from "resend";
 
-type ExprOrValue<T> = Expr<T> | T;
+export type ExprOrValue<T> = Expr<T> | T;
 
 // ---- What the plugin adds to $ ----------------------------
 
@@ -265,11 +265,10 @@ export function resend(config: ResendConfig): PluginDefinition<ResendMethods> {
 //    rendered to HTML before the AST is built. Use `html` instead.
 //
 // 6. Return types:
-//    Real resend-node has typed response objects (CreateEmailResponse,
-//    GetEmailResponse, etc.) with precise type definitions.
-//    Mvfm uses Record<string, unknown> for all return types.
-//    Property access still works via proxy (email.id, contact.email),
-//    but there's no IDE autocomplete for Resend-specific fields.
+//    Return types use concrete resend-node response types
+//    (CreateEmailResponseSuccess, GetEmailResponseSuccess, etc.).
+//    Property access works via proxy (email.id, contact.email)
+//    with IDE autocomplete for Resend-specific fields.
 //
 // DOESN'T WORK / NOT MODELED:
 //
@@ -299,7 +298,6 @@ export function resend(config: ResendConfig): PluginDefinition<ResendMethods> {
 // Resource nesting (emails, batch, contacts) maps 1:1.
 // Proxy chains capture cross-operation dependencies perfectly.
 //
-// The main gaps are: React email templates (use html instead),
-// typed response objects (we use Record<string, unknown>),
+// The main gaps are: React email templates (use html instead)
 // and webhooks (push-based, not AST-modelable).
 // ============================================================
