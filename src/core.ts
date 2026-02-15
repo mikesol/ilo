@@ -748,7 +748,7 @@ function autoLift<T>(value: T | Expr<T>, exprFn: PluginContext["expr"]): Expr<T>
   if (Array.isArray(value)) {
     return exprFn<T>({
       kind: "core/tuple",
-      elements: value.map((v) => autoLift(v, exprFn)),
+      elements: value.map((v) => autoLift(v, exprFn).__node),
     });
   }
 
