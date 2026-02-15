@@ -4,12 +4,73 @@
 
 ```ts
 
-import type { FalClient as FalClient_2 } from '@fal-ai/client';
+import type Anthropic from '@anthropic-ai/sdk';
 import type { default as postgres_2 } from 'postgres';
 import type Stripe from 'stripe';
+import type { WebClient } from '@slack/web-api';
 
 // @public
 export function adaptLegacy(fragment: LegacyInterpreterFragment): InterpreterFragment;
+
+// @public
+export function anthropic(config: AnthropicConfig): PluginDefinition<AnthropicMethods>;
+
+// @public
+export interface AnthropicClient {
+    request(method: string, path: string, params?: Record<string, unknown>): Promise<unknown>;
+}
+
+// @public
+export function anthropicClientHandler(options: AnthropicClientHandlerOptions): StepHandler<AnthropicClientHandlerState>;
+
+// @public
+export interface AnthropicClientHandlerOptions {
+    baseUrl: string;
+    contractHash: string;
+    fetch?: typeof globalThis.fetch;
+    headers?: Record<string, string>;
+}
+
+// @public
+export interface AnthropicClientHandlerState {
+    stepIndex: number;
+}
+
+// @public
+export interface AnthropicConfig {
+    apiKey: string;
+    baseURL?: string;
+}
+
+// @public
+export const anthropicInterpreter: InterpreterFragment;
+
+// @public
+export interface AnthropicMethods {
+    anthropic: {
+        messages: {
+            create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            countTokens(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            batches: {
+                create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+                retrieve(id: Expr<string> | string): Expr<Record<string, unknown>>;
+                list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+                delete(id: Expr<string> | string): Expr<Record<string, unknown>>;
+                cancel(id: Expr<string> | string): Expr<Record<string, unknown>>;
+            };
+        };
+        models: {
+            retrieve(id: Expr<string> | string): Expr<Record<string, unknown>>;
+            list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+        };
+    };
+}
+
+// @public
+export function anthropicServerEvaluate(client: AnthropicClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
+
+// @public
+export function anthropicServerHandler(client: AnthropicClient): StepHandler<void>;
 
 // @public
 export function array(of: SchemaType): ArraySchema;
@@ -133,73 +194,6 @@ export function escapeIdentifier(name: string): string;
 //
 // @public
 export type Expr<T> = ExprBase<T> & ExprFields<T>;
-
-// @public
-export function fal(config: FalConfig): PluginDefinition<FalMethods>;
-
-// @public
-export interface FalClient {
-    queueCancel(endpointId: string, requestId: string): Promise<void>;
-    queueResult(endpointId: string, requestId: string): Promise<unknown>;
-    queueStatus(endpointId: string, requestId: string): Promise<unknown>;
-    queueSubmit(endpointId: string, input?: Record<string, unknown>): Promise<unknown>;
-    run(endpointId: string, input?: Record<string, unknown>): Promise<unknown>;
-    subscribe(endpointId: string, input?: Record<string, unknown>): Promise<unknown>;
-}
-
-// @public
-export function falClientHandler(options: FalClientHandlerOptions): StepHandler<FalClientHandlerState>;
-
-// @public
-export interface FalClientHandlerOptions {
-    baseUrl: string;
-    contractHash: string;
-    fetch?: typeof globalThis.fetch;
-    headers?: Record<string, string>;
-}
-
-// @public
-export interface FalClientHandlerState {
-    stepIndex: number;
-}
-
-// @public
-export interface FalConfig {
-    credentials: string;
-}
-
-// @public
-export const falInterpreter: InterpreterFragment;
-
-// @public (undocumented)
-export interface FalMethods {
-    fal: {
-        run(endpointId: Expr<string> | string, options?: FalRunOptions): Expr<Record<string, unknown>>;
-        subscribe(endpointId: Expr<string> | string, options?: FalRunOptions): Expr<Record<string, unknown>>;
-        queue: {
-            submit(endpointId: Expr<string> | string, options?: FalRunOptions): Expr<Record<string, unknown>>;
-            status(endpointId: Expr<string> | string, options: FalQueueOptions): Expr<Record<string, unknown>>;
-            result(endpointId: Expr<string> | string, options: FalQueueOptions): Expr<Record<string, unknown>>;
-            cancel(endpointId: Expr<string> | string, options: FalQueueOptions): Expr<Record<string, unknown>>;
-        };
-    };
-}
-
-// @public
-export type FalQueueOptions = {
-    requestId: Expr<string> | string;
-};
-
-// @public
-export type FalRunOptions = {
-    input?: Expr<Record<string, unknown>> | Record<string, unknown>;
-};
-
-// @public
-export function falServerEvaluate(client: FalClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
-
-// @public
-export function falServerHandler(client: FalClient): StepHandler<void>;
 
 // @public
 export const fiber: PluginDefinition<FiberMethods>;
@@ -467,6 +461,63 @@ export interface RecurseFn {
 }
 
 // @public
+export function resend(config: ResendConfig): PluginDefinition<ResendMethods>;
+
+// @public
+export interface ResendClient {
+    request(method: string, path: string, params?: unknown): Promise<unknown>;
+}
+
+// @public
+export function resendClientHandler(options: ResendClientHandlerOptions): StepHandler<ResendClientHandlerState>;
+
+// @public
+export interface ResendClientHandlerOptions {
+    baseUrl: string;
+    contractHash: string;
+    fetch?: typeof globalThis.fetch;
+    headers?: Record<string, string>;
+}
+
+// @public
+export interface ResendClientHandlerState {
+    stepIndex: number;
+}
+
+// @public
+export interface ResendConfig {
+    apiKey: string;
+}
+
+// @public
+export const resendInterpreter: InterpreterFragment;
+
+// @public
+export interface ResendMethods {
+    resend: {
+        emails: {
+            send(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            get(id: Expr<string> | string): Expr<Record<string, unknown>>;
+        };
+        batch: {
+            send(emails: Expr<Record<string, unknown>[]> | Record<string, unknown>[]): Expr<Record<string, unknown>>;
+        };
+        contacts: {
+            create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            get(id: Expr<string> | string): Expr<Record<string, unknown>>;
+            list(): Expr<Record<string, unknown>>;
+            remove(id: Expr<string> | string): Expr<Record<string, unknown>>;
+        };
+    };
+}
+
+// @public
+export function resendServerEvaluate(client: ResendClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
+
+// @public
+export function resendServerHandler(client: ResendClient): StepHandler<void>;
+
+// @public
 export function resolveSchemaType(node: ASTNode, schema?: Record<string, unknown>): string | null;
 
 // @public
@@ -522,6 +573,85 @@ export const show: PluginDefinition<TypeclassSlot<"show">>;
 export interface ShowFor<T> {
     show(a: Expr<T> | T): Expr<string>;
 }
+
+// @public
+export function slack(config: SlackConfig): PluginDefinition<SlackMethods>;
+
+// @public
+export interface SlackClient {
+    apiCall(method: string, params?: Record<string, unknown>): Promise<unknown>;
+}
+
+// @public
+export function slackClientHandler(options: SlackClientHandlerOptions): StepHandler<SlackClientHandlerState>;
+
+// @public
+export interface SlackClientHandlerOptions {
+    baseUrl: string;
+    contractHash: string;
+    fetch?: typeof globalThis.fetch;
+    headers?: Record<string, string>;
+}
+
+// @public
+export interface SlackClientHandlerState {
+    stepIndex: number;
+}
+
+// @public
+export interface SlackConfig {
+    token: string;
+}
+
+// @public
+export const slackInterpreter: InterpreterFragment;
+
+// @public
+export interface SlackMethods {
+    slack: {
+        chat: {
+            postMessage(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            update(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            delete(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            postEphemeral(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            scheduleMessage(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            getPermalink(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+        };
+        conversations: {
+            list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            info(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            invite(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            history(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            members(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            open(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            replies(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+        };
+        users: {
+            info(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            lookupByEmail(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            conversations(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+        };
+        reactions: {
+            add(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            get(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            remove(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+        };
+        files: {
+            list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            info(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            delete(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+        };
+    };
+}
+
+// @public
+export function slackServerEvaluate(client: SlackClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
+
+// @public
+export function slackServerHandler(client: SlackClient): StepHandler<void>;
 
 // @public
 export const st: PluginDefinition<StMethods>;
@@ -675,6 +805,77 @@ export interface TraitImpl {
     type: string;
 }
 
+// @public
+export function twilio(config: TwilioConfig): PluginDefinition<TwilioMethods>;
+
+// @public
+export interface TwilioCallContext {
+    fetch(): Expr<Record<string, unknown>>;
+}
+
+// @public
+export interface TwilioCallsResource {
+    (sid: Expr<string> | string): TwilioCallContext;
+    create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+    list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+}
+
+// @public
+export interface TwilioClient {
+    request(method: string, path: string, params?: Record<string, unknown>): Promise<unknown>;
+}
+
+// @public
+export function twilioClientHandler(options: TwilioClientHandlerOptions): StepHandler<TwilioClientHandlerState>;
+
+// @public
+export interface TwilioClientHandlerOptions {
+    baseUrl: string;
+    contractHash: string;
+    fetch?: typeof globalThis.fetch;
+    headers?: Record<string, string>;
+}
+
+// @public
+export interface TwilioClientHandlerState {
+    stepIndex: number;
+}
+
+// @public
+export interface TwilioConfig {
+    accountSid: string;
+    authToken: string;
+}
+
+// @public
+export const twilioInterpreter: InterpreterFragment;
+
+// @public
+export interface TwilioMessageContext {
+    fetch(): Expr<Record<string, unknown>>;
+}
+
+// @public
+export interface TwilioMessagesResource {
+    (sid: Expr<string> | string): TwilioMessageContext;
+    create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+    list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+}
+
+// @public
+export interface TwilioMethods {
+    twilio: {
+        messages: TwilioMessagesResource;
+        calls: TwilioCallsResource;
+    };
+}
+
+// @public
+export function twilioServerEvaluate(client: TwilioClient, fragments: InterpreterFragment[]): (root: ASTNode) => Promise<unknown>;
+
+// @public
+export function twilioServerHandler(client: TwilioClient): StepHandler<void>;
+
 // Warning: (ae-internal-missing-underscore) The name "TypeclassMapping" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
@@ -690,7 +891,7 @@ export interface TypeclassSlot<Name extends string> {
 }
 
 // @public
-export function wrapFalSdk(client: FalClient_2): FalClient;
+export function wrapAnthropicSdk(client: Anthropic): AnthropicClient;
 
 // Warning: (ae-forgotten-export) The symbol "Sql" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "TransactionSql" needs to be exported by the entry point index.d.ts
@@ -698,8 +899,21 @@ export function wrapFalSdk(client: FalClient_2): FalClient;
 // @public
 export function wrapPostgresJs(sql: Sql | TransactionSql): PostgresClient;
 
+// Warning: (ae-forgotten-export) The symbol "ResendSdk" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function wrapResendSdk(resend: ResendSdk): ResendClient;
+
+// @public
+export function wrapSlackWebClient(client: WebClient): SlackClient;
+
 // @public
 export function wrapStripeSdk(stripe: Stripe): StripeClient;
+
+// Warning: (ae-forgotten-export) The symbol "TwilioSdkClient" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function wrapTwilioSdk(client: TwilioSdkClient): TwilioClient;
 
 // Warnings were encountered during analysis:
 //
