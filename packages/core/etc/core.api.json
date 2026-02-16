@@ -718,6 +718,30 @@
           }
         },
         {
+          "kind": "Variable",
+          "canonicalReference": "@mvfm/core!controlInterpreter:var",
+          "docComment": "/**\n * Interpreter handlers for `control/` node kinds.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "controlInterpreter: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Interpreter",
+              "canonicalReference": "@mvfm/core!Interpreter:type"
+            }
+          ],
+          "fileUrlPath": "dist/plugins/control/interpreter.d.ts",
+          "isReadonly": true,
+          "releaseTag": "Public",
+          "name": "controlInterpreter",
+          "variableTypeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
           "kind": "Interface",
           "canonicalReference": "@mvfm/core!ControlMethods:interface",
           "docComment": "/**\n * Control flow operations for iteration.\n */\n",

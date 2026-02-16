@@ -75,6 +75,54 @@ const _unregistered = typedInterpreter<"unregistered/kind">()({
   },
 });
 
+// --- Coverage: error/fiber/control kinds must be registered ---
+
+const _errorPositive = typedInterpreter<"error/fail">()({
+  // biome-ignore lint/correctness/useYield: type test
+  "error/fail": async function* (node) {
+    throw node.error;
+  },
+});
+
+const _fiberPositive = typedInterpreter<"fiber/timeout">()({
+  // biome-ignore lint/correctness/useYield: type test
+  "fiber/timeout": async function* (node) {
+    return node.ms;
+  },
+});
+
+const _controlPositive = typedInterpreter<"control/while">()({
+  // biome-ignore lint/correctness/useYield: type test
+  "control/while": async function* (node) {
+    void node.body.length;
+    return undefined;
+  },
+});
+
+const _errorBadAny = typedInterpreter<"error/fail">()({
+  // @ts-expect-error handler with node:any must be rejected once registered
+  // biome-ignore lint/correctness/useYield: type test
+  "error/fail": async function* (node: any) {
+    return node.error;
+  },
+});
+
+const _fiberBadAny = typedInterpreter<"fiber/timeout">()({
+  // @ts-expect-error handler with node:any must be rejected once registered
+  // biome-ignore lint/correctness/useYield: type test
+  "fiber/timeout": async function* (node: any) {
+    return node.ms;
+  },
+});
+
+const _controlBadAny = typedInterpreter<"control/while">()({
+  // @ts-expect-error handler with node:any must be rejected once registered
+  // biome-ignore lint/correctness/useYield: type test
+  "control/while": async function* (node: any) {
+    return node.body.length;
+  },
+});
+
 // --- str/eq/ord registrations ---
 
 const _strCorrect = typedInterpreter<"str/upper">()({
