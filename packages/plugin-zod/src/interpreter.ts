@@ -8,6 +8,7 @@ import type { SchemaInterpreterMap } from "./interpreter-utils";
 import { toZodError } from "./interpreter-utils";
 import { literalInterpreter } from "./literal";
 import { numberInterpreter } from "./number";
+import { createObjectInterpreter } from "./object";
 import { primitivesInterpreter } from "./primitives";
 import { stringInterpreter } from "./string";
 import type { ErrorConfig, RefinementDescriptor } from "./types";
@@ -16,7 +17,7 @@ import type { ErrorConfig, RefinementDescriptor } from "./types";
 // Each schema module exports an interpreter map.
 // New schema types add ONE import + ONE spread here.
 
-const schemaHandlers: SchemaInterpreterMap = {
+const leafHandlers: SchemaInterpreterMap = {
   ...stringInterpreter,
   ...bigintInterpreter,
   ...dateInterpreter,
@@ -26,13 +27,28 @@ const schemaHandlers: SchemaInterpreterMap = {
   ...primitivesInterpreter,
 };
 
+// Object interpreter needs buildSchemaGen for recursive field building.
+// Initialized lazily on first use to break the definition-order cycle.
+let schemaHandlers: SchemaInterpreterMap | undefined;
+
+/** @internal Resolve all schema handlers, including recursive ones. */
+function getHandlers(): SchemaInterpreterMap {
+  if (!schemaHandlers) {
+    schemaHandlers = {
+      ...leafHandlers,
+      ...createObjectInterpreter(buildSchemaGen),
+    };
+  }
+  return schemaHandlers;
+}
+
 /**
  * Build a Zod schema from a schema AST node (generator version).
  * Dispatches to per-schema handlers, then handles shared wrappers.
  */
 function* buildSchemaGen(node: ASTNode): Generator<StepEffect, z.ZodType, unknown> {
   // Schema type dispatch
-  const handler = schemaHandlers[node.kind];
+  const handler = getHandlers()[node.kind];
   if (handler) return yield* handler(node);
 
   // Shared wrappers (stable — never changes per schema type)
