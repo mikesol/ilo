@@ -2,12 +2,15 @@
 import Base from "../../layouts/Base.astro";
 import Playground from "../../components/Playground";
 
-const example = `const app = mvfm(num, str, semiring);
+const example = `const app = mvfm(prelude, console_);
 
 const prog = app(($) => {
   const a = $.add(1, 2);
   const b = $.concat("hello", " world");
-  return $.do(a, b);
+  return $.do(
+    $.console.log(a),
+    $.console.log(b)
+  );
 });
 
 const ast = prog.ast;
@@ -16,8 +19,8 @@ console.log(JSON.stringify(ast, (k, v) => k === "__id" ? undefined : v, 2));`;
 
 <Base title="core/do — MVFM">
   <div class="pt-4">
-    <h1 class="text-lg font-bold text-base-50 tracking-tight">core/do</h1>
-    <p class="mt-1 text-xs text-base-500">Sequential composition. All arguments but the last are steps. The last is the return value.</p>
+    <h1 class="text-2xl font-bold text-base-50 tracking-tight">core/do</h1>
+    <p class="mt-2 text-base text-base-500">Sequential composition. All arguments but the last are steps. The last is the return value.</p>
     <Playground code={example} client:visible />
   </div>
 </Base>

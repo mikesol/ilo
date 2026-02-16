@@ -1,13 +1,24 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 interface PlaygroundProps {
   code: string;
+}
+
+function useAutoHeight(ref: React.RefObject<HTMLTextAreaElement | null>, value: string) {
+  useEffect(() => {
+    const ta = ref.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = `${ta.scrollHeight}px`;
+  }, [ref, value]);
 }
 
 export default function Playground({ code: initialCode }: PlaygroundProps) {
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState<string>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useAutoHeight(textareaRef, code);
 
   const run = useCallback(async () => {
     const logs: string[] = [];
@@ -25,8 +36,14 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
 
     try {
       const core = await import("@mvfm/core");
-      const fn = new Function("console", ...Object.keys(core), code);
-      fn(fakeConsole, ...Object.values(core));
+      const { consolePlugin } = await import("@mvfm/plugin-console");
+      const injected = { ...core, console_: consolePlugin() };
+      const fn = new Function(
+        "console",
+        ...Object.keys(injected),
+        code
+      );
+      fn(fakeConsole, ...Object.values(injected));
       setOutput(logs.join("\n"));
     } catch (e: unknown) {
       setOutput(String(e));
@@ -40,7 +57,7 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
         value={code}
         onChange={(e) => setCode(e.target.value)}
         spellCheck={false}
-        className="w-full min-h-[180px] font-mono text-[13px] leading-relaxed p-4 bg-base-900 text-base-200 border border-base-800 rounded-none resize-y outline-none focus:border-base-600 transition-colors"
+        className="w-full font-mono text-sm leading-relaxed p-4 bg-base-900 text-base-200 border border-base-800 rounded-none resize-none outline-none focus:border-base-600 transition-colors overflow-hidden"
         style={{ tabSize: 2 }}
         onKeyDown={(e) => {
           if (e.key === "Tab") {
@@ -63,16 +80,14 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
         <button
           onClick={run}
           type="button"
-          className="px-4 py-1.5 text-xs tracking-widest font-medium bg-base-50 text-base-950 hover:bg-base-200 transition-colors cursor-pointer"
+          className="px-4 py-1.5 text-sm tracking-widest font-medium bg-base-50 text-base-950 hover:bg-base-200 transition-colors cursor-pointer"
         >
           RUN
         </button>
-        <span className="text-[11px] text-base-600">
-          Ctrl+Enter
-        </span>
+        <span className="text-xs text-base-600">Ctrl+Enter</span>
       </div>
       {output && (
-        <pre className="mt-4 p-4 bg-base-900 border border-base-800 font-mono text-xs leading-relaxed text-base-300 whitespace-pre-wrap break-words overflow-auto">
+        <pre className="mt-4 p-4 bg-base-900 border border-base-800 font-mono text-sm leading-relaxed text-base-300 whitespace-pre-wrap break-words overflow-auto">
           {output}
         </pre>
       )}
