@@ -3,6 +3,10 @@ import type { Program } from "./types";
 /**
  * Inject input data into all `core/input` nodes in a Program.
  * Returns a new Program with the injected data — does not mutate the original.
+ *
+ * @param program - The Program to inject input into
+ * @param input - Record mapping input field names to their runtime values
+ * @returns A new Program with `__inputData` attached to all `core/input` nodes
  */
 export function injectInput(program: Program, input: Record<string, unknown>): Program {
   function walk(node: any): any {
