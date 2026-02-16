@@ -1,4 +1,5 @@
 import boolean from "./boolean";
+import console_ from "./console";
 import control from "./control";
 import core from "./core";
 import eq from "./eq";
@@ -21,6 +22,7 @@ const modules: Record<string, NodeExample>[] = [
   control,
   error,
   fiber,
+  console_,
 ];
 
 export function getAllExamples(): Record<string, NodeExample> {
