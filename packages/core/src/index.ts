@@ -1,6 +1,6 @@
 // Public API
 
-export { injectLambdaParam, mvfm } from "./core";
+export { injectInput, injectLambdaParam, mvfm } from "./core";
 
 export type {
   CompleteInterpreter,

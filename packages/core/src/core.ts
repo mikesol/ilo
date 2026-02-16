@@ -46,4 +46,5 @@ export {
   type TypeclassSlot,
   type UnionToIntersection,
 } from "./types";
+export { injectInput } from "./inject";
 export { injectLambdaParam, isInternalNode, nextNodeId, simpleHash } from "./utils";
