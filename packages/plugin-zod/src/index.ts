@@ -11,6 +11,8 @@ import type { ZodLiteralNamespace } from "./literal";
 import { literalNamespace, literalNodeKinds } from "./literal";
 import type { ZodNumberNamespace } from "./number";
 import { numberNamespace, numberNodeKinds } from "./number";
+import type { ZodObjectNamespace } from "./object";
+import { objectNamespace, objectNodeKinds } from "./object";
 import type { ZodPrimitivesNamespace } from "./primitives";
 import { primitivesNamespace, primitivesNodeKinds } from "./primitives";
 import type { ZodStringNamespace } from "./string";
@@ -27,6 +29,8 @@ export { zodInterpreter } from "./interpreter";
 export type { SchemaInterpreterMap } from "./interpreter-utils";
 export { ZodLiteralBuilder } from "./literal";
 export { ZodNumberBuilder } from "./number";
+export type { ShapeInput } from "./object";
+export { ZodObjectBuilder } from "./object";
 export { ZodPrimitiveBuilder } from "./primitives";
 export { ZodStringBuilder } from "./string";
 export type { ZodIsoNamespace, ZodStringFormatsNamespace } from "./string-formats";
@@ -57,6 +61,7 @@ export interface ZodNamespace
     ZodEnumNamespace,
     ZodLiteralNamespace,
     ZodNumberNamespace,
+    ZodObjectNamespace,
     ZodPrimitivesNamespace,
     ZodStringFormatsNamespace {
   /** Coercion constructors -- convert input before validating. */
@@ -106,6 +111,7 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
     ...enumNodeKinds,
     ...literalNodeKinds,
     ...numberNodeKinds,
+    ...objectNodeKinds,
     ...primitivesNodeKinds,
     ...coerceNodeKinds,
     ...stringFormatsNodeKinds,
@@ -121,6 +127,7 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
         ...enumNamespace(ctx, parseError),
         ...literalNamespace(ctx),
         ...numberNamespace(ctx, parseError),
+        ...objectNamespace(ctx, parseError),
         ...primitivesNamespace(ctx, parseError),
         ...coerceNamespace(ctx, parseError),
         ...stringFormatsNamespace(ctx, parseError),
