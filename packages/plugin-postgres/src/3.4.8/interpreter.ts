@@ -1,5 +1,5 @@
-import { eval_, typedInterpreter } from "@mvfm/core";
 import type { TypedNode } from "@mvfm/core";
+import { eval_, typedInterpreter } from "@mvfm/core";
 
 /**
  * Database client interface consumed by the postgres handler.
@@ -183,9 +183,14 @@ export async function* buildSQL(
  */
 export function createPostgresInterpreter(client: PostgresClient) {
   return typedInterpreter<
-    | "postgres/query" | "postgres/identifier" | "postgres/insert_helper"
-    | "postgres/set_helper" | "postgres/begin" | "postgres/savepoint"
-    | "postgres/cursor" | "postgres/cursor_batch"
+    | "postgres/query"
+    | "postgres/identifier"
+    | "postgres/insert_helper"
+    | "postgres/set_helper"
+    | "postgres/begin"
+    | "postgres/savepoint"
+    | "postgres/cursor"
+    | "postgres/cursor_batch"
   >()({
     "postgres/query": async function* (node: PostgresQueryNode) {
       const { sql, params } = yield* buildSQL(node);

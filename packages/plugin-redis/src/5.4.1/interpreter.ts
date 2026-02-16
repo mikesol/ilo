@@ -1,5 +1,5 @@
-import { eval_, typedInterpreter } from "@mvfm/core";
 import type { TypedNode } from "@mvfm/core";
+import { eval_, typedInterpreter } from "@mvfm/core";
 
 /**
  * Redis client interface consumed by the redis handler.
@@ -90,7 +90,8 @@ export interface RedisMSetNode extends TypedNode<"OK"> {
   kind: "redis/mset";
   mapping: TypedNode<Record<string, string | number>>;
 }
-export interface RedisAppendNode extends RedisKeyValueNode<"redis/append", number, string | number> {}
+export interface RedisAppendNode
+  extends RedisKeyValueNode<"redis/append", number, string | number> {}
 export interface RedisGetRangeNode extends TypedNode<string> {
   kind: "redis/getrange";
   key: TypedNode<string>;
@@ -231,17 +232,43 @@ declare module "@mvfm/core" {
  */
 export function createRedisInterpreter(client: RedisClient) {
   return typedInterpreter<
-    | "redis/get" | "redis/set" | "redis/incr" | "redis/incrby"
-    | "redis/decr" | "redis/decrby" | "redis/mget" | "redis/mset"
-    | "redis/append" | "redis/getrange" | "redis/setrange"
-    | "redis/del" | "redis/exists" | "redis/expire" | "redis/pexpire"
-    | "redis/ttl" | "redis/pttl"
-    | "redis/hget" | "redis/hset" | "redis/hmget" | "redis/hgetall"
-    | "redis/hdel" | "redis/hexists" | "redis/hlen" | "redis/hkeys"
-    | "redis/hvals" | "redis/hincrby"
-    | "redis/lpush" | "redis/rpush" | "redis/lpop" | "redis/rpop"
-    | "redis/llen" | "redis/lrange" | "redis/lindex" | "redis/lset"
-    | "redis/lrem" | "redis/linsert"
+    | "redis/get"
+    | "redis/set"
+    | "redis/incr"
+    | "redis/incrby"
+    | "redis/decr"
+    | "redis/decrby"
+    | "redis/mget"
+    | "redis/mset"
+    | "redis/append"
+    | "redis/getrange"
+    | "redis/setrange"
+    | "redis/del"
+    | "redis/exists"
+    | "redis/expire"
+    | "redis/pexpire"
+    | "redis/ttl"
+    | "redis/pttl"
+    | "redis/hget"
+    | "redis/hset"
+    | "redis/hmget"
+    | "redis/hgetall"
+    | "redis/hdel"
+    | "redis/hexists"
+    | "redis/hlen"
+    | "redis/hkeys"
+    | "redis/hvals"
+    | "redis/hincrby"
+    | "redis/lpush"
+    | "redis/rpush"
+    | "redis/lpop"
+    | "redis/rpop"
+    | "redis/llen"
+    | "redis/lrange"
+    | "redis/lindex"
+    | "redis/lset"
+    | "redis/lrem"
+    | "redis/linsert"
   >()({
     // ---- String commands ----
 

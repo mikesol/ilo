@@ -6,7 +6,7 @@
  */
 
 import { typedInterpreter } from "../fold";
-import type { CoreLiteral, CoreInput } from "../interpreters/core";
+import type { CoreInput, CoreLiteral } from "../interpreters/core";
 
 // --- Positive: correct handler compiles ---
 

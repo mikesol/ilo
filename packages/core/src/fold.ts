@@ -78,29 +78,25 @@ export interface NodeTypeMap {}
 export type IsAny<T> = 0 extends 1 & T ? true : false;
 
 /** Look up the node type for a kind from the registry, falling back to TypedNode. */
-type NodeForKind<K extends string> =
-  K extends keyof NodeTypeMap ? NodeTypeMap[K] : TypedNode;
+type NodeForKind<K extends string> = K extends keyof NodeTypeMap ? NodeTypeMap[K] : TypedNode;
 
 /** Extract the phantom return type from a TypedNode. */
-type ReturnOfNode<N extends TypedNode<any>> =
-  N extends TypedNode<infer T> ? T : unknown;
+type ReturnOfNode<N extends TypedNode<any>> = N extends TypedNode<infer T> ? T : unknown;
 
 /** The exact handler signature required for a given kind. */
-type ExpectedHandler<K extends string> =
-  (node: NodeForKind<K>) => AsyncGenerator<FoldYield, ReturnOfNode<NodeForKind<K>>, unknown>;
+type ExpectedHandler<K extends string> = (
+  node: NodeForKind<K>,
+) => AsyncGenerator<FoldYield, ReturnOfNode<NodeForKind<K>>, unknown>;
 
 /** Extract the node parameter type from a handler function. */
-type ExtractNodeParam<F> =
-  F extends (node: infer N, ...args: any[]) => any ? N : unknown;
+type ExtractNodeParam<F> = F extends (node: infer N, ...args: any[]) => any ? N : unknown;
 
 /**
  * Reject handlers with `any`-typed node parameters for registered kinds.
  * Unregistered kinds (not in NodeTypeMap) allow `any` as a migration escape hatch.
  */
 type RejectAnyParam<K extends string, H> =
-  IsAny<ExtractNodeParam<H>> extends true
-    ? K extends keyof NodeTypeMap ? never : H
-    : H;
+  IsAny<ExtractNodeParam<H>> extends true ? (K extends keyof NodeTypeMap ? never : H) : H;
 
 /** Required handler shape for a set of kinds. */
 type RequiredShape<K extends string> = {
