@@ -1,9 +1,24 @@
 import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { stripeInterpreter } from "../../src";
 import { stripe } from "../../src/2025-04-30.basil";
 import { createStripeInterpreter, type StripeClient } from "../../src/2025-04-30.basil/interpreter";
 
 const app = mvfm(num, str, stripe({ apiKey: "sk_test_123" }));
+
+describe("stripe interpreter: default export", () => {
+  it("throws when STRIPE_API_KEY is missing", () => {
+    vi.stubEnv("STRIPE_API_KEY", "");
+    expect(() => stripeInterpreter["stripe/create_payment_intent"]).toThrow(/STRIPE_API_KEY/);
+    vi.unstubAllEnvs();
+  });
+
+  it("exports a default ready-to-use interpreter when STRIPE_API_KEY is set", () => {
+    vi.stubEnv("STRIPE_API_KEY", "sk_test_default");
+    expect(typeof stripeInterpreter["stripe/create_payment_intent"]).toBe("function");
+    vi.unstubAllEnvs();
+  });
+});
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

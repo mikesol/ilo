@@ -1,5 +1,6 @@
 import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { anthropicInterpreter } from "../../src";
 import { anthropic } from "../../src/0.74.0";
 import { type AnthropicClient, createAnthropicInterpreter } from "../../src/0.74.0/interpreter";
 
@@ -35,6 +36,18 @@ async function run(prog: { ast: any }, input: Record<string, unknown> = {}) {
 // ============================================================
 
 describe("anthropic interpreter: create_message", () => {
+  it("throws when ANTHROPIC_API_KEY is missing", () => {
+    vi.stubEnv("ANTHROPIC_API_KEY", "");
+    expect(() => anthropicInterpreter["anthropic/create_message"]).toThrow(/ANTHROPIC_API_KEY/);
+    vi.unstubAllEnvs();
+  });
+
+  it("exports a default ready-to-use interpreter", () => {
+    vi.stubEnv("ANTHROPIC_API_KEY", "sk-ant-test-default");
+    expect(typeof anthropicInterpreter["anthropic/create_message"]).toBe("function");
+    vi.unstubAllEnvs();
+  });
+
   it("calls POST /v1/messages with correct params", async () => {
     const prog = app(($) =>
       $.anthropic.messages.create({

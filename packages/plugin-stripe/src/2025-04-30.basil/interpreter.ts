@@ -1,5 +1,7 @@
 import type { Interpreter, TypedNode } from "@mvfm/core";
 import { eval_ } from "@mvfm/core";
+import Stripe from "stripe";
+import { wrapStripeSdk } from "./client-stripe-sdk";
 
 /**
  * Stripe client interface consumed by the stripe handler.
@@ -79,3 +81,42 @@ export function createStripeInterpreter(client: StripeClient): Interpreter {
     },
   };
 }
+
+function requiredEnv(name: "STRIPE_API_KEY"): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `@mvfm/plugin-stripe: missing ${name}. Set ${name} or use createStripeInterpreter(...)`,
+    );
+  }
+  return value;
+}
+
+function lazyInterpreter(factory: () => Interpreter): Interpreter {
+  let cached: Interpreter | undefined;
+  const get = () => (cached ??= factory());
+  return new Proxy({} as Interpreter, {
+    get(_target, property) {
+      return get()[property as keyof Interpreter];
+    },
+    has(_target, property) {
+      return property in get();
+    },
+    ownKeys() {
+      return Reflect.ownKeys(get());
+    },
+    getOwnPropertyDescriptor(_target, property) {
+      const descriptor = Object.getOwnPropertyDescriptor(get(), property);
+      return descriptor
+        ? descriptor
+        : { configurable: true, enumerable: true, writable: false, value: undefined };
+    },
+  });
+}
+
+/**
+ * Default Stripe interpreter that uses `STRIPE_API_KEY`.
+ */
+export const stripeInterpreter: Interpreter = lazyInterpreter(() =>
+  createStripeInterpreter(wrapStripeSdk(new Stripe(requiredEnv("STRIPE_API_KEY")))),
+);

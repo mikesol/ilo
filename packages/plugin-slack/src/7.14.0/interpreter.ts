@@ -1,5 +1,7 @@
 import type { Interpreter, TypedNode } from "@mvfm/core";
 import { eval_ } from "@mvfm/core";
+import { WebClient } from "@slack/web-api";
+import { wrapSlackWebClient } from "./client-slack-web-api";
 
 /**
  * Abstract Slack client interface consumed by the slack handler.
@@ -71,3 +73,42 @@ export function createSlackInterpreter(client: SlackClient): Interpreter {
 
   return Object.fromEntries(Object.keys(NODE_TO_METHOD).map((kind) => [kind, handler]));
 }
+
+function requiredEnv(name: "SLACK_BOT_TOKEN"): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `@mvfm/plugin-slack: missing ${name}. Set ${name} or use createSlackInterpreter(...)`,
+    );
+  }
+  return value;
+}
+
+function lazyInterpreter(factory: () => Interpreter): Interpreter {
+  let cached: Interpreter | undefined;
+  const get = () => (cached ??= factory());
+  return new Proxy({} as Interpreter, {
+    get(_target, property) {
+      return get()[property as keyof Interpreter];
+    },
+    has(_target, property) {
+      return property in get();
+    },
+    ownKeys() {
+      return Reflect.ownKeys(get());
+    },
+    getOwnPropertyDescriptor(_target, property) {
+      const descriptor = Object.getOwnPropertyDescriptor(get(), property);
+      return descriptor
+        ? descriptor
+        : { configurable: true, enumerable: true, writable: false, value: undefined };
+    },
+  });
+}
+
+/**
+ * Default Slack interpreter that uses `SLACK_BOT_TOKEN`.
+ */
+export const slackInterpreter: Interpreter = lazyInterpreter(() =>
+  createSlackInterpreter(wrapSlackWebClient(new WebClient(requiredEnv("SLACK_BOT_TOKEN")))),
+);

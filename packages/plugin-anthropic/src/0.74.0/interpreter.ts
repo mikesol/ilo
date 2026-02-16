@@ -1,5 +1,7 @@
+import Anthropic from "@anthropic-ai/sdk";
 import type { Interpreter, TypedNode } from "@mvfm/core";
 import { eval_ } from "@mvfm/core";
+import { wrapAnthropicSdk } from "./client-anthropic-sdk";
 
 /**
  * Anthropic client interface consumed by the anthropic handler.
@@ -72,3 +74,48 @@ export function createAnthropicInterpreter(client: AnthropicClient): Interpreter
     },
   };
 }
+
+function requiredEnv(name: "ANTHROPIC_API_KEY"): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `@mvfm/plugin-anthropic: missing ${name}. Set ${name} or use createAnthropicInterpreter(...)`,
+    );
+  }
+  return value;
+}
+
+function lazyInterpreter(factory: () => Interpreter): Interpreter {
+  let cached: Interpreter | undefined;
+  const get = () => (cached ??= factory());
+  return new Proxy({} as Interpreter, {
+    get(_target, property) {
+      return get()[property as keyof Interpreter];
+    },
+    has(_target, property) {
+      return property in get();
+    },
+    ownKeys() {
+      return Reflect.ownKeys(get());
+    },
+    getOwnPropertyDescriptor(_target, property) {
+      const descriptor = Object.getOwnPropertyDescriptor(get(), property);
+      return descriptor
+        ? descriptor
+        : { configurable: true, enumerable: true, writable: false, value: undefined };
+    },
+  });
+}
+
+/**
+ * Default Anthropic interpreter that uses `ANTHROPIC_API_KEY`.
+ */
+export const anthropicInterpreter: Interpreter = lazyInterpreter(() =>
+  createAnthropicInterpreter(
+    wrapAnthropicSdk(
+      new Anthropic({
+        apiKey: requiredEnv("ANTHROPIC_API_KEY"),
+      }),
+    ),
+  ),
+);

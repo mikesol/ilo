@@ -1,5 +1,7 @@
 import type { Interpreter, TypedNode } from "@mvfm/core";
 import { eval_ } from "@mvfm/core";
+import pino from "pino";
+import { wrapPino } from "./client-pino";
 
 /**
  * Pino client interface consumed by the pino handler.
@@ -47,3 +49,8 @@ export function createPinoInterpreter(client: PinoClient): Interpreter {
 
   return Object.fromEntries(LEVELS.map((l) => [`pino/${l}`, handler]));
 }
+
+/**
+ * Default pino interpreter that uses a default `pino()` logger.
+ */
+export const pinoInterpreter: Interpreter = createPinoInterpreter(wrapPino(pino()));

@@ -4,8 +4,10 @@ import type {
   QueueStatus,
   Result,
 } from "@fal-ai/client";
+import { fal as falSdk } from "@fal-ai/client";
 import type { Interpreter, TypedNode } from "@mvfm/core";
 import { eval_ } from "@mvfm/core";
+import { wrapFalSdk } from "./client-fal-sdk";
 
 /**
  * Fal client interface consumed by the fal handler.
@@ -95,3 +97,43 @@ export function createFalInterpreter(client: FalClient): Interpreter {
     },
   };
 }
+
+function requiredEnv(name: "FAL_KEY"): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `@mvfm/plugin-fal: missing ${name}. Set ${name} or use createFalInterpreter(...)`,
+    );
+  }
+  return value;
+}
+
+function lazyInterpreter(factory: () => Interpreter): Interpreter {
+  let cached: Interpreter | undefined;
+  const get = () => (cached ??= factory());
+  return new Proxy({} as Interpreter, {
+    get(_target, property) {
+      return get()[property as keyof Interpreter];
+    },
+    has(_target, property) {
+      return property in get();
+    },
+    ownKeys() {
+      return Reflect.ownKeys(get());
+    },
+    getOwnPropertyDescriptor(_target, property) {
+      const descriptor = Object.getOwnPropertyDescriptor(get(), property);
+      return descriptor
+        ? descriptor
+        : { configurable: true, enumerable: true, writable: false, value: undefined };
+    },
+  });
+}
+
+/**
+ * Default Fal interpreter that uses `FAL_KEY`.
+ */
+export const falInterpreter: Interpreter = lazyInterpreter(() => {
+  falSdk.config({ credentials: requiredEnv("FAL_KEY") });
+  return createFalInterpreter(wrapFalSdk(falSdk));
+});

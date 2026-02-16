@@ -1,9 +1,24 @@
 import { coreInterpreter, foldAST, mvfm, num, str } from "@mvfm/core";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { resendInterpreter } from "../../src";
 import { resend } from "../../src/6.9.2";
 import { createResendInterpreter, type ResendClient } from "../../src/6.9.2/interpreter";
 
 const app = mvfm(num, str, resend({ apiKey: "re_test_123" }));
+
+describe("resend interpreter: default export", () => {
+  it("throws when RESEND_API_KEY is missing", () => {
+    vi.stubEnv("RESEND_API_KEY", "");
+    expect(() => resendInterpreter["resend/send_email"]).toThrow(/RESEND_API_KEY/);
+    vi.unstubAllEnvs();
+  });
+
+  it("exports a default ready-to-use interpreter when RESEND_API_KEY is set", () => {
+    vi.stubEnv("RESEND_API_KEY", "re_test_default");
+    expect(typeof resendInterpreter["resend/send_email"]).toBe("function");
+    vi.unstubAllEnvs();
+  });
+});
 
 function injectInput(node: any, input: Record<string, unknown>): any {
   if (node === null || node === undefined || typeof node !== "object") return node;

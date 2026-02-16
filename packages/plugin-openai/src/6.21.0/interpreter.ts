@@ -1,5 +1,7 @@
 import type { Interpreter, TypedNode } from "@mvfm/core";
 import { eval_ } from "@mvfm/core";
+import OpenAI from "openai";
+import { wrapOpenAISdk } from "./client-openai-sdk";
 
 /**
  * OpenAI client interface consumed by the openai handler.
@@ -68,3 +70,48 @@ export function createOpenAIInterpreter(client: OpenAIClient): Interpreter {
     },
   };
 }
+
+function requiredEnv(name: "OPENAI_API_KEY"): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `@mvfm/plugin-openai: missing ${name}. Set ${name} or use createOpenAIInterpreter(...)`,
+    );
+  }
+  return value;
+}
+
+function lazyInterpreter(factory: () => Interpreter): Interpreter {
+  let cached: Interpreter | undefined;
+  const get = () => (cached ??= factory());
+  return new Proxy({} as Interpreter, {
+    get(_target, property) {
+      return get()[property as keyof Interpreter];
+    },
+    has(_target, property) {
+      return property in get();
+    },
+    ownKeys() {
+      return Reflect.ownKeys(get());
+    },
+    getOwnPropertyDescriptor(_target, property) {
+      const descriptor = Object.getOwnPropertyDescriptor(get(), property);
+      return descriptor
+        ? descriptor
+        : { configurable: true, enumerable: true, writable: false, value: undefined };
+    },
+  });
+}
+
+/**
+ * Default OpenAI interpreter that uses `OPENAI_API_KEY`.
+ */
+export const openaiInterpreter: Interpreter = lazyInterpreter(() =>
+  createOpenAIInterpreter(
+    wrapOpenAISdk(
+      new OpenAI({
+        apiKey: requiredEnv("OPENAI_API_KEY"),
+      }),
+    ),
+  ),
+);
