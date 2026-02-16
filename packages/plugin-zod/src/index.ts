@@ -21,6 +21,8 @@ import type { ZodStringNamespace } from "./string";
 import { stringNamespace, stringNodeKinds } from "./string";
 import type { ZodStringFormatsNamespace } from "./string-formats";
 import { stringFormatsNamespace, stringFormatsNodeKinds } from "./string-formats";
+import type { ZodTupleNamespace } from "./tuple";
+import { tupleNamespace, tupleNodeKinds } from "./tuple";
 
 // Re-export types, builders, and interpreter for consumers
 export { ZodArrayBuilder } from "./array";
@@ -38,6 +40,7 @@ export { ZodPrimitiveBuilder } from "./primitives";
 export { ZodStringBuilder } from "./string";
 export type { ZodIsoNamespace, ZodStringFormatsNamespace } from "./string-formats";
 export { buildStringFormat } from "./string-formats";
+export { ZodTupleBuilder } from "./tuple";
 export type {
   CheckDescriptor,
   ErrorConfig,
@@ -46,6 +49,11 @@ export type {
   ValidationASTNode,
   WrapperASTNode,
 } from "./types";
+
+/** Helper to extract error string from the common `errorOrOpts` parameter pattern. */
+function parseError(errorOrOpts?: string | { error?: string }): string | undefined {
+  return typeof errorOrOpts === "string" ? errorOrOpts : errorOrOpts?.error;
+}
 
 /**
  * The `$.zod` namespace contributed by the Zod plugin.
@@ -67,15 +75,11 @@ export interface ZodNamespace
     ZodNumberNamespace,
     ZodObjectNamespace,
     ZodPrimitivesNamespace,
-    ZodStringFormatsNamespace {
+    ZodStringFormatsNamespace,
+    ZodTupleNamespace {
   /** Coercion constructors -- convert input before validating. */
   coerce: ZodCoerceNamespace;
   // ^^^ Each new schema type adds ONE extends clause here
-}
-
-/** Parse error config from the standard `errorOrOpts` param. */
-function parseError(errorOrOpts?: string | { error?: string }): string | undefined {
-  return typeof errorOrOpts === "string" ? errorOrOpts : errorOrOpts?.error;
 }
 
 /** Parsing and wrapper node kinds shared across all schema types. */
@@ -120,6 +124,7 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
     ...primitivesNodeKinds,
     ...coerceNodeKinds,
     ...stringFormatsNodeKinds,
+    ...tupleNodeKinds,
     // ^^^ Each new schema type adds ONE spread here
   ],
 
@@ -137,6 +142,7 @@ export const zod: PluginDefinition<{ zod: ZodNamespace }> = {
         ...primitivesNamespace(ctx, parseError),
         ...coerceNamespace(ctx, parseError),
         ...stringFormatsNamespace(ctx, parseError),
+        ...tupleNamespace(ctx, parseError),
         // ^^^ Each new schema type adds ONE spread here
       } as ZodNamespace,
     };
