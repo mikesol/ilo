@@ -2,6 +2,8 @@
 // Stack-safe async fold with memoization and taint tracking
 // ============================================================
 
+import type { Program } from "./types";
+
 /**
  * Base type for AST nodes in the interpreter. Carries a phantom type
  * parameter `T` tracking the runtime value type. No index signature —
@@ -59,6 +61,77 @@ export type Interpreter = Record<
 export type Handler<N extends TypedNode<any>> =
   N extends TypedNode<infer T> ? (node: N) => AsyncGenerator<FoldYield, T, unknown> : never;
 
+/**
+ * Global registry mapping node kind strings to their typed node interfaces.
+ * Plugins extend this via declaration merging (module augmentation).
+ *
+ * @example
+ * ```ts
+ * declare module "@mvfm/core" {
+ *   interface NodeTypeMap {
+ *     "myplugin/op": MyOpNode;
+ *   }
+ * }
+ * ```
+ */
+export interface NodeTypeMap {}
+
+/** Detect the `any` type. Returns `true` for `any`, `false` otherwise. */
+export type IsAny<T> = 0 extends 1 & T ? true : false;
+
+/** Look up the node type for a kind from the registry, falling back to TypedNode. */
+type NodeForKind<K extends string> = K extends keyof NodeTypeMap ? NodeTypeMap[K] : TypedNode;
+
+/** Extract the phantom return type from a TypedNode. */
+type ReturnOfNode<N extends TypedNode<any>> = N extends TypedNode<infer T> ? T : unknown;
+
+/** The exact handler signature required for a given kind. */
+type ExpectedHandler<K extends string> = (
+  node: NodeForKind<K>,
+) => AsyncGenerator<FoldYield, ReturnOfNode<NodeForKind<K>>, unknown>;
+
+/** Extract the node parameter type from a handler function. */
+type ExtractNodeParam<F> = F extends (node: infer N, ...args: any[]) => any ? N : unknown;
+
+/**
+ * Reject handlers with `any`-typed node parameters for registered kinds.
+ * Unregistered kinds (not in NodeTypeMap) allow `any` as a migration escape hatch.
+ */
+type RejectAnyParam<K extends string, H> =
+  IsAny<ExtractNodeParam<H>> extends true ? (K extends keyof NodeTypeMap ? never : H) : H;
+
+/** Required handler shape for a set of kinds. */
+type RequiredShape<K extends string> = {
+  [P in K]: ExpectedHandler<P>;
+};
+
+/**
+ * Create a typed interpreter with compile-time enforcement of handler signatures.
+ *
+ * Uses a curried form because TypeScript cannot partially infer generics —
+ * `K` (the kinds) is specified explicitly, while `T` (handler types) is inferred.
+ *
+ * For registered kinds (in {@link NodeTypeMap}), this enforces:
+ * - Correct node type on the handler parameter (not `any`, not wrong type)
+ * - Correct return type matching the node's phantom `T`
+ * - Completeness (every kind in `K` must have a handler)
+ *
+ * @example
+ * ```ts
+ * const interp = typedInterpreter<"redis/get" | "redis/set">()({
+ *   "redis/get": async function* (node: RedisGetNode) { ... },
+ *   "redis/set": async function* (node: RedisSetNode) { ... },
+ * });
+ * ```
+ */
+export function typedInterpreter<K extends string>() {
+  return <T extends RequiredShape<K>>(
+    handlers: T & {
+      [P in K]: P extends keyof T ? RejectAnyParam<P, T[P]> : ExpectedHandler<P>;
+    },
+  ): T => handlers;
+}
+
 /** Node kinds that are inherently volatile (never cached, always re-evaluated). */
 export const VOLATILE_KINDS = new Set<string>(["core/lambda_param", "postgres/cursor_batch"]);
 
@@ -73,41 +146,6 @@ export function createFoldState(): FoldState {
   return { cache: new WeakMap(), tainted: new WeakSet() };
 }
 
-/**
- * Walk an AST to verify all node kinds have handlers.
- * Throws before evaluation if any are missing.
- */
-export function checkCompleteness(interpreter: Interpreter, root: TypedNode): void {
-  const visited = new WeakSet<TypedNode>();
-  const missing = new Set<string>();
-  const queue: TypedNode[] = [root];
-
-  while (queue.length > 0) {
-    const node = queue.pop()!;
-    if (visited.has(node)) continue;
-    visited.add(node);
-
-    if (!interpreter[node.kind]) missing.add(node.kind);
-
-    for (const val of Object.values(node)) {
-      if (val && typeof val === "object" && "kind" in val) {
-        queue.push(val as TypedNode);
-      }
-      if (Array.isArray(val)) {
-        for (const v of val) {
-          if (v && typeof v === "object" && "kind" in v) {
-            queue.push(v as TypedNode);
-          }
-        }
-      }
-    }
-  }
-
-  if (missing.size > 0) {
-    throw new Error(`Missing interpreters for: ${[...missing].join(", ")}`);
-  }
-}
-
 type Frame = {
   gen: AsyncGenerator<FoldYield, unknown, unknown>;
   node: TypedNode;
@@ -118,9 +156,23 @@ type Frame = {
 /** Stack-safe async fold with memoization and taint tracking. */
 export async function foldAST(
   interpreter: Interpreter,
+  program: Program,
+  state?: FoldState,
+): Promise<unknown>;
+export async function foldAST(
+  interpreter: Interpreter,
   root: TypedNode,
   state?: FoldState,
+): Promise<unknown>;
+export async function foldAST(
+  interpreter: Interpreter,
+  rootOrProgram: TypedNode | Program,
+  state?: FoldState,
 ): Promise<unknown> {
+  const root =
+    "ast" in rootOrProgram && "hash" in rootOrProgram
+      ? (rootOrProgram as Program).ast.result
+      : (rootOrProgram as TypedNode);
   const { cache, tainted } = state ?? createFoldState();
   const stack: Frame[] = [];
   const scopeStack: Array<Map<number, unknown>> = [];
@@ -270,9 +322,13 @@ export interface TypedProgram<K extends string> {
 
 /**
  * Complete interpreter type: must have a handler for every kind `K`.
+ * Registered kinds (in {@link NodeTypeMap}) get full type checking via
+ * {@link Handler}. Unregistered kinds fall back to `(node: any)`.
  */
 export type CompleteInterpreter<K extends string> = {
-  [key in K]: (node: any) => AsyncGenerator<FoldYield, unknown, unknown>;
+  [key in K]: key extends keyof NodeTypeMap
+    ? Handler<NodeTypeMap[key]>
+    : (node: any) => AsyncGenerator<FoldYield, unknown, unknown>;
 };
 
 /**

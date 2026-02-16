@@ -1,6 +1,7 @@
 // Public API
 
-export { injectLambdaParam, mvfm } from "./core";
+export { injectInput, injectLambdaParam, mvfm } from "./core";
+export { defaults } from "./defaults";
 
 export type {
   CompleteInterpreter,
@@ -8,21 +9,33 @@ export type {
   FoldYield,
   Handler,
   Interpreter,
+  IsAny,
+  NodeTypeMap,
   RecurseScopedEffect,
   ScopedBinding,
   TypedNode,
   TypedProgram,
 } from "./fold";
-
 export {
-  checkCompleteness,
   createFoldState,
   eval_,
   foldAST,
   recurseScoped,
   typedFoldAST,
+  typedInterpreter,
   VOLATILE_KINDS,
 } from "./fold";
+export type {
+  CoreBegin,
+  CoreCond,
+  CoreInput,
+  CoreLambdaParam,
+  CoreLiteral,
+  CoreProgram,
+  CorePropAccess,
+  CoreRecord,
+  CoreTuple,
+} from "./interpreters/core";
 export { coreInterpreter } from "./interpreters/core";
 export type { BooleanMethods } from "./plugins/boolean";
 export { boolean } from "./plugins/boolean";
@@ -84,3 +97,4 @@ export type {
   TypeclassMapping,
   TypeclassSlot,
 } from "./types";
+export { checkCompleteness } from "./validation";
