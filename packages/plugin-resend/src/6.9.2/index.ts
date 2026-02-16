@@ -50,7 +50,6 @@
 // ============================================================
 
 import type { Expr, PluginContext, PluginDefinition } from "@mvfm/core";
-import { resendInterpreter } from "./interpreter";
 import type {
   CreateBatchOptions,
   CreateBatchSuccessResponse,
@@ -64,6 +63,7 @@ import type {
   ListContactsResponseSuccess,
   RemoveContactsResponseSuccess,
 } from "resend";
+import { resendInterpreter } from "./interpreter";
 
 export type ExprOrValue<T> = Expr<T> | T;
 
