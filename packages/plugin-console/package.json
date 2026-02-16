@@ -24,5 +24,11 @@
   },
   "devDependencies": {
     "@mvfm/core": "workspace:*"
-  }
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "1.5 kB"
+    }
+  ]
 }
