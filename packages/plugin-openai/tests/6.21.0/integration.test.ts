@@ -10,22 +10,13 @@ import {
   numInterpreter,
   str,
   strInterpreter,
+  injectInput,
 } from "@mvfm/core";
+import type { Program } from "@mvfm/core";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { openai as openaiPlugin } from "../../src/6.21.0";
 import { serverEvaluate } from "../../src/6.21.0/handler.server";
 import type { OpenAIClient } from "../../src/6.21.0/interpreter";
-
-function injectInput(node: any, input: Record<string, unknown>): any {
-  if (node === null || node === undefined || typeof node !== "object") return node;
-  if (Array.isArray(node)) return node.map((n) => injectInput(n, input));
-  const result: any = {};
-  for (const [k, v] of Object.entries(node)) {
-    result[k] = injectInput(v, input);
-  }
-  if (result.kind === "core/input") result.__inputData = input;
-  return result;
-}
 
 // ---- Lightweight mock OpenAI HTTP server ----
 
@@ -172,11 +163,11 @@ const baseInterpreter = {
 
 const app = mvfm(num, str, openaiPlugin({ apiKey: "sk-test-fake" }), fiber, error);
 
-async function run(prog: { ast: any }, input: Record<string, unknown> = {}) {
-  const ast = injectInput(prog.ast, input);
+async function run(prog: Program, input: Record<string, unknown> = {}) {
+  const injected = injectInput(prog, input);
   const client = createMockClient();
   const evaluate = serverEvaluate(client, baseInterpreter);
-  return await evaluate(ast.result);
+  return await evaluate(injected.ast.result);
 }
 
 // ============================================================
