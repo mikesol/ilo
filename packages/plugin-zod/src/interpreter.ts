@@ -3,6 +3,7 @@ import { injectLambdaParam } from "@mvfm/core";
 import type { z } from "zod";
 import { bigintInterpreter } from "./bigint";
 import { dateInterpreter } from "./date";
+import { enumInterpreter } from "./enum";
 import type { SchemaInterpreterMap } from "./interpreter-utils";
 import { toZodError } from "./interpreter-utils";
 import { literalInterpreter } from "./literal";
@@ -19,6 +20,7 @@ const schemaHandlers: SchemaInterpreterMap = {
   ...stringInterpreter,
   ...bigintInterpreter,
   ...dateInterpreter,
+  ...enumInterpreter,
   ...literalInterpreter,
   ...numberInterpreter,
   ...primitivesInterpreter,
