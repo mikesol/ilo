@@ -46,7 +46,7 @@ export function checkCompleteness(interpreter: Interpreter, root: TypedNode): vo
 
 // @public
 export type CompleteInterpreter<K extends string> = {
-    [key in K]: (node: any) => AsyncGenerator<FoldYield, unknown, unknown>;
+    [key in K]: key extends keyof NodeTypeMap ? Handler<NodeTypeMap[key]> : (node: any) => AsyncGenerator<FoldYield, unknown, unknown>;
 };
 
 // @public
@@ -61,7 +61,97 @@ export interface ControlMethods {
 }
 
 // @public
-export const coreInterpreter: Interpreter;
+export interface CoreBegin<T = unknown> extends TypedNode<T> {
+    // (undocumented)
+    kind: "core/begin";
+    // (undocumented)
+    result: TypedNode<T>;
+    // (undocumented)
+    steps: TypedNode[];
+}
+
+// @public
+export interface CoreCond<T = unknown> extends TypedNode<T> {
+    // (undocumented)
+    else: TypedNode<T>;
+    // (undocumented)
+    kind: "core/cond";
+    // (undocumented)
+    predicate: TypedNode<boolean>;
+    // (undocumented)
+    then: TypedNode<T>;
+}
+
+// @public
+export interface CoreInput extends TypedNode<unknown> {
+    // (undocumented)
+    __inputData?: unknown;
+    // (undocumented)
+    kind: "core/input";
+}
+
+// @public
+export const coreInterpreter: {
+    "core/literal": (node: CoreLiteral) => AsyncGenerator<never, unknown, unknown>;
+    "core/input": (node: CoreInput) => AsyncGenerator<never, unknown, unknown>;
+    "core/prop_access": (node: CorePropAccess) => AsyncGenerator<TypedNode<unknown>, unknown, unknown>;
+    "core/record": (node: CoreRecord) => AsyncGenerator<TypedNode<unknown>, Record<string, unknown>, unknown>;
+    "core/cond": (node: CoreCond) => AsyncGenerator<TypedNode<unknown>, unknown, unknown>;
+    "core/begin": (node: CoreBegin) => AsyncGenerator<TypedNode<unknown>, unknown, unknown>;
+    "core/program": (node: CoreProgram) => AsyncGenerator<TypedNode<unknown>, unknown, unknown>;
+    "core/tuple": (node: CoreTuple) => AsyncGenerator<TypedNode<unknown>, unknown[], unknown>;
+    "core/lambda_param": (node: CoreLambdaParam) => AsyncGenerator<never, unknown, unknown>;
+};
+
+// @public
+export interface CoreLambdaParam<T = unknown> extends TypedNode<T> {
+    // (undocumented)
+    __value?: T;
+    // (undocumented)
+    kind: "core/lambda_param";
+}
+
+// @public
+export interface CoreLiteral<T = unknown> extends TypedNode<T> {
+    // (undocumented)
+    kind: "core/literal";
+    // (undocumented)
+    value: T;
+}
+
+// @public
+export interface CoreProgram extends TypedNode<unknown> {
+    // (undocumented)
+    kind: "core/program";
+    // (undocumented)
+    result: TypedNode;
+}
+
+// @public
+export interface CorePropAccess<T = unknown> extends TypedNode<T> {
+    // (undocumented)
+    kind: "core/prop_access";
+    // (undocumented)
+    object: TypedNode<Record<string, unknown>>;
+    // (undocumented)
+    property: string;
+}
+
+// @public
+export interface CoreRecord extends TypedNode<Record<string, unknown>> {
+    // (undocumented)
+    fields: Record<string, TypedNode>;
+    // (undocumented)
+    kind: "core/record";
+}
+
+// @public
+export interface CoreTuple extends TypedNode<unknown[]> {
+    // (undocumented)
+    elements: TypedNode[];
+    // (undocumented)
+    kind: "core/tuple";
+}
 
 // @public
 export function createFoldState(): FoldState;
@@ -195,6 +285,9 @@ export function injectLambdaParam(node: any, name: string, value: unknown): void
 // @public
 export type Interpreter = Record<string, (node: any) => AsyncGenerator<FoldYield, unknown, unknown>>;
 
+// @public
+export type IsAny<T> = 0 extends 1 & T ? true : false;
+
 // Warning: (ae-internal-missing-underscore) The name "MissingTraitError" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
@@ -219,6 +312,10 @@ export function mvfm<const P extends readonly PluginInput[]>(...plugins: P): {
 } & {
     plugins: FlattenPluginInputs<P>;
 };
+
+// @public
+export interface NodeTypeMap {
+}
 
 // @public
 export function nullable(of: SchemaType): NullableSchema;
@@ -478,6 +575,13 @@ export interface TypeclassSlot<Name extends string> {
 
 // @public
 export function typedFoldAST<K extends string>(program: TypedProgram<K>, interpreter: CompleteInterpreter<K>, state?: FoldState): Promise<unknown>;
+
+// Warning: (ae-forgotten-export) The symbol "RequiredShape" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "RejectAnyParam" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "ExpectedHandler" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function typedInterpreter<K extends string>(): <T extends RequiredShape<K>>(handlers: T & { [P in K]: P extends keyof T ? RejectAnyParam<P, T[P]> : ExpectedHandler<P>; }) => T;
 
 // @public
 export interface TypedNode<T = unknown> {

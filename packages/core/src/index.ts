@@ -9,6 +9,8 @@ export type {
   FoldYield,
   Handler,
   Interpreter,
+  IsAny,
+  NodeTypeMap,
   RecurseScopedEffect,
   ScopedBinding,
   TypedNode,
@@ -20,8 +22,20 @@ export {
   foldAST,
   recurseScoped,
   typedFoldAST,
+  typedInterpreter,
   VOLATILE_KINDS,
 } from "./fold";
+export type {
+  CoreBegin,
+  CoreCond,
+  CoreInput,
+  CoreLambdaParam,
+  CoreLiteral,
+  CoreProgram,
+  CorePropAccess,
+  CoreRecord,
+  CoreTuple,
+} from "./interpreters/core";
 export { coreInterpreter } from "./interpreters/core";
 export type { BooleanMethods } from "./plugins/boolean";
 export { boolean } from "./plugins/boolean";

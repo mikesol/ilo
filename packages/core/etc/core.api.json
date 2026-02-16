@@ -591,7 +591,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "@mvfm/core!CompleteInterpreter:type",
-          "docComment": "/**\n * Complete interpreter type: must have a handler for every kind `K`.\n */\n",
+          "docComment": "/**\n * Complete interpreter type: must have a handler for every kind `K`. Registered kinds (in {@link NodeTypeMap}) get full type checking via {@link Handler}. Unregistered kinds fall back to `(node: any)`.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -607,7 +607,34 @@
             },
             {
               "kind": "Content",
-              "text": "{\n    [key in K]: (node: any) => "
+              "text": "{\n    [key in K]: key extends keyof "
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeTypeMap",
+              "canonicalReference": "@mvfm/core!~NodeTypeMap:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " ? "
+            },
+            {
+              "kind": "Reference",
+              "text": "Handler",
+              "canonicalReference": "@mvfm/core!Handler:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeTypeMap",
+              "canonicalReference": "@mvfm/core!~NodeTypeMap:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[key]> : (node: any) => "
             },
             {
               "kind": "Reference",
@@ -650,7 +677,7 @@
           ],
           "typeTokenRange": {
             "startIndex": 3,
-            "endIndex": 8
+            "endIndex": 14
           }
         },
         {
@@ -847,6 +874,424 @@
           "extendsTokenRanges": []
         },
         {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!CoreBegin:interface",
+          "docComment": "/**\n * A begin (sequencing) node.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CoreBegin<T = "
+            },
+            {
+              "kind": "Content",
+              "text": "unknown"
+            },
+            {
+              "kind": "Content",
+              "text": "> extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<T>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/interpreters/core.d.ts",
+          "releaseTag": "Public",
+          "typeParameters": [
+            {
+              "typeParameterName": "T",
+              "constraintTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              },
+              "defaultTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "name": "CoreBegin",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreBegin#kind:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "kind: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "\"core/begin\""
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "kind",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreBegin#result:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "result: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<T>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "result",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreBegin#steps:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "steps: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "steps",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 3,
+              "endIndex": 5
+            }
+          ]
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!CoreCond:interface",
+          "docComment": "/**\n * A conditional node.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CoreCond<T = "
+            },
+            {
+              "kind": "Content",
+              "text": "unknown"
+            },
+            {
+              "kind": "Content",
+              "text": "> extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<T>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/interpreters/core.d.ts",
+          "releaseTag": "Public",
+          "typeParameters": [
+            {
+              "typeParameterName": "T",
+              "constraintTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              },
+              "defaultTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "name": "CoreCond",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreCond#else:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "else: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<T>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "else",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreCond#kind:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "kind: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "\"core/cond\""
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "kind",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreCond#predicate:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "predicate: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<boolean>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "predicate",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreCond#then:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "then: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<T>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "then",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 3,
+              "endIndex": 5
+            }
+          ]
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!CoreInput:interface",
+          "docComment": "/**\n * An input data node.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CoreInput extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/interpreters/core.d.ts",
+          "releaseTag": "Public",
+          "name": "CoreInput",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreInput#__inputData:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "__inputData?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "unknown"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "__inputData",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreInput#kind:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "kind: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "\"core/input\""
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "kind",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 3
+            }
+          ]
+        },
+        {
           "kind": "Variable",
           "canonicalReference": "@mvfm/core!coreInterpreter:var",
           "docComment": "/**\n * Interpreter handlers for core node kinds.\n */\n",
@@ -856,9 +1301,233 @@
               "text": "coreInterpreter: "
             },
             {
+              "kind": "Content",
+              "text": "{\n    \"core/literal\": (node: "
+            },
+            {
               "kind": "Reference",
-              "text": "Interpreter",
-              "canonicalReference": "@mvfm/core!Interpreter:type"
+              "text": "CoreLiteral",
+              "canonicalReference": "@mvfm/core!CoreLiteral:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, unknown, unknown>;\n    \"core/input\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CoreInput",
+              "canonicalReference": "@mvfm/core!CoreInput:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, unknown, unknown>;\n    \"core/prop_access\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CorePropAccess",
+              "canonicalReference": "@mvfm/core!CorePropAccess:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, unknown, unknown>;\n    \"core/record\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CoreRecord",
+              "canonicalReference": "@mvfm/core!CoreRecord:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, "
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, unknown>, unknown>;\n    \"core/cond\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CoreCond",
+              "canonicalReference": "@mvfm/core!CoreCond:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, unknown, unknown>;\n    \"core/begin\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CoreBegin",
+              "canonicalReference": "@mvfm/core!CoreBegin:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, unknown, unknown>;\n    \"core/program\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CoreProgram",
+              "canonicalReference": "@mvfm/core!CoreProgram:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, unknown, unknown>;\n    \"core/tuple\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CoreTuple",
+              "canonicalReference": "@mvfm/core!CoreTuple:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, unknown[], unknown>;\n    \"core/lambda_param\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CoreLambdaParam",
+              "canonicalReference": "@mvfm/core!CoreLambdaParam:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, unknown, unknown>;\n}"
             }
           ],
           "fileUrlPath": "dist/interpreters/core.d.ts",
@@ -867,8 +1536,681 @@
           "name": "coreInterpreter",
           "variableTypeTokenRange": {
             "startIndex": 1,
-            "endIndex": 2
+            "endIndex": 52
           }
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!CoreLambdaParam:interface",
+          "docComment": "/**\n * A lambda parameter node.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CoreLambdaParam<T = "
+            },
+            {
+              "kind": "Content",
+              "text": "unknown"
+            },
+            {
+              "kind": "Content",
+              "text": "> extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<T>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/interpreters/core.d.ts",
+          "releaseTag": "Public",
+          "typeParameters": [
+            {
+              "typeParameterName": "T",
+              "constraintTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              },
+              "defaultTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "name": "CoreLambdaParam",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreLambdaParam#__value:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "__value?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "T"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "__value",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreLambdaParam#kind:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "kind: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "\"core/lambda_param\""
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "kind",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 3,
+              "endIndex": 5
+            }
+          ]
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!CoreLiteral:interface",
+          "docComment": "/**\n * A literal value node.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CoreLiteral<T = "
+            },
+            {
+              "kind": "Content",
+              "text": "unknown"
+            },
+            {
+              "kind": "Content",
+              "text": "> extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<T>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/interpreters/core.d.ts",
+          "releaseTag": "Public",
+          "typeParameters": [
+            {
+              "typeParameterName": "T",
+              "constraintTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              },
+              "defaultTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "name": "CoreLiteral",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreLiteral#kind:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "kind: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "\"core/literal\""
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "kind",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreLiteral#value:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "value: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "T"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "value",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 3,
+              "endIndex": 5
+            }
+          ]
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!CoreProgram:interface",
+          "docComment": "/**\n * A program root node.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CoreProgram extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/interpreters/core.d.ts",
+          "releaseTag": "Public",
+          "name": "CoreProgram",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreProgram#kind:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "kind: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "\"core/program\""
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "kind",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreProgram#result:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "result: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "result",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 3
+            }
+          ]
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!CorePropAccess:interface",
+          "docComment": "/**\n * A property access node.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CorePropAccess<T = "
+            },
+            {
+              "kind": "Content",
+              "text": "unknown"
+            },
+            {
+              "kind": "Content",
+              "text": "> extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<T>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/interpreters/core.d.ts",
+          "releaseTag": "Public",
+          "typeParameters": [
+            {
+              "typeParameterName": "T",
+              "constraintTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              },
+              "defaultTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "name": "CorePropAccess",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CorePropAccess#kind:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "kind: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "\"core/prop_access\""
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "kind",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CorePropAccess#object:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "object: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, unknown>>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "object",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 5
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CorePropAccess#property:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "property: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "property",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 3,
+              "endIndex": 5
+            }
+          ]
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!CoreRecord:interface",
+          "docComment": "/**\n * A record construction node.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CoreRecord extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, unknown>>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/interpreters/core.d.ts",
+          "releaseTag": "Public",
+          "name": "CoreRecord",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreRecord#fields:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "fields: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "fields",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 5
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreRecord#kind:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "kind: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "\"core/record\""
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "kind",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 5
+            }
+          ]
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!CoreTuple:interface",
+          "docComment": "/**\n * A tuple construction node.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CoreTuple extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown[]>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/interpreters/core.d.ts",
+          "releaseTag": "Public",
+          "name": "CoreTuple",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreTuple#elements:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "elements: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "elements",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreTuple#kind:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "kind: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "\"core/tuple\""
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "kind",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 3
+            }
+          ]
         },
         {
           "kind": "Function",
@@ -3309,6 +4651,45 @@
           }
         },
         {
+          "kind": "TypeAlias",
+          "canonicalReference": "@mvfm/core!IsAny:type",
+          "docComment": "/**\n * Detect the `any` type. Returns `true` for `any`, `false` otherwise.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type IsAny<T> = "
+            },
+            {
+              "kind": "Content",
+              "text": "0 extends 1 & T ? true : false"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/fold.d.ts",
+          "releaseTag": "Public",
+          "name": "IsAny",
+          "typeParameters": [
+            {
+              "typeParameterName": "T",
+              "constraintTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              },
+              "defaultTypeTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              }
+            }
+          ],
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
           "kind": "Variable",
           "canonicalReference": "@mvfm/core!monoid:var",
           "docComment": "/**\n * Monoid typeclass plugin. Enables identity element dispatch for types with registered monoid traits.\n */\n",
@@ -3566,6 +4947,23 @@
             }
           ],
           "name": "mvfm"
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "@mvfm/core!NodeTypeMap:interface",
+          "docComment": "/**\n * Global registry mapping node kind strings to their typed node interfaces. Plugins extend this via declaration merging (module augmentation).\n *\n * @example\n * ```ts\n * declare module \"@mvfm/core\" {\n *   interface NodeTypeMap {\n *     \"myplugin/op\": MyOpNode;\n *   }\n * }\n * ```\n *\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface NodeTypeMap "
+            }
+          ],
+          "fileUrlPath": "dist/fold.d.ts",
+          "releaseTag": "Public",
+          "name": "NodeTypeMap",
+          "preserveMemberOrder": false,
+          "members": [],
+          "extendsTokenRanges": []
         },
         {
           "kind": "Function",
@@ -8204,6 +9602,82 @@
             }
           ],
           "name": "typedFoldAST"
+        },
+        {
+          "kind": "Function",
+          "canonicalReference": "@mvfm/core!typedInterpreter:function(1)",
+          "docComment": "/**\n * Create a typed interpreter with compile-time enforcement of handler signatures.\n *\n * Uses a curried form because TypeScript cannot partially infer generics — `K` (the kinds) is specified explicitly, while `T` (handler types) is inferred.\n *\n * For registered kinds (in {@link NodeTypeMap}), this enforces: - Correct node type on the handler parameter (not `any`, not wrong type) - Correct return type matching the node's phantom `T` - Completeness (every kind in `K` must have a handler)\n *\n * @example\n * ```ts\n * const interp = typedInterpreter<\"redis/get\" | \"redis/set\">()({\n *   \"redis/get\": async function* (node: RedisGetNode) { ... },\n *   \"redis/set\": async function* (node: RedisSetNode) { ... },\n * });\n * ```\n *\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare function typedInterpreter<K extends "
+            },
+            {
+              "kind": "Content",
+              "text": "string"
+            },
+            {
+              "kind": "Content",
+              "text": ">(): "
+            },
+            {
+              "kind": "Content",
+              "text": "<T extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "RequiredShape",
+              "canonicalReference": "@mvfm/core!~RequiredShape:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<K>>(handlers: T & { [P in K]: P extends keyof T ? "
+            },
+            {
+              "kind": "Reference",
+              "text": "RejectAnyParam",
+              "canonicalReference": "@mvfm/core!~RejectAnyParam:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<P, T[P]> : "
+            },
+            {
+              "kind": "Reference",
+              "text": "ExpectedHandler",
+              "canonicalReference": "@mvfm/core!~ExpectedHandler:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<P>; }) => T"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/fold.d.ts",
+          "returnTypeTokenRange": {
+            "startIndex": 3,
+            "endIndex": 10
+          },
+          "releaseTag": "Public",
+          "overloadIndex": 1,
+          "parameters": [],
+          "typeParameters": [
+            {
+              "typeParameterName": "K",
+              "constraintTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "defaultTypeTokenRange": {
+                "startIndex": 0,
+                "endIndex": 0
+              }
+            }
+          ],
+          "name": "typedInterpreter"
         },
         {
           "kind": "Interface",
