@@ -50,6 +50,7 @@
 // ============================================================
 
 import type { Expr, PluginContext, PluginDefinition } from "@mvfm/core";
+import { resendInterpreter } from "./interpreter";
 import type {
   CreateBatchOptions,
   CreateBatchSuccessResponse,
@@ -140,6 +141,7 @@ export function resend(config: ResendConfig): PluginDefinition<ResendMethods> {
       "resend/list_contacts",
       "resend/remove_contact",
     ],
+    defaultInterpreter: resendInterpreter,
 
     build(ctx: PluginContext): ResendMethods {
       // Helper: resolve an id argument to an AST node.
