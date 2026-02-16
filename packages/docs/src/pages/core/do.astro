@@ -13,8 +13,13 @@ const prog = app(($) => {
   );
 });
 
-const ast = prog.ast;
-console.log(JSON.stringify(ast, (k, v) => k === "__id" ? undefined : v, 2));`;
+// console.log(JSON.stringify(prog.ast, (k, v) => k === "__id" ? undefined : v, 2));
+
+const run = foldAST(
+  [consoleInterpreter, numInterpreter, strInterpreter, coreInterpreter],
+  { "console/log": async (e) => { console.log(...e.args); } }
+);
+await run(prog.ast.result);`;
 ---
 
 <Base title="core/do — MVFM">

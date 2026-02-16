@@ -36,14 +36,19 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
 
     try {
       const core = await import("@mvfm/core");
-      const { consolePlugin } = await import("@mvfm/plugin-console");
-      const injected = { ...core, console_: consolePlugin() };
-      const fn = new Function(
+      const pluginConsole = await import("@mvfm/plugin-console");
+      const injected = {
+        ...core,
+        console_: pluginConsole.consolePlugin(),
+        consoleInterpreter: pluginConsole.consoleInterpreter,
+      };
+      const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+      const fn = new AsyncFunction(
         "console",
         ...Object.keys(injected),
         code
       );
-      fn(fakeConsole, ...Object.values(injected));
+      await fn(fakeConsole, ...Object.values(injected));
       setOutput(logs.join("\n"));
     } catch (e: unknown) {
       setOutput(String(e));
