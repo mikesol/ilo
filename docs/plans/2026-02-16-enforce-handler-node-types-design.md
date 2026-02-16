@@ -24,12 +24,12 @@ Update `CompleteInterpreter` to look up node types from the registry:
 export type CompleteInterpreter<K extends string> = {
   [key in K]: key extends keyof NodeTypeMap
     ? Handler<NodeTypeMap[key]>
-    : never;
+    : (node: any) => AsyncGenerator<FoldYield, unknown, unknown>;
 };
 ```
 
 - **Registered kinds** get full type checking via `Handler<N>` — both input node type and return type (via phantom `T`).
-- **Unregistered kinds** map to `never` — compile error. Every kind must be registered.
+- **Unregistered kinds** fall back to `(node: any)` — this is the temporary escape hatch while plugins migrate. A final follow-up issue will flip this to `never` once all plugins are registered.
 - **`Interpreter`** stays as-is (`Record<string, (node: any) => ...>`). It's the untyped runtime record used by `foldAST`.
 - **`Handler<N>`** already exists and is unchanged.
 - **`NodeTypeMap`** is re-exported from `core/src/index.ts`.
@@ -51,14 +51,28 @@ declare module "@mvfm/core" {
 
 Core interpreter nodes (`core/literal`, `core/prop_access`, etc.) register in `core/src/interpreters/core.ts`.
 
-### Plugins that must register
+### Plugins that register in this PR
 
-All plugins register in this PR — no graduated migration:
+Only plugins that already have typed node interfaces:
 
-- **core** — all `core/*` node kinds
-- **plugin-redis** — all `redis/*` node kinds
-- **plugin-postgres** — all `postgres/*` node kinds
-- **plugin-zod** — all `zod/*` node kinds
+- **core** — all `core/*` node kinds (9 kinds)
+- **plugin-redis** — all `redis/*` node kinds (35 kinds)
+- **plugin-postgres** — all `postgres/*` node kinds (8 kinds)
+- **plugin-zod** — if #192 (zod typed nodes) lands before this PR
+
+### Follow-up issues (created as part of this work)
+
+One issue per untyped plugin to add typed interfaces + register in `NodeTypeMap`:
+
+- error, fiber, control (core prelude)
+- boolean, num, str, eq, ord (core prelude)
+- anthropic, openai, fal (AI plugins)
+- fetch, s3, cloudflare-kv (data plugins)
+- slack, resend, twilio (messaging plugins)
+- stripe (payments)
+- pino, console (observability)
+
+Plus a **final issue** to flip the `any` fallback to `never`, closable once all plugins are registered.
 
 ## Spike phase (mandatory, before implementation)
 
@@ -120,3 +134,7 @@ Checked by `pnpm run build` — no runtime needed. If someone loosens the types,
 ## Risks
 
 If a plugin's existing handler signatures don't exactly match `Handler<NodeTypeMap[key]>` (e.g. a handler returns `string` but the phantom type says `string | null`), we'll get compile errors. These are real type bugs being surfaced — fix them, don't loosen the types.
+
+## Spike validation (updated)
+
+The spike must also validate item 7 positively — unregistered kinds get `any` fallback (not `never`). This is the temporary state. The final "flip to never" issue will change this behavior.
