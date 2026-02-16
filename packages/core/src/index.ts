@@ -1,7 +1,8 @@
 // Public API
 
-export { injectLambdaParam, mvfm } from "./core";
+export { injectInput, injectLambdaParam, mvfm } from "./core";
 export { defaults } from "./defaults";
+
 export type {
   CompleteInterpreter,
   FoldState,
@@ -14,7 +15,6 @@ export type {
   TypedProgram,
 } from "./fold";
 export {
-  checkCompleteness,
   createFoldState,
   eval_,
   foldAST,
@@ -83,3 +83,4 @@ export type {
   TypeclassMapping,
   TypeclassSlot,
 } from "./types";
+export { checkCompleteness } from "./validation";
