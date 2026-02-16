@@ -280,9 +280,7 @@ describe("defaults() end-to-end", () => {
 
   it("eq + cond: dispatch on input", async () => {
     const app = mvfm(num, str, eq);
-    const prog = app({ x: "number" }, ($) =>
-      $.cond($.eq($.input.x, 1)).t("one").f("other"),
-    );
+    const prog = app({ x: "number" }, ($) => $.cond($.eq($.input.x, 1)).t("one").f("other"));
     const interp = defaults(app);
 
     const ast1 = injectInput(prog.ast, { x: 1 });
