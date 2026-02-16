@@ -83,7 +83,9 @@ export function createStripeInterpreter(client: StripeClient): Interpreter {
 }
 
 function requiredEnv(name: "STRIPE_API_KEY"): string {
-  const value = process.env[name];
+  const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+    ?.env;
+  const value = env?.[name];
   if (!value) {
     throw new Error(
       `@mvfm/plugin-stripe: missing ${name}. Set ${name} or use createStripeInterpreter(...)`,

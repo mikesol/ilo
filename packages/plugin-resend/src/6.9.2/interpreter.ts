@@ -67,7 +67,9 @@ export function createResendInterpreter(client: ResendClient): Interpreter {
 }
 
 function requiredEnv(name: "RESEND_API_KEY"): string {
-  const value = process.env[name];
+  const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+    ?.env;
+  const value = env?.[name];
   if (!value) {
     throw new Error(
       `@mvfm/plugin-resend: missing ${name}. Set ${name} or use createResendInterpreter(...)`,

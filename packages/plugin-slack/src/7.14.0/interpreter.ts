@@ -75,7 +75,9 @@ export function createSlackInterpreter(client: SlackClient): Interpreter {
 }
 
 function requiredEnv(name: "SLACK_BOT_TOKEN"): string {
-  const value = process.env[name];
+  const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+    ?.env;
+  const value = env?.[name];
   if (!value) {
     throw new Error(
       `@mvfm/plugin-slack: missing ${name}. Set ${name} or use createSlackInterpreter(...)`,

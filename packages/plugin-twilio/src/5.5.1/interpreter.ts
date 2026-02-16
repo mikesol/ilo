@@ -68,7 +68,9 @@ export function createTwilioInterpreter(client: TwilioClient): Interpreter {
 }
 
 function requiredEnv(name: "TWILIO_ACCOUNT_SID" | "TWILIO_AUTH_TOKEN"): string {
-  const value = process.env[name];
+  const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+    ?.env;
+  const value = env?.[name];
   if (!value) {
     throw new Error(
       `@mvfm/plugin-twilio: missing ${name}. Set ${name} or use createTwilioInterpreter(...)`,
@@ -91,7 +93,7 @@ function createDefaultTwilioClient(): unknown {
         uri: string;
         data?: Record<string, unknown>;
       }): Promise<{ body: unknown }> {
-        const encodedAuth = Buffer.from(`${accountSid}:${authToken}`).toString("base64");
+        const encodedAuth = btoa(`${accountSid}:${authToken}`);
         const response = await fetch(opts.uri, {
           method: opts.method,
           headers: {

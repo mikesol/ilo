@@ -72,7 +72,9 @@ export function createOpenAIInterpreter(client: OpenAIClient): Interpreter {
 }
 
 function requiredEnv(name: "OPENAI_API_KEY"): string {
-  const value = process.env[name];
+  const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+    ?.env;
+  const value = env?.[name];
   if (!value) {
     throw new Error(
       `@mvfm/plugin-openai: missing ${name}. Set ${name} or use createOpenAIInterpreter(...)`,
