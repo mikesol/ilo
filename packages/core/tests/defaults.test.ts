@@ -2,8 +2,28 @@ import { describe, expect, it } from "vitest";
 import { mvfm } from "../src/builder";
 import { defaults } from "../src/defaults";
 import type { Interpreter } from "../src/fold";
+import { boolean } from "../src/plugins/boolean";
+import { eq } from "../src/plugins/eq";
+import { error } from "../src/plugins/error";
+import { fiber } from "../src/plugins/fiber";
 import { num } from "../src/plugins/num";
+import { ord } from "../src/plugins/ord";
 import { str } from "../src/plugins/str";
+
+describe("core plugins have defaultInterpreter", () => {
+  it.each([
+    ["num", num],
+    ["str", str],
+    ["boolean", boolean],
+    ["eq", eq],
+    ["ord", ord],
+    ["error", error],
+    ["fiber", fiber],
+  ])("%s has defaultInterpreter", (_name, plugin) => {
+    expect(plugin.defaultInterpreter).toBeDefined();
+    expect(typeof plugin.defaultInterpreter).toBe("object");
+  });
+});
 
 describe("PluginDefinition.defaultInterpreter", () => {
   it("structural discrimination works at type level", () => {
