@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mvfm } from "../src/builder";
 import { defaults } from "../src/defaults";
-import type { Interpreter } from "../src/fold";
+import { foldAST, type Interpreter } from "../src/fold";
 import { boolean } from "../src/plugins/boolean";
 import { eq } from "../src/plugins/eq";
 import { error } from "../src/plugins/error";
@@ -202,5 +202,92 @@ describe("defaults()", () => {
     expect(interp["core/prop_access"]).toBeDefined();
     expect(interp["core/tuple"]).toBeDefined();
     expect(interp["core/lambda_param"]).toBeDefined();
+  });
+});
+
+// ---- helpers for integration tests ----
+
+function injectInput(node: any, input: Record<string, unknown>): any {
+  if (node === null || node === undefined || typeof node !== "object") return node;
+  if (Array.isArray(node)) return node.map((n) => injectInput(n, input));
+  const result: any = {};
+  for (const [k, v] of Object.entries(node)) {
+    result[k] = injectInput(v, input);
+  }
+  if (result.kind === "core/input") result.__inputData = input;
+  return result;
+}
+
+describe("defaults() end-to-end", () => {
+  it("num arithmetic: sub(10, 3) = 7", async () => {
+    const app = mvfm(num);
+    const prog = app(($) => $.sub(10, 3));
+    const interp = defaults(app);
+    const result = await foldAST(interp, prog.ast);
+    expect(result).toBe(7);
+  });
+
+  it("num arithmetic: nested sub(div(12, 4), 1) = 2", async () => {
+    const app = mvfm(num);
+    const prog = app(($) => $.sub($.div(12, 4), 1));
+    const interp = defaults(app);
+    const result = await foldAST(interp, prog.ast);
+    expect(result).toBe(2);
+  });
+
+  it("with schema input: sub(input.n, 1)", async () => {
+    const app = mvfm(num);
+    const prog = app({ n: "number" }, ($) => $.sub($.input.n, 1));
+    const interp = defaults(app);
+    const ast = injectInput(prog.ast, { n: 10 });
+    const result = await foldAST(interp, ast);
+    expect(result).toBe(9);
+  });
+
+  it("conditional: cond(eq(1, 1)).t(42).f(0) = 42", async () => {
+    const app = mvfm(num, boolean, eq);
+    const prog = app(($) => $.cond($.eq(1, 1)).t(42).f(0));
+    const interp = defaults(app);
+    const result = await foldAST(interp, prog.ast);
+    expect(result).toBe(42);
+  });
+
+  it("string operations: concat", async () => {
+    const app = mvfm(str);
+    const prog = app(($) => $.concat("hello", " ", "world"));
+    const interp = defaults(app);
+    const result = await foldAST(interp, prog.ast);
+    expect(result).toBe("hello world");
+  });
+
+  it("string with input: upper(input.name)", async () => {
+    const app = mvfm(str);
+    const prog = app({ name: "string" }, ($) => $.upper($.input.name));
+    const interp = defaults(app);
+    const ast = injectInput(prog.ast, { name: "alice" });
+    const result = await foldAST(interp, ast);
+    expect(result).toBe("ALICE");
+  });
+
+  it("ord comparison: gt(5, 3) = true", async () => {
+    const app = mvfm(num, ord);
+    const prog = app(($) => $.gt(5, 3));
+    const interp = defaults(app);
+    const result = await foldAST(interp, prog.ast);
+    expect(result).toBe(true);
+  });
+
+  it("eq + cond: dispatch on input", async () => {
+    const app = mvfm(num, str, eq);
+    const prog = app({ x: "number" }, ($) =>
+      $.cond($.eq($.input.x, 1)).t("one").f("other"),
+    );
+    const interp = defaults(app);
+
+    const ast1 = injectInput(prog.ast, { x: 1 });
+    expect(await foldAST(interp, ast1)).toBe("one");
+
+    const ast2 = injectInput(prog.ast, { x: 2 });
+    expect(await foldAST(interp, ast2)).toBe("other");
   });
 });
