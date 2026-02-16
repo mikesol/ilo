@@ -73,9 +73,10 @@ const app = mvfm(prelude, console_);
 
 // 2. make a program
 const prog = app({ x: "number", y: "number" }, ($) => {
-  const xPos = $.gt($.input.x, 0);
-  const yPos = $.gt($.input.y, 0);
-  const same = $.eq(xPos, yPos);
+  // Wrap in $.not to produce boolean-typed nodes for eq dispatch
+  const xNeg = $.not($.gt($.input.x, 0));
+  const yNeg = $.not($.gt($.input.y, 0));
+  const same = $.eq(xNeg, yNeg);
   return $.begin(
     $.console.log($.cond(same).t("same sign").f("different sign")),
     same
@@ -164,7 +165,8 @@ const app = mvfm(prelude, console_);
 
 // 2. make a program
 const prog = app({ x: "number" }, ($) => {
-  const isPositive = $.gt($.input.x, 0);
+  // Wrap in $.not($.not(...)) to produce a boolean-typed node for show dispatch
+  const isPositive = $.not($.not($.gt($.input.x, 0)));
   // $.show dispatches to boolean/show for boolean expressions
   const label = $.concat("positive: ", $.show(isPositive));
   return $.begin(

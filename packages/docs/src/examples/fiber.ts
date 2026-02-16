@@ -7,10 +7,9 @@ const examples: Record<string, NodeExample> = {
 const app = mvfm(prelude, console_, fiber);
 
 // 2. make a program
-const prog = app({ factor: "number" }, ($) => {
-  const nums = [1, 2, 3, 4];
-  const doubled = $.par(nums, { concurrency: 2 }, (n) =>
-    $.mul(n, $.input.factor)
+const prog = app({ nums: array("number") }, ($) => {
+  const doubled = $.par($.input.nums, { concurrency: 2 }, (n) =>
+    $.mul(n, 10)
   );
   return $.begin(
     $.console.log(doubled),
@@ -21,7 +20,7 @@ const prog = app({ factor: "number" }, ($) => {
 // 3. run
 await foldAST(
   defaults(app),
-  injectInput(prog, { factor: 10 })
+  injectInput(prog, { nums: [1, 2, 3, 4] })
 );`,
   },
   "fiber/race": {
@@ -35,7 +34,7 @@ const prog = app({ x: "number" }, ($) => {
   const slow = $.mul($.input.x, 100);
   const winner = $.race(fast, slow);
   return $.begin(
-    $.console.log($.concat("winner: ", $.show(winner))),
+    $.console.log("winner:", winner),
     winner
   );
 });
@@ -56,7 +55,7 @@ const prog = app({ x: "number" }, ($) => {
   const computation = $.mul($.input.x, $.input.x);
   const safe = $.timeout(computation, 5000, -1);
   return $.begin(
-    $.console.log($.concat("result: ", $.show(safe))),
+    $.console.log("result:", safe),
     safe
   );
 });
@@ -77,7 +76,7 @@ const prog = app({ base: "number" }, ($) => {
   const value = $.add($.input.base, 42);
   const reliable = $.retry(value, { attempts: 3, delay: 100 });
   return $.begin(
-    $.console.log($.concat("got: ", $.show(reliable))),
+    $.console.log("got:", reliable),
     reliable
   );
 });

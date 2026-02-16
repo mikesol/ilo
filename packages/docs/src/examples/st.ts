@@ -30,7 +30,7 @@ const app = mvfm(prelude, console_, st);
 const prog = app({ n: "number" }, ($) => {
   const counter = $.let($.input.n);
   return $.begin(
-    $.console.log($.concat("initial: ", $.show(counter.get()))),
+    $.console.log("initial:", counter.get()),
     counter.get()
   );
 });
@@ -51,7 +51,7 @@ const app = mvfm(prelude, console_, st);
 const prog = app({ x: "number" }, ($) => {
   const val = $.let($.add($.input.x, 5));
   return $.begin(
-    $.console.log($.concat("computed: ", $.show(val.get()))),
+    $.console.log("computed:", val.get()),
     val.get()
   );
 });
@@ -73,7 +73,7 @@ const prog = app({ x: "number" }, ($) => {
   const cell = $.let(0);
   cell.set($.mul($.input.x, 2));
   return $.begin(
-    $.console.log($.concat("doubled: ", $.show(cell.get()))),
+    $.console.log("doubled:", cell.get()),
     cell.get()
   );
 });
@@ -96,7 +96,7 @@ const prog = app({ x: "number" }, ($) => {
   items.push($.input.x);
   items.push($.add($.input.x, 1));
   return $.begin(
-    $.console.log($.show(items.get())),
+    $.console.log("items:", items.get()),
     items.get()
   );
 });

@@ -52,10 +52,9 @@ const prog = app({ items: "string" }, ($) => {
   const count = $.let(0);
   $.each([$.input.items, "world", "!"], (item) => {
     count.set($.add(count.get(), 1));
-    $.console.log($.concat("item: ", item));
   });
   return $.begin(
-    $.console.log($.concat("total: ", $.show(count.get()))),
+    $.console.log("total:", count.get()),
     count.get()
   );
 });
@@ -76,11 +75,11 @@ const app = mvfm(prelude, console_, st, control);
 const prog = app({ limit: "number" }, ($) => {
   const i = $.let(0);
   $.while($.lt(i.get(), $.input.limit)).body(
-    $.console.log($.concat("i = ", $.show(i.get()))),
+    $.console.log("i =", i.get()),
     i.set($.add(i.get(), 1))
   );
   return $.begin(
-    $.console.log($.concat("done at ", $.show(i.get()))),
+    $.console.log("done at", i.get()),
     i.get()
   );
 });
