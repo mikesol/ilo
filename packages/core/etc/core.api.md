@@ -139,6 +139,9 @@ export interface CoreTuple extends TypedNode<unknown[]> {
 // @public
 export function createFoldState(): FoldState;
 
+// @public
+export function createStInterpreter(): Interpreter<"st/let" | "st/get" | "st/set" | "st/push">;
+
 // Warning: (ae-forgotten-export) The symbol "DefaultsArgs" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -156,7 +159,7 @@ export function definePlugin<const Kinds extends readonly string[], T, Traits ex
     name: string;
     nodeKinds: Kinds;
     build: (ctx: PluginContext) => T;
-    defaultInterpreter?: Interpreter<string>;
+    defaultInterpreter?: () => Interpreter<string>;
     traits?: PluginDefinition<any, Traits, Kinds[number]>["traits"];
 }): PluginDefinition<T, Traits, Kinds[number]>;
 
@@ -395,7 +398,7 @@ export interface PluginDefinition<T = any, Traits extends Record<string, unknown
     readonly __traits?: Traits;
     // (undocumented)
     build: (ctx: PluginContext) => T;
-    defaultInterpreter?: Interpreter<K>;
+    defaultInterpreter?: () => Interpreter<K>;
     // (undocumented)
     name: string;
     // (undocumented)
@@ -495,6 +498,9 @@ export interface ShowFor<T> {
 
 // @public
 export const st: PluginDefinition<StMethods, {}, "st/let" | "st/get" | "st/set" | "st/push">;
+
+// @public
+export const stInterpreter: Interpreter<"st/let" | "st/get" | "st/set" | "st/push">;
 
 // @public
 export interface StMethods {
