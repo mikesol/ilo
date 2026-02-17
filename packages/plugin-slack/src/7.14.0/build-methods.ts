@@ -1,9 +1,8 @@
-import type { Expr, PluginContext } from "@mvfm/core";
+import type { PluginContext } from "@mvfm/core";
 import type { SlackConfig, SlackMethods } from "./types";
 
 export function buildSlackMethods(ctx: PluginContext, config: SlackConfig): SlackMethods {
-  const resolveParams = (params: Expr<Record<string, unknown>> | Record<string, unknown>) =>
-    ctx.lift(params).__node;
+  const resolveParams = (params: unknown) => ctx.lift(params).__node;
 
   return {
     slack: {
