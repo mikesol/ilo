@@ -25,12 +25,14 @@ const isIndex = isNamespaceIndex(example);
       <div class="mt-4 prose-index">
         <div set:html={example.content} />
         {example.staticCode && (
-          <div class="mt-8 border border-base-800">
-            <Code code={example.staticCode} lang="typescript" theme={MONO_THEME} />
+          <div class="playground-wrapper mt-6">
+            <div class="border border-base-800">
+              <Code code={example.staticCode} lang="typescript" theme={MONO_THEME} />
+            </div>
           </div>
         )}
         {example.code && (
-          <div class="playground-wrapper mt-8">
+          <div class="playground-wrapper mt-6">
             <div class="playground-fallback border border-base-800">
               <Code code={example.code} lang="typescript" theme={MONO_THEME} />
             </div>
@@ -64,8 +66,8 @@ const isIndex = isNamespaceIndex(example);
   .playground-wrapper:has(.playground-ready) .playground-editor {
     display: block;
   }
-  /* Match fallback styling to the editor */
-  .playground-fallback pre {
+  /* Match fallback and static code styling to the editor */
+  .playground-wrapper pre {
     padding: 16px;
     font-size: 0.875rem;
     line-height: 1.625;
@@ -89,5 +91,13 @@ const isIndex = isNamespaceIndex(example);
   .prose-index code {
     color: rgb(var(--base-300));
     font-size: 0.875rem;
+  }
+  .prose-index a {
+    color: rgb(var(--base-200));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose-index a:hover {
+    color: rgb(var(--base-50));
   }
 </style>
