@@ -118,6 +118,12 @@ async function* buildSchemaGen(
     }
     case "zod/preprocess":
       return yield* buildSchemaGen(node.inner as AnyZodSchemaNode);
+    case "zod/lazy": {
+      // Build the inner schema
+      const innerSchema = yield* buildSchemaGen(node.schema as AnyZodSchemaNode);
+      // Wrap it in z.lazy with a function that returns the built schema
+      return z.lazy(() => innerSchema);
+    }
     case "zod/promise":
       return z.promise(yield* buildSchemaGen(node.inner as AnyZodSchemaNode));
     default:
