@@ -14,8 +14,8 @@ Import types directly from `twilio` package (as a devDependency) rather than red
 
 Re-exports from twilio-node's deep paths:
 
-- **Messages:** `MessageInstance`, `MessageListInstanceCreateOptions`, `MessageListInstancePageOptions`
-- **Calls:** `CallInstance`, `CallListInstanceCreateOptions`, `CallListInstancePageOptions`
+- **Messages:** `MessageInstance`, `MessageListInstanceCreateOptions`, `MessageListInstanceOptions`
+- **Calls:** `CallInstance`, `CallListInstanceCreateOptions`, `CallListInstanceOptions`
 
 Type-only imports keep bundle size zero.
 
@@ -32,12 +32,12 @@ Replace `Record<string, unknown>` in all interfaces:
 | `TwilioMessageContext` | `fetch()` return | `Expr<Record<string, unknown>>` | `Expr<MessageInstance>` |
 | `TwilioMessagesResource` | `create()` params | `Record<string, unknown>` | `MessageListInstanceCreateOptions` |
 | `TwilioMessagesResource` | `create()` return | `Expr<Record<string, unknown>>` | `Expr<MessageInstance>` |
-| `TwilioMessagesResource` | `list()` params | `Record<string, unknown>` | `MessageListInstancePageOptions` |
+| `TwilioMessagesResource` | `list()` params | `Record<string, unknown>` | `MessageListInstanceOptions` |
 | `TwilioMessagesResource` | `list()` return | `Expr<Record<string, unknown>>` | `Expr<MessageInstance[]>` |
 | `TwilioCallContext` | `fetch()` return | `Expr<Record<string, unknown>>` | `Expr<CallInstance>` |
 | `TwilioCallsResource` | `create()` params | `Record<string, unknown>` | `CallListInstanceCreateOptions` |
 | `TwilioCallsResource` | `create()` return | `Expr<Record<string, unknown>>` | `Expr<CallInstance>` |
-| `TwilioCallsResource` | `list()` params | `Record<string, unknown>` | `CallListInstancePageOptions` |
+| `TwilioCallsResource` | `list()` params | `Record<string, unknown>` | `CallListInstanceOptions` |
 | `TwilioCallsResource` | `list()` return | `Expr<Record<string, unknown>>` | `Expr<CallInstance[]>` |
 
 ### 4. Update `packages/plugin-twilio/src/5.5.1/interpreter.ts`

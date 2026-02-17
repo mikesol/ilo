@@ -9,23 +9,11 @@
 //   - Messages: create, fetch, list
 //   - Calls: create, fetch, list
 //
-// Not doable (fundamental mismatch with AST model):
-//   - Auto-pagination (each() with async iterator — push-based)
-//   - Webhooks / status callbacks (server-initiated push)
-//   - TwiML generation (XML construction, not REST API)
-//   - Real-time call control (stateful, TwiML-driven)
+// Not modeled (AST mismatch): auto-pagination, webhooks, TwiML, real-time call control.
 //
-// Remaining (same REST pattern, add as needed):
-//   Messages: update (cancel), remove
-//   Calls: update (modify in-progress)
-//   Verify: services, verifications, verification checks
-//   Lookups: phone number lookup
-//   Conversations, Sync, Studio, and 20+ other service domains
-//
-//   Each resource follows the same CRUD pattern: add node kinds,
-//   add methods to TwilioMethods, add switch cases to the
-//   interpreter. The interpreter/handler architecture does
-//   not need to change — twilio/api_call covers everything.
+// Remaining (same CRUD pattern): messages update/remove, calls update,
+// Verify, Lookups, Conversations, Sync, Studio, and 20+ other domains.
+// Add node kinds + TwilioMethods entries + interpreter cases; no arch changes needed.
 //
 // ============================================================
 //
@@ -55,19 +43,27 @@
 import type { Expr, PluginContext } from "@mvfm/core";
 import { definePlugin } from "@mvfm/core";
 import { twilioInterpreter } from "./interpreter";
+import type {
+  CallInstance,
+  CallListInstanceCreateOptions,
+  CallListInstanceOptions,
+  MessageInstance,
+  MessageListInstanceCreateOptions,
+  MessageListInstanceOptions,
+} from "./types";
 
 // ---- What the plugin adds to $ ----------------------------
 
 /** Context returned by `$.twilio.messages(sid)` — mirrors twilio-node's MessageContext. */
 export interface TwilioMessageContext {
   /** Fetch this message by its SID. */
-  fetch(): Expr<Record<string, unknown>>;
+  fetch(): Expr<MessageInstance>;
 }
 
 /** Context returned by `$.twilio.calls(sid)` — mirrors twilio-node's CallContext. */
 export interface TwilioCallContext {
   /** Fetch this call by its SID. */
-  fetch(): Expr<Record<string, unknown>>;
+  fetch(): Expr<CallInstance>;
 }
 
 /**
@@ -79,12 +75,12 @@ export interface TwilioMessagesResource {
   (sid: Expr<string> | string): TwilioMessageContext;
   /** Send an SMS/MMS message. */
   create(
-    params: Expr<Record<string, unknown>> | Record<string, unknown>,
-  ): Expr<Record<string, unknown>>;
+    params: Expr<MessageListInstanceCreateOptions> | MessageListInstanceCreateOptions,
+  ): Expr<MessageInstance>;
   /** List messages with optional filter params. */
   list(
-    params?: Expr<Record<string, unknown>> | Record<string, unknown>,
-  ): Expr<Record<string, unknown>>;
+    params?: Expr<MessageListInstanceOptions> | MessageListInstanceOptions,
+  ): Expr<MessageInstance[]>;
 }
 
 /**
@@ -96,12 +92,10 @@ export interface TwilioCallsResource {
   (sid: Expr<string> | string): TwilioCallContext;
   /** Initiate an outbound call. */
   create(
-    params: Expr<Record<string, unknown>> | Record<string, unknown>,
-  ): Expr<Record<string, unknown>>;
+    params: Expr<CallListInstanceCreateOptions> | CallListInstanceCreateOptions,
+  ): Expr<CallInstance>;
   /** List calls with optional filter params. */
-  list(
-    params?: Expr<Record<string, unknown>> | Record<string, unknown>,
-  ): Expr<Record<string, unknown>>;
+  list(params?: Expr<CallListInstanceOptions> | CallListInstanceOptions): Expr<CallInstance[]>;
 }
 
 /**
@@ -165,7 +159,13 @@ export function twilio(config: TwilioConfig) {
         return ctx.isExpr(sid) ? sid.__node : ctx.lift(sid).__node;
       }
 
-      function resolveParams(params: Expr<Record<string, unknown>> | Record<string, unknown>) {
+      type TwilioParams =
+        | MessageListInstanceCreateOptions
+        | MessageListInstanceOptions
+        | CallListInstanceCreateOptions
+        | CallListInstanceOptions;
+
+      function resolveParams(params: Expr<TwilioParams> | TwilioParams) {
         return ctx.lift(params).__node;
       }
 
@@ -174,7 +174,7 @@ export function twilio(config: TwilioConfig) {
       const messages = Object.assign(
         (sid: Expr<string> | string): TwilioMessageContext => ({
           fetch() {
-            return ctx.expr({
+            return ctx.expr<MessageInstance>({
               kind: "twilio/fetch_message",
               sid: resolveSid(sid),
               config,
@@ -182,15 +182,17 @@ export function twilio(config: TwilioConfig) {
           },
         }),
         {
-          create(params: Expr<Record<string, unknown>> | Record<string, unknown>) {
-            return ctx.expr({
+          create(
+            params: Expr<MessageListInstanceCreateOptions> | MessageListInstanceCreateOptions,
+          ) {
+            return ctx.expr<MessageInstance>({
               kind: "twilio/create_message",
               params: resolveParams(params),
               config,
             });
           },
-          list(params?: Expr<Record<string, unknown>> | Record<string, unknown>) {
-            return ctx.expr({
+          list(params?: Expr<MessageListInstanceOptions> | MessageListInstanceOptions) {
+            return ctx.expr<MessageInstance[]>({
               kind: "twilio/list_messages",
               params: params != null ? resolveParams(params) : null,
               config,
@@ -203,7 +205,7 @@ export function twilio(config: TwilioConfig) {
       const calls = Object.assign(
         (sid: Expr<string> | string): TwilioCallContext => ({
           fetch() {
-            return ctx.expr({
+            return ctx.expr<CallInstance>({
               kind: "twilio/fetch_call",
               sid: resolveSid(sid),
               config,
@@ -211,15 +213,15 @@ export function twilio(config: TwilioConfig) {
           },
         }),
         {
-          create(params: Expr<Record<string, unknown>> | Record<string, unknown>) {
-            return ctx.expr({
+          create(params: Expr<CallListInstanceCreateOptions> | CallListInstanceCreateOptions) {
+            return ctx.expr<CallInstance>({
               kind: "twilio/create_call",
               params: resolveParams(params),
               config,
             });
           },
-          list(params?: Expr<Record<string, unknown>> | Record<string, unknown>) {
-            return ctx.expr({
+          list(params?: Expr<CallListInstanceOptions> | CallListInstanceOptions) {
+            return ctx.expr<CallInstance[]>({
               kind: "twilio/list_calls",
               params: params != null ? resolveParams(params) : null,
               config,
@@ -235,51 +237,7 @@ export function twilio(config: TwilioConfig) {
   });
 }
 
-// ============================================================
-// HONEST ASSESSMENT: What works, what's hard, what breaks
-// ============================================================
-//
-// WORKS GREAT:
-//
-// 1. Basic CRUD operations:
-//    Real:  const msg = await client.messages.create({ to: '+1...', from: '+1...', body: 'Hello' })
-//    Mvfm:   const msg = $.twilio.messages.create({ to: '+1...', from: '+1...', body: 'Hello' })
-//    Nearly identical. Only difference is $ prefix and no await.
-//
-// 2. Parameterized operations with proxy values:
-//    const msg = $.twilio.messages.create({ to: $.input.to, body: $.input.body })
-//    Proxy chains capture the dependency graph perfectly.
-//
-// 3. Resource method naming:
-//    Real:  client.messages.create(...)
-//    Mvfm:   $.twilio.messages.create(...)
-//    The nested resource pattern maps 1:1.
-//
-// WORKS GREAT (cont.):
-//
-// 4. Fetch by SID:
-//    Real:  client.messages('SM123').fetch()
-//    Mvfm:   $.twilio.messages('SM123').fetch()
-//    1:1 match. Uses Object.assign to make messages both callable
-//    and have .create()/.list() properties, just like twilio-node.
-//
-// 5. Return types:
-//    Real twilio-node has typed response classes (MessageInstance,
-//    CallInstance, etc.) with properties like .sid, .status, .body.
-//    Mvfm uses Record<string, unknown> for all return types.
-//    Property access still works via proxy (msg.sid, call.status),
-//    but no IDE autocomplete for Twilio-specific fields.
-//
-// DOESN'T WORK / NOT MODELED:
-//
-// 6. Auto-pagination:
-//    Real:  client.messages.each({ pageSize: 20 }, (msg) => { ... })
-//    Mvfm:   Can't model async iterators/callbacks.
-//
-// 7. Webhooks / status callbacks:
-//    Server-initiated push events, not request/response.
-//
-// 8. TwiML generation:
-//    XML construction — separate concern from REST API calls.
-//
-// ============================================================
+// What works well: CRUD (create/fetch/list) is near-1:1 with twilio-node,
+// parameterized ops via proxy chains, callable resource pattern (messages(sid).fetch()),
+// and SDK return types (MessageInstance, CallInstance) for IDE autocomplete.
+// What doesn't: auto-pagination (async iterators), webhooks (push), TwiML (XML).
