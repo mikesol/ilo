@@ -17,6 +17,8 @@ export interface NamespaceIndex {
   content: string;
   /** Optional non-runnable code example (rendered with Shiki Code component). */
   staticCode?: string;
+  /** Optional runnable code for an interactive playground. */
+  code?: string;
 }
 
 /** Union of all example entry types. */
@@ -26,5 +28,5 @@ export type ExampleEntry = NodeExample | NamespaceIndex;
 export function isNamespaceIndex(
   entry: ExampleEntry,
 ): entry is NamespaceIndex {
-  return "content" in entry && !("code" in entry);
+  return "content" in entry;
 }

@@ -29,6 +29,14 @@ const isIndex = isNamespaceIndex(example);
             <Code code={example.staticCode} lang="typescript" theme={MONO_THEME} />
           </div>
         )}
+        {example.code && (
+          <div class="playground-wrapper mt-8">
+            <div class="playground-fallback border border-base-800">
+              <Code code={example.code} lang="typescript" theme={MONO_THEME} />
+            </div>
+            <Playground code={example.code} client:load />
+          </div>
+        )}
       </div>
     ) : (
       <>

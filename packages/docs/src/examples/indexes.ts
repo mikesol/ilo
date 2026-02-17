@@ -8,7 +8,18 @@ const indexes: Record<string, NamespaceIndex> = {
   <li><code>app(schema, builder)</code> defines a program from a schema and builder function.</li>
   <li><code>foldAST(interpreter, program)</code> executes the program with a concrete interpreter.</li>
 </ul>
-<p>The <code>prelude</code> export bundles all core plugins. Use <code>defaults(app)</code> to build a standard interpreter, and <code>injectInput(prog, data)</code> to provide runtime values.</p>`,
+<p>The <code>prelude</code> export bundles all core plugins. Use <code>defaults(app)</code> to build a standard interpreter, and <code>injectInput(prog, data)</code> to provide runtime values.</p>
+`,
+    code: `const app = mvfm(prelude, console_);
+
+const prog = app({ greeting: "string" }, ($) =>
+  $.console.log($.concat($.input.greeting, " — have fun!"))
+);
+
+await foldAST(
+  defaults(app),
+  injectInput(prog, { greeting: "hello, mvfm" })
+);`,
   },
 
   boolean: {
