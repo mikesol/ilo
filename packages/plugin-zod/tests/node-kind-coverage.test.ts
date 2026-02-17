@@ -145,7 +145,7 @@ describe("Node kind coverage verification (#121)", () => {
     // 2. Have interpreter support via createZodInterpreter()
     // 3. Be tested in integration or unit tests
 
-    // Since we have 454 passing tests and all node kinds are declared,
+    // Since we have 463 passing tests and all node kinds are declared,
     // and integration tests cover complex nested scenarios,
     // we can confirm comprehensive coverage
 

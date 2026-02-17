@@ -193,6 +193,7 @@ describe("zodInterpreter: edge cases and validation (#121)", () => {
       $.zod
         .object({
           status: $.zod.literal("active"),
+          // literal array creates union: "admin" | "user"
           type: $.zod.literal(["admin", "user"]),
           count: $.zod.literal(42),
         })
