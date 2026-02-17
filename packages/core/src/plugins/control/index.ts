@@ -9,18 +9,18 @@ export interface ControlMethods {
   /**
    * Iterate over each element of a collection, executing side effects.
    *
-   * @param collection - The array expression to iterate.
+   * @param collection - The array expression to iterate, or a raw array to auto-lift.
    * @param body - Callback receiving each element as an `Expr<T>`.
    */
-  each<T>(collection: Expr<T[]>, body: (item: Expr<T>) => void): void;
+  each<T>(collection: Expr<T[]> | T[], body: (item: Expr<T>) => void): void;
   /**
    * Loop while a condition is true.
    *
    * @param condition - Boolean expression to evaluate each iteration.
-   * @returns A builder with a `body` method for the loop statements.
+   * @returns A builder with a `body` callback for the loop statements.
    */
   while(condition: Expr<boolean>): {
-    body: (...statements: unknown[]) => void;
+    body: (fn: () => void) => void;
   };
 }
 
@@ -35,7 +35,8 @@ export const control = definePlugin({
   defaultInterpreter: () => controlInterpreter,
   build(ctx: PluginContext): ControlMethods {
     return {
-      each<T>(collection: Expr<T[]>, body: (item: Expr<T>) => void) {
+      each<T>(collection: Expr<T[]> | T[], body: (item: Expr<T>) => void) {
+        const lifted = ctx.lift(collection as Expr<T[]> | T[]);
         const paramNode: any = { kind: "core/lambda_param", name: "item" };
         const paramProxy = ctx.expr<T>(paramNode) as Expr<T>;
         const prevLen = ctx.statements.length;
@@ -43,7 +44,7 @@ export const control = definePlugin({
         const bodyStatements = ctx.statements.splice(prevLen);
         ctx.emit({
           kind: "control/each",
-          collection: collection.__node,
+          collection: lifted.__node,
           param: paramNode,
           body: bodyStatements,
         });
@@ -51,11 +52,14 @@ export const control = definePlugin({
 
       while(condition: Expr<boolean>) {
         return {
-          body: (...stmts: unknown[]) => {
+          body: (fn: () => void) => {
+            const prevLen = ctx.statements.length;
+            fn();
+            const bodyStatements = ctx.statements.splice(prevLen);
             ctx.emit({
               kind: "control/while",
               condition: condition.__node,
-              body: stmts.filter((s) => ctx.isExpr(s)).map((s) => (s as Expr<unknown>).__node),
+              body: bodyStatements,
             });
           },
         };

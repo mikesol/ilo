@@ -46,6 +46,7 @@ export interface CoreBegin<T = unknown> extends TypedNode<T> {
 /** A program root node. */
 export interface CoreProgram extends TypedNode<unknown> {
   kind: "core/program";
+  statements: TypedNode[];
   result: TypedNode;
 }
 
@@ -130,6 +131,9 @@ export const coreInterpreter = defineInterpreter<
   },
 
   "core/program": async function* (node: CoreProgram) {
+    for (const stmt of node.statements ?? []) {
+      yield* eval_(stmt);
+    }
     return yield* eval_(node.result);
   },
 

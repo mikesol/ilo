@@ -1,7 +1,9 @@
 ---
 import Base from "../layouts/Base.astro";
+import { Code } from "astro:components";
 import Playground from "../components/Playground";
 import { getAllExamples } from "../examples";
+import { MONO_THEME } from "../themes/mono";
 
 export function getStaticPaths() {
   const examples = getAllExamples();
@@ -18,6 +20,33 @@ const { kind, description, code } = Astro.props;
   <div class="pt-4">
     <h1 class="text-2xl font-bold text-base-50 tracking-tight">{kind}</h1>
     <p class="mt-2 text-base text-base-500">{description}</p>
-    <Playground code={code} client:visible />
+    <div class="playground-wrapper mt-10">
+      <div class="playground-fallback border border-base-800">
+        <Code code={code} lang="typescript" theme={MONO_THEME} />
+      </div>
+      <Playground code={code} client:load />
+    </div>
   </div>
 </Base>
+
+<style is:global>
+  /* Hide fallback once the interactive editor mounts */
+  .playground-wrapper:has(.playground-ready) .playground-fallback {
+    display: none;
+  }
+  /* Hide the editor until it's ready */
+  .playground-editor {
+    display: none;
+  }
+  .playground-wrapper:has(.playground-ready) .playground-editor {
+    display: block;
+  }
+  /* Match fallback styling to the editor */
+  .playground-fallback pre {
+    padding: 16px;
+    font-size: 0.875rem;
+    line-height: 1.625;
+    tab-size: 2;
+    margin: 0;
+  }
+</style>

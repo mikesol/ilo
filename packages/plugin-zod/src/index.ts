@@ -9,6 +9,7 @@ import type { ZodDateNamespace } from "./date";
 import { dateNamespace, dateNodeKinds } from "./date";
 import type { ZodEnumNamespace } from "./enum";
 import { enumNamespace, enumNodeKinds } from "./enum";
+import { createZodInterpreter } from "./interpreter";
 import type { ZodIntersectionNamespace } from "./intersection";
 import { intersectionNamespace, intersectionNodeKinds } from "./intersection";
 import type { ZodLiteralNamespace } from "./literal";
@@ -134,6 +135,8 @@ const COMMON_NODE_KINDS: string[] = [
  */
 export const zod = definePlugin({
   name: "zod",
+
+  defaultInterpreter: createZodInterpreter,
 
   nodeKinds: [
     ...COMMON_NODE_KINDS,
