@@ -2,6 +2,7 @@
 export async function createPlaygroundScope(
   fakeConsole: Record<string, (...args: unknown[]) => void>,
   mockInterpreter?: Record<string, unknown>,
+  pgliteDb?: unknown,
 ) {
   const core = await import("@mvfm/core");
   const pluginConsole = await import("@mvfm/plugin-console");
@@ -34,20 +35,49 @@ export async function createPlaygroundScope(
     zod: pluginZod.zod,
     createZodInterpreter: pluginZod.createZodInterpreter,
     consoleInterpreter: fakeConsoleInterpreter,
-    defaults: (app: any, ...args: any[]) => {
-      // Merge mock overrides into any user-provided overrides
+  };
+
+  // Wire PGLite-backed postgres when a db instance is provided
+  if (pgliteDb) {
+    const pluginPostgres = await import("@mvfm/plugin-postgres");
+    const { wrapPgLite } = await import("./pglite-adapter");
+    const pg = pluginPostgres.postgres();
+    const client = wrapPgLite(pgliteDb as any);
+    injected.pg = pg;
+
+    // Build the WASM postgres interpreter eagerly so examples pass it
+    // explicitly: defaults(app, { postgres: wasmPgInterpreter })
+    const baseInterp: Record<string, unknown> = {
+      ...(core.coreInterpreter as any),
+      ...fakeConsoleInterpreter,
+    };
+    injected.wasmPgInterpreter = pluginPostgres.serverInterpreter(client, baseInterp as any);
+
+    injected.defaults = (app: any, ...args: any[]) => {
+      const userOverrides = (args[0] ?? {}) as Record<string, unknown>;
+      const interp = realDefaults(app, {
+        ...mockOverrides,
+        ...userOverrides,
+      });
+      Object.assign(interp, fakeConsoleInterpreter);
+      return interp;
+    };
+  } else {
+    injected.defaults = (app: any, ...args: any[]) => {
       const userOverrides = (args[0] ?? {}) as Record<string, unknown>;
       const merged = { ...mockOverrides, ...userOverrides };
       const interp = realDefaults(app, merged);
       Object.assign(interp, fakeConsoleInterpreter);
       return interp;
-    },
-    foldAST: async (...args: any[]) => {
-      const result = await (realFoldAST as any)(...args);
-      lastFoldResult = result;
-      return result;
-    },
+    };
+  }
+
+  injected.foldAST = async (...args: any[]) => {
+    const result = await (realFoldAST as any)(...args);
+    lastFoldResult = result;
+    return result;
   };
+
   return {
     paramNames: ["console", ...Object.keys(injected)],
     paramValues: [fakeConsole, ...Object.values(injected)],

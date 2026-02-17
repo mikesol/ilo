@@ -8,7 +8,11 @@ import { MONO_THEME } from "../themes/mono";
 
 interface PlaygroundProps {
   code: string;
+  pglite?: { seedSQL: string };
+  mockInterpreter?: string;
 }
+
+type DbState = "idle" | "loading" | "ready" | "error";
 
 let highlighterPromise: Promise<Highlighter> | null = null;
 
@@ -22,15 +26,41 @@ function getHighlighter() {
   return highlighterPromise;
 }
 
-export default function Playground({ code: initialCode }: PlaygroundProps) {
+export default function Playground({ code: initialCode, pglite, mockInterpreter }: PlaygroundProps) {
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState<string>("");
   const [isError, setIsError] = useState(false);
   const [highlighter, setHighlighter] = useState<Highlighter | null>(null);
+  const [dbState, setDbState] = useState<DbState>(pglite ? "loading" : "idle");
+  const [dbError, setDbError] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
+  const dbRef = useRef<unknown>(null);
 
   useEffect(() => {
     getHighlighter().then(setHighlighter);
+  }, []);
+
+  // PGLite initialization
+  useEffect(() => {
+    if (!pglite) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { PGlite } = await import("@electric-sql/pglite");
+        const db = new PGlite();
+        await db.exec(pglite.seedSQL);
+        if (!cancelled) {
+          dbRef.current = db;
+          setDbState("ready");
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setDbState("error");
+          setDbError(e instanceof Error ? e.message : String(e));
+        }
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const highlight = useCallback(
@@ -44,7 +74,23 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
     [highlighter],
   );
 
+  const parsedMockInterpreter = useRef<Record<string, unknown> | undefined>(undefined);
+  if (mockInterpreter && !parsedMockInterpreter.current) {
+    try {
+      parsedMockInterpreter.current = new Function(`return (${mockInterpreter})`)();
+    } catch { /* ignore parse errors */ }
+  }
+
+  const resetDb = useCallback(async () => {
+    if (!dbRef.current || !pglite) return;
+    await (dbRef.current as any).exec(pglite.seedSQL);
+    setOutput("");
+    setIsError(false);
+  }, [pglite]);
+
   const run = useCallback(async () => {
+    if (pglite && dbState !== "ready") return;
+
     const logs: string[] = [];
     const noop = (...args: unknown[]) =>
       logs.push(args.map((a) => typeof a === "string" ? a : JSON.stringify(a, null, 2)).join(" "));
@@ -59,7 +105,11 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
 
     try {
       const { createPlaygroundScope } = await import("../playground-scope");
-      const scope = await createPlaygroundScope(fakeConsole);
+      const scope = await createPlaygroundScope(
+        fakeConsole,
+        parsedMockInterpreter.current,
+        pglite ? dbRef.current : undefined,
+      );
       const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
       const fn = new AsyncFunction(...scope.paramNames, code);
       await fn(...scope.paramValues);
@@ -70,7 +120,7 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
         const formatted = typeof scope.lastFoldResult === "string"
           ? scope.lastFoldResult
           : JSON.stringify(scope.lastFoldResult, null, 2);
-        parts.push(`→ ${formatted}`);
+        parts.push(`\u2192 ${formatted}`);
       }
       setOutput(parts.join("\n"));
     } catch (e: unknown) {
@@ -87,7 +137,24 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
       const prefix = line != null ? `Line ${line}: ` : "";
       setOutput(prefix + err.message);
     }
-  }, [code]);
+  }, [code, pglite, dbState]);
+
+  if (dbState === "loading") {
+    return (
+      <div className="flex items-center gap-3 py-12">
+        <div className="h-4 w-4 border-2 border-base-400 border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm text-base-500 tracking-wide">Initializing database...</span>
+      </div>
+    );
+  }
+
+  if (dbState === "error") {
+    return (
+      <div className="py-12">
+        <pre className="text-sm text-base-500">Failed to load PGLite: {dbError}</pre>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -127,6 +194,15 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
         >
           RUN
         </button>
+        {pglite && (
+          <button
+            onClick={resetDb}
+            type="button"
+            className="px-4 py-1.5 text-sm tracking-widest font-medium border border-base-700 text-base-400 hover:border-base-500 hover:text-base-300 transition-colors cursor-pointer"
+          >
+            RESET DB
+          </button>
+        )}
         <span className="text-xs text-base-600">Ctrl+Enter</span>
       </div>
       {output && (
