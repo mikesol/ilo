@@ -7,4 +7,6 @@ export interface NodeExample {
   plugins?: string[];
   /** JS expression returning an interpreter record for infra plugins. */
   mockInterpreter?: string;
+  /** When set, the playground loads PGLite and seeds it with this SQL. */
+  pglite?: { seedSQL: string };
 }
