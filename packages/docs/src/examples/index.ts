@@ -10,12 +10,13 @@ import ord from "./ord";
 import postgres from "./postgres";
 import st from "./st";
 import str from "./str";
-import type { NodeExample } from "./types";
+import indexes from "./indexes";
+import type { ExampleEntry } from "./types";
 import zodSchemas from "./zod-schemas";
 import zodSchemasMore from "./zod-schemas-more";
 import zodWrappers from "./zod-wrappers";
 
-const modules: Record<string, NodeExample>[] = [
+const modules: Record<string, ExampleEntry>[] = [
   core,
   boolean,
   num,
@@ -31,8 +32,9 @@ const modules: Record<string, NodeExample>[] = [
   zodSchemas,
   zodSchemasMore,
   zodWrappers,
+  indexes,
 ];
 
-export function getAllExamples(): Record<string, NodeExample> {
+export function getAllExamples(): Record<string, ExampleEntry> {
   return Object.assign({}, ...modules);
 }
