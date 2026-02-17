@@ -8,6 +8,7 @@ import { enumInterpreter } from "./enum";
 import type { SchemaInterpreterMap } from "./interpreter-utils";
 import { toZodError } from "./interpreter-utils";
 import { createIntersectionInterpreter } from "./intersection";
+import { createLazyInterpreter } from "./lazy";
 import { literalInterpreter } from "./literal";
 import { createMapSetInterpreter } from "./map-set";
 import { numberInterpreter } from "./number";
@@ -51,6 +52,7 @@ function getHandlers(): SchemaInterpreterMap {
       ...createIntersectionInterpreter(buildSchemaGen),
       ...createRecordInterpreter(buildSchemaGen),
       ...createMapSetInterpreter(buildSchemaGen),
+      ...createLazyInterpreter(buildSchemaGen),
     };
   }
   return schemaHandlers;

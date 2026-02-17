@@ -12,6 +12,8 @@ import { enumNamespace, enumNodeKinds } from "./enum";
 import { createZodInterpreter } from "./interpreter";
 import type { ZodIntersectionNamespace } from "./intersection";
 import { intersectionNamespace, intersectionNodeKinds } from "./intersection";
+import type { ZodLazyNamespace } from "./lazy";
+import { lazyNamespace, lazyNodeKinds } from "./lazy";
 import type { ZodLiteralNamespace } from "./literal";
 import { literalNamespace, literalNodeKinds } from "./literal";
 import type { ZodMapSetNamespace } from "./map-set";
@@ -46,6 +48,7 @@ export { ZodEnumBuilder, ZodNativeEnumBuilder } from "./enum";
 export { createZodInterpreter } from "./interpreter";
 export type { SchemaInterpreterMap } from "./interpreter-utils";
 export { ZodIntersectionBuilder } from "./intersection";
+export { ZodLazyBuilder } from "./lazy";
 export { ZodLiteralBuilder } from "./literal";
 export { ZodMapBuilder, ZodSetBuilder } from "./map-set";
 export { ZodNumberBuilder } from "./number";
@@ -91,6 +94,7 @@ export interface ZodNamespace
     ZodDateNamespace,
     ZodEnumNamespace,
     ZodIntersectionNamespace,
+    ZodLazyNamespace,
     ZodLiteralNamespace,
     ZodMapSetNamespace,
     ZodNumberNamespace,
@@ -146,6 +150,7 @@ export const zod = definePlugin({
     ...dateNodeKinds,
     ...enumNodeKinds,
     ...intersectionNodeKinds,
+    ...lazyNodeKinds,
     ...literalNodeKinds,
     ...mapSetNodeKinds,
     ...numberNodeKinds,
@@ -170,6 +175,7 @@ export const zod = definePlugin({
         ...dateNamespace(ctx, parseError),
         ...enumNamespace(ctx, parseError),
         ...intersectionNamespace(ctx, parseError),
+        ...lazyNamespace(ctx),
         ...literalNamespace(ctx),
         ...mapSetNamespace(ctx, parseError),
         ...numberNamespace(ctx, parseError),
