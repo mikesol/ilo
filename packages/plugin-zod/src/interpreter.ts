@@ -24,6 +24,8 @@ import { primitivesInterpreter } from "./primitives";
 import { createRecordInterpreter } from "./record";
 import { specialInterpreter } from "./special";
 import { stringInterpreter } from "./string";
+import { stringboolInterpreter } from "./stringbool";
+import { createTemplateLiteralInterpreter } from "./template-literal";
 import type { AnyZodSchemaNode, ValidationASTNode } from "./types";
 import { createUnionInterpreter } from "./union";
 import { zodNonoptional, zodPrefault, zodTupleRest } from "./zod-compat";
@@ -37,6 +39,7 @@ const leafHandlers: SchemaInterpreterMap = {
   ...numberInterpreter,
   ...primitivesInterpreter,
   ...specialInterpreter,
+  ...stringboolInterpreter,
 };
 
 let schemaHandlers: SchemaInterpreterMap | undefined;
@@ -51,6 +54,7 @@ function getHandlers(): SchemaInterpreterMap {
       ...createIntersectionInterpreter(buildSchemaGen),
       ...createRecordInterpreter(buildSchemaGen),
       ...createMapSetInterpreter(buildSchemaGen),
+      ...createTemplateLiteralInterpreter(buildSchemaGen),
     };
   }
   return schemaHandlers;

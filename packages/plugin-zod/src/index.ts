@@ -30,6 +30,10 @@ import type { ZodStringNamespace } from "./string";
 import { stringNamespace, stringNodeKinds } from "./string";
 import type { ZodStringFormatsNamespace } from "./string-formats";
 import { stringFormatsNamespace, stringFormatsNodeKinds } from "./string-formats";
+import type { ZodStringBoolNamespace } from "./stringbool";
+import { stringboolNamespace, stringboolNodeKinds } from "./stringbool";
+import type { ZodTemplateLiteralNamespace } from "./template-literal";
+import { templateLiteralNamespace, templateLiteralNodeKinds } from "./template-literal";
 import type { ZodTransformNamespace } from "./transform";
 import { transformNamespace, transformNodeKinds } from "./transform";
 import type { ZodTupleNamespace } from "./tuple";
@@ -57,6 +61,8 @@ export { ZodSimpleBuilder } from "./special";
 export { ZodStringBuilder } from "./string";
 export type { ZodIsoNamespace, ZodStringFormatsNamespace } from "./string-formats";
 export { buildStringFormat } from "./string-formats";
+export { ZodStringBoolBuilder } from "./stringbool";
+export { ZodTemplateLiteralBuilder } from "./template-literal";
 export { ZodTransformBuilder } from "./transform";
 export { ZodTupleBuilder } from "./tuple";
 export type {
@@ -99,6 +105,8 @@ export interface ZodNamespace
     ZodRecordNamespace,
     ZodSpecialNamespace,
     ZodStringFormatsNamespace,
+    ZodStringBoolNamespace,
+    ZodTemplateLiteralNamespace,
     ZodTransformNamespace,
     ZodTupleNamespace,
     ZodUnionNamespace {
@@ -155,6 +163,8 @@ export const zod = definePlugin({
     ...recordNodeKinds,
     ...specialNodeKinds,
     ...stringFormatsNodeKinds,
+    ...stringboolNodeKinds,
+    ...templateLiteralNodeKinds,
     ...transformNodeKinds,
     ...tupleNodeKinds,
     ...unionNodeKinds,
@@ -179,6 +189,8 @@ export const zod = definePlugin({
         ...recordNamespace(ctx, parseError),
         ...specialNamespace(ctx, parseError),
         ...stringFormatsNamespace(ctx, parseError),
+        ...stringboolNamespace(ctx),
+        ...templateLiteralNamespace(ctx),
         ...transformNamespace(ctx),
         ...tupleNamespace(ctx, parseError),
         ...unionNamespace(ctx, parseError),
