@@ -77,13 +77,13 @@ export function lazyNamespace(ctx: PluginContext): ZodLazyNamespace {
  */
 type SchemaBuildFn = (node: AnyZodSchemaNode) => AsyncGenerator<TypedNode, z.ZodType, unknown>;
 
-/** 
+/**
  * Cache for resolved lazy schemas to handle cycles during interpretation.
  * Maps each lazy node to its Zod schema.
  */
 const lazySchemaCache = new WeakMap<ZodLazyNode, z.ZodLazy<z.ZodType>>();
 
-/** 
+/**
  * Cache for schemas resolved from getters.
  * This allows the synchronous z.lazy callback to lookup pre-built schemas.
  */
@@ -92,16 +92,14 @@ const resolvedSchemaCache = new WeakMap<() => ZodSchemaBuilder<unknown>, z.ZodTy
 /** Create lazy interpreter handler with access to the shared schema builder. */
 export function createLazyInterpreter(buildSchema: SchemaBuildFn): SchemaInterpreterMap {
   return {
-    "zod/lazy": async function* (
-      node: ZodLazyNode,
-    ): AsyncGenerator<TypedNode, z.ZodType, unknown> {
+    "zod/lazy": async function* (node: ZodLazyNode): AsyncGenerator<TypedNode, z.ZodType, unknown> {
       const getter = node.getter;
-      
+
       // Check cache to avoid rebuilding the same lazy schema
       if (lazySchemaCache.has(node)) {
         return lazySchemaCache.get(node)!;
       }
-      
+
       // Create the lazy schema wrapper
       // The challenge: z.lazy needs a sync function, but buildSchema is async
       // Solution: Pre-build the schema now and cache it for the getter
@@ -110,36 +108,36 @@ export function createLazyInterpreter(buildSchema: SchemaBuildFn): SchemaInterpr
         if (resolvedSchemaCache.has(getter)) {
           return resolvedSchemaCache.get(getter)!;
         }
-        
+
         // If not cached, we need the schema to have been pre-built
         // This can happen during mutual recursion where we're called before resolution
         // In this case, call the getter to get the builder and extract its cached schema
         const builder = getter();
         const schemaNode = builder.__schemaNode as AnyZodSchemaNode;
-        
+
         // For mutual recursion, the schema might be in our lazy cache already
         if (schemaNode.kind === "zod/lazy" && lazySchemaCache.has(schemaNode as ZodLazyNode)) {
           return lazySchemaCache.get(schemaNode as ZodLazyNode)!;
         }
-        
+
         // If we reach here during interpretation, it means we need the schema but haven't built it
         // This is the deferred resolution case - Zod will call this later during validation
         // We should throw a descriptive error
         throw new Error(
           `Lazy schema resolution failed: schema not pre-built. ` +
-          `This may happen if the lazy getter references schemas not yet interpreted.`
+            `This may happen if the lazy getter references schemas not yet interpreted.`,
         );
       });
-      
+
       // Cache the lazy schema to handle circular references
       lazySchemaCache.set(node, lazySchema);
-      
+
       // Now eagerly build the inner schema to populate resolvedSchemaCache
       // This allows subsequent lazy callbacks to find the pre-built schema
       try {
         const builder = getter();
         const schemaNode = builder.__schemaNode as AnyZodSchemaNode;
-        
+
         // Only build if not already cached (avoid infinite loops)
         if (!resolvedSchemaCache.has(getter)) {
           // Build the schema asynchronously
@@ -147,11 +145,11 @@ export function createLazyInterpreter(buildSchema: SchemaBuildFn): SchemaInterpr
           // Cache it for the synchronous lazy callback
           resolvedSchemaCache.set(getter, builtSchema);
         }
-      } catch (error) {
+      } catch (_error) {
         // If we get an error during pre-building (e.g., due to circular refs),
         // that's okay - the lazy wrapper will handle deferred resolution
       }
-      
+
       return lazySchema;
     },
   };

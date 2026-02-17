@@ -8,11 +8,8 @@ describe("lazy schema interpreter (#117)", () => {
     const prog = app({ value: "string" }, ($) => {
       return $.zod.lazy(() => $.zod.string()).parse($.input.value);
     });
-    
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { value: "hello" })
-    );
+
+    const result = await foldAST(defaults(app), injectInput(prog, { value: "hello" }));
     expect(result).toBe("hello");
   });
 
@@ -25,7 +22,7 @@ describe("lazy schema interpreter (#117)", () => {
       });
       return Category.parse($.input.value);
     });
-    
+
     const input = {
       name: "Electronics",
       subcategories: [
@@ -33,11 +30,8 @@ describe("lazy schema interpreter (#117)", () => {
         { name: "Phones", subcategories: [] },
       ],
     };
-    
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { value: input })
-    );
+
+    const result = await foldAST(defaults(app), injectInput(prog, { value: input }));
     expect(result).toEqual(input);
   });
 
@@ -54,7 +48,7 @@ describe("lazy schema interpreter (#117)", () => {
       });
       return User.parse($.input.value);
     });
-    
+
     const input = {
       email: "user@example.com",
       posts: [
@@ -67,11 +61,8 @@ describe("lazy schema interpreter (#117)", () => {
         },
       ],
     };
-    
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { value: input })
-    );
+
+    const result = await foldAST(defaults(app), injectInput(prog, { value: input }));
     expect(result).toEqual(input);
   });
 
@@ -84,7 +75,7 @@ describe("lazy schema interpreter (#117)", () => {
       });
       return TreeNode.parse($.input.value);
     });
-    
+
     const input = {
       value: 1,
       children: [
@@ -95,11 +86,8 @@ describe("lazy schema interpreter (#117)", () => {
         },
       ],
     };
-    
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { value: input })
-    );
+
+    const result = await foldAST(defaults(app), injectInput(prog, { value: input }));
     expect(result).toEqual(input);
   });
 
@@ -112,18 +100,15 @@ describe("lazy schema interpreter (#117)", () => {
       });
       return Category.safeParse($.input.value);
     });
-    
+
     const input = {
       name: "Electronics",
       subcategories: [
         { name: 123, subcategories: [] }, // Invalid: name should be string
       ],
     };
-    
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { value: input })
-    );
+
+    const result = await foldAST(defaults(app), injectInput(prog, { value: input }));
     expect(result.success).toBe(false);
   });
 
@@ -136,16 +121,13 @@ describe("lazy schema interpreter (#117)", () => {
       });
       return Category.parse($.input.value);
     });
-    
+
     const input = {
       name: "Root",
       subcategories: [],
     };
-    
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { value: input })
-    );
+
+    const result = await foldAST(defaults(app), injectInput(prog, { value: input }));
     expect(result).toEqual(input);
   });
 });

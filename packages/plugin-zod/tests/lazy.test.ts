@@ -38,7 +38,7 @@ describe("lazy schemas (#117)", () => {
       });
       return Category.parse($.input);
     });
-    
+
     // Verify the AST is finite (doesn't have infinite nesting)
     const ast = prog.ast as any;
     expect(ast.result.schema.kind).toBe("zod/object");
@@ -62,7 +62,7 @@ describe("lazy schemas (#117)", () => {
       });
       return User.parse($.input);
     });
-    
+
     // Verify both schemas produce finite ASTs
     const ast = prog.ast as any;
     expect(ast.result.schema.kind).toBe("zod/object");
@@ -77,11 +77,11 @@ describe("lazy schemas (#117)", () => {
     const prog = app(($) => {
       const getter = () => $.zod.string();
       const lazy1 = $.zod.lazy(getter);
-      const lazy2 = $.zod.lazy(getter);
+      const _lazy2 = $.zod.lazy(getter);
       // Return just the first one - we're testing AST structure
       return lazy1.parse($.input.a);
     });
-    
+
     const ast = prog.ast as any;
     // The lazy schema should exist in the AST
     expect(ast.result.schema.kind).toBe("zod/lazy");
@@ -90,9 +90,12 @@ describe("lazy schemas (#117)", () => {
   it("lazy schema inherits base methods (optional, nullable)", () => {
     const app = mvfm(zod);
     const prog = app(($) => {
-      return $.zod.lazy(() => $.zod.string()).optional().parse($.input);
+      return $.zod
+        .lazy(() => $.zod.string())
+        .optional()
+        .parse($.input);
     });
-    
+
     const ast = strip(prog.ast) as any;
     expect(ast.result.schema.kind).toBe("zod/optional");
     expect(ast.result.schema.inner.kind).toBe("zod/lazy");
