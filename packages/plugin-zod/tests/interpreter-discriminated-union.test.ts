@@ -123,4 +123,46 @@ describe("zodInterpreter: discriminated union schemas (#113)", () => {
     const result = (await run(prog, { value: { value: "test" } })) as any;
     expect(result.success).toBe(false);
   });
+
+  it("throws when an option is not an object schema", async () => {
+    const prog = app(($) =>
+      $.zod
+        .discriminatedUnion("type", [
+          $.zod.string(),
+          $.zod.object({ type: $.zod.literal("b"), count: $.zod.number() }),
+        ])
+        .parse($.input.value),
+    );
+    await expect(run(prog, { value: { type: "b", count: 1 } })).rejects.toThrow(
+      /option\[0\] must be a zod\/object schema/i,
+    );
+  });
+
+  it("throws when an option omits the discriminator key", async () => {
+    const prog = app(($) =>
+      $.zod
+        .discriminatedUnion("type", [
+          $.zod.object({ value: $.zod.string() }),
+          $.zod.object({ type: $.zod.literal("b"), count: $.zod.number() }),
+        ])
+        .parse($.input.value),
+    );
+    await expect(run(prog, { value: { type: "b", count: 1 } })).rejects.toThrow(
+      /option\[0\] is missing discriminator "type"/i,
+    );
+  });
+
+  it("throws when discriminator field is not literal or enum-like", async () => {
+    const prog = app(($) =>
+      $.zod
+        .discriminatedUnion("type", [
+          $.zod.object({ type: $.zod.string(), value: $.zod.string() }),
+          $.zod.object({ type: $.zod.literal("b"), count: $.zod.number() }),
+        ])
+        .parse($.input.value),
+    );
+    await expect(run(prog, { value: { type: "b", count: 1 } })).rejects.toThrow(
+      /option\[0\] discriminator "type" must be literal or enum-like/i,
+    );
+  });
 });

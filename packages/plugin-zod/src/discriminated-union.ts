@@ -63,7 +63,7 @@ export const discriminatedUnionNodeKinds: string[] = ["zod/discriminated_union"]
  */
 export interface ZodDiscriminatedUnionNamespace {
   /** Create a discriminated union schema builder. */
-  discriminatedUnion<T extends unknown[]>(
+  discriminatedUnion<T extends [unknown, unknown, ...unknown[]]>(
     discriminator: string,
     options: { [K in keyof T]: ZodSchemaBuilder<T[K]> },
     errorOrOpts?: string | { error?: string },
@@ -76,7 +76,7 @@ export function discriminatedUnionNamespace(
   parseError: (errorOrOpts?: string | { error?: string }) => string | undefined,
 ): ZodDiscriminatedUnionNamespace {
   return {
-    discriminatedUnion<T extends unknown[]>(
+    discriminatedUnion<T extends [unknown, unknown, ...unknown[]]>(
       discriminator: string,
       options: { [K in keyof T]: ZodSchemaBuilder<T[K]> },
       errorOrOpts?: string | { error?: string },
@@ -99,8 +99,57 @@ type SchemaBuildFn = (node: AnyZodSchemaNode) => AsyncGenerator<TypedNode, z.Zod
 
 interface ZodDiscriminatedUnionNode extends ZodSchemaNodeBase {
   kind: "zod/discriminated_union";
-  discriminator?: string;
-  options?: AnyZodSchemaNode[];
+  discriminator: string;
+  options: AnyZodSchemaNode[];
+}
+
+const WRAPPER_KINDS = new Set([
+  "zod/optional",
+  "zod/nullable",
+  "zod/nullish",
+  "zod/nonoptional",
+  "zod/default",
+  "zod/prefault",
+  "zod/catch",
+  "zod/readonly",
+  "zod/branded",
+]);
+
+function unwrapDiscriminatorSchema(node: AnyZodSchemaNode): AnyZodSchemaNode {
+  let current = node;
+  while (WRAPPER_KINDS.has(current.kind) && "inner" in current && current.inner) {
+    current = current.inner as AnyZodSchemaNode;
+  }
+  return current;
+}
+
+function assertOptionNodeShape(
+  node: AnyZodSchemaNode,
+  optionIndex: number,
+  discriminator: string,
+): void {
+  if (node.kind !== "zod/object") {
+    throw new Error(`Discriminated union option[${optionIndex}] must be a zod/object schema`);
+  }
+
+  const shape = (node as { shape?: Record<string, AnyZodSchemaNode> }).shape ?? {};
+  const discriminatorNode = shape[discriminator];
+  if (!discriminatorNode) {
+    throw new Error(
+      `Discriminated union option[${optionIndex}] is missing discriminator "${discriminator}"`,
+    );
+  }
+
+  const unwrapped = unwrapDiscriminatorSchema(discriminatorNode);
+  if (
+    unwrapped.kind !== "zod/literal" &&
+    unwrapped.kind !== "zod/enum" &&
+    unwrapped.kind !== "zod/native_enum"
+  ) {
+    throw new Error(
+      `Discriminated union option[${optionIndex}] discriminator "${discriminator}" must be literal or enum-like`,
+    );
+  }
 }
 
 /** Create discriminated union interpreter handlers with access to the shared schema builder. */
@@ -112,20 +161,28 @@ export function createDiscriminatedUnionInterpreter(
       node: ZodDiscriminatedUnionNode,
     ): AsyncGenerator<TypedNode, z.ZodType, unknown> {
       const discriminator = node.discriminator;
-      if (!discriminator) {
-        throw new Error("Discriminated union requires a discriminator key");
-      }
-      const optionNodes = node.options ?? [];
+      const optionNodes = node.options;
       if (optionNodes.length < 2) {
         throw new Error("Discriminated union requires at least 2 options");
       }
       const errorFn = toZodError(node.error as ErrorConfig | undefined);
       const errOpt = errorFn ? { error: errorFn } : {};
-      const builtOptions: z.ZodType[] = [];
-      for (const optNode of optionNodes) {
-        builtOptions.push(yield* buildSchema(optNode));
+      for (const [index, optNode] of optionNodes.entries()) {
+        assertOptionNodeShape(optNode, index, discriminator);
       }
-      return z.discriminatedUnion(discriminator, builtOptions as never, errOpt);
+      const builtOptions: z.ZodObject<any>[] = [];
+      for (const [index, optNode] of optionNodes.entries()) {
+        const built = yield* buildSchema(optNode);
+        if (!(built instanceof z.ZodObject)) {
+          throw new Error(`Discriminated union option[${index}] must build to a ZodObject schema`);
+        }
+        builtOptions.push(built);
+      }
+      return z.discriminatedUnion(
+        discriminator,
+        builtOptions as [z.ZodObject<any>, z.ZodObject<any>, ...z.ZodObject<any>[]],
+        errOpt,
+      );
     },
   };
 }
