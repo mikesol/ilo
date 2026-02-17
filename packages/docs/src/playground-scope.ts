@@ -11,6 +11,7 @@ export async function createPlaygroundScope(
     pluginConsole.wrapConsole(fakeConsole as any),
   );
   const realDefaults = core.defaults;
+  const realFoldAST = core.foldAST;
 
   // Group mock handler keys (e.g. "st/let") by plugin name (e.g. "st")
   // so they can be passed as overrides to defaults().
@@ -22,6 +23,9 @@ export async function createPlaygroundScope(
       mockOverrides[pluginName][key] = handler;
     }
   }
+
+  // Track the last foldAST return value for display in the playground.
+  let lastFoldResult: unknown;
 
   const injected: Record<string, unknown> = {
     ...core,
@@ -38,9 +42,17 @@ export async function createPlaygroundScope(
       Object.assign(interp, fakeConsoleInterpreter);
       return interp;
     },
+    foldAST: async (...args: any[]) => {
+      const result = await (realFoldAST as any)(...args);
+      lastFoldResult = result;
+      return result;
+    },
   };
   return {
     paramNames: ["console", ...Object.keys(injected)],
     paramValues: [fakeConsole, ...Object.values(injected)],
+    get lastFoldResult() {
+      return lastFoldResult;
+    },
   };
 }

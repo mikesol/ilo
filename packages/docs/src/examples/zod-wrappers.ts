@@ -5,10 +5,9 @@ const ZP = ["@mvfm/plugin-zod"];
 const examples: Record<string, NodeExample> = {
   "zod/branded": {
     description: "Brand a schema to create a nominal type tag",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().brand("Email").parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().brand("Email").parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -18,10 +17,9 @@ await foldAST(
   },
   "zod/catch": {
     description: "Provide a fallback value when validation fails",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().catch("default").parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().catch("default").parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -31,10 +29,9 @@ await foldAST(
   },
   "zod/default": {
     description: "Supply a default value for undefined inputs",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().default("hello").parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().default("hello").parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -44,10 +41,9 @@ await foldAST(
   },
   "zod/nonoptional": {
     description: "Remove optionality from a schema, requiring a value",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().optional().nonoptional().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().optional().nonoptional().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -57,10 +53,9 @@ await foldAST(
   },
   "zod/nullable": {
     description: "Allow null in addition to the base type",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().nullable().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().nullable().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -70,10 +65,9 @@ await foldAST(
   },
   "zod/nullish": {
     description: "Allow both null and undefined in addition to the base type",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().nullish().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().nullish().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -83,10 +77,9 @@ await foldAST(
   },
   "zod/optional": {
     description: "Mark a schema as optional, allowing undefined",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().optional().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().optional().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -96,10 +89,9 @@ await foldAST(
   },
   "zod/parse": {
     description: "Parse input and throw on validation failure",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -109,10 +101,9 @@ await foldAST(
   },
   "zod/parse_async": {
     description: "Parse input asynchronously and throw on validation failure",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().parseAsync($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().parseAsync($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -122,10 +113,9 @@ await foldAST(
   },
   "zod/prefault": {
     description: "Supply a default before validation rather than after",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().min(1).prefault("fallback").parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().min(1).prefault("fallback").parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -135,10 +125,9 @@ await foldAST(
   },
   "zod/readonly": {
     description: "Mark a schema output as readonly",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.object({ name: $.zod.string() }).readonly().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.object({ name: $.zod.string() }).readonly().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -148,10 +137,9 @@ await foldAST(
   },
   "zod/safe_parse": {
     description: "Parse input returning a result object instead of throwing",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().safeParse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().safeParse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -161,10 +149,9 @@ await foldAST(
   },
   "zod/safe_parse_async": {
     description: "Parse input asynchronously returning a result object",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().safeParseAsync($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().safeParseAsync($.input.value);
 });
 await foldAST(
   defaults(app),

@@ -6,10 +6,9 @@ const ZP = ["@mvfm/plugin-zod"];
 const examples: Record<string, NodeExample> = {
   "zod/object": {
     description: "Schema for validating objects with typed properties",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.object({ name: $.zod.string() }).partial().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.object({ name: $.zod.string() }).partial().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -21,7 +20,7 @@ await foldAST(
     description: "Schema that wraps another schema in a Promise type",
     code: `// Promise schemas require async parsing at runtime.
 // This example builds the AST; use safeParseAsync in a real interpreter.
-const app = mvfm(prelude, console_, zod);
+const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
   return $.zod.promise($.zod.string()).safeParseAsync($.input.value);
 });`,
@@ -29,10 +28,9 @@ const prog = app({ value: "string" }, ($) => {
   },
   "zod/record": {
     description: "Schema for validating record objects with typed keys and values",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.record($.zod.string(), $.zod.number()).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.record($.zod.string(), $.zod.number()).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -42,10 +40,9 @@ await foldAST(
   },
   "zod/set": {
     description: "Schema for validating Set objects with typed elements",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.set($.zod.string()).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.set($.zod.string()).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -55,10 +52,9 @@ await foldAST(
   },
   "zod/string": {
     description: "Schema for validating string values with optional checks",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().min(1).max(255).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().min(1).max(255).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -68,10 +64,9 @@ await foldAST(
   },
   "zod/symbol": {
     description: "Schema that validates symbol values",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.symbol().safeParse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.symbol().safeParse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -81,10 +76,9 @@ await foldAST(
   },
   "zod/tuple": {
     description: "Schema for fixed-length arrays with per-element types",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.tuple([$.zod.string(), $.zod.number()]).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.tuple([$.zod.string(), $.zod.number()]).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -94,10 +88,9 @@ await foldAST(
   },
   "zod/undefined": {
     description: "Schema that only accepts undefined",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.undefined().safeParse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.undefined().safeParse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -107,10 +100,9 @@ await foldAST(
   },
   "zod/union": {
     description: "Schema for values matching any of several schemas",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.union([$.zod.string(), $.zod.number()]).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.union([$.zod.string(), $.zod.number()]).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -120,10 +112,9 @@ await foldAST(
   },
   "zod/unknown": {
     description: "Schema that accepts unknown values for later narrowing",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.unknown().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.unknown().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -133,10 +124,9 @@ await foldAST(
   },
   "zod/void": {
     description: "Schema that only accepts void/undefined returns",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.void().safeParse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.void().safeParse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -146,10 +136,9 @@ await foldAST(
   },
   "zod/xor": {
     description: "Schema for values matching exactly one of several schemas",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.xor([$.zod.string(), $.zod.number()]).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.xor([$.zod.string(), $.zod.number()]).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -159,10 +148,9 @@ await foldAST(
   },
   "zod/transform": {
     description: "Standalone transform that maps parsed values through a function",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.transform((val) => val).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.transform((val) => val).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -172,10 +160,9 @@ await foldAST(
   },
   "zod/pipe": {
     description: "Chain one schema into another for multi-step validation",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.string().pipe($.zod.string()).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.string().pipe($.zod.string()).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -185,10 +172,9 @@ await foldAST(
   },
   "zod/preprocess": {
     description: "Apply a preprocessing step to input before schema validation",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.preprocess((val) => val, $.zod.string()).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.preprocess((val) => val, $.zod.string()).parse($.input.value);
 });
 await foldAST(
   defaults(app),

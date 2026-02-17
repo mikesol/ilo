@@ -27,6 +27,35 @@ describe("control: $.each()", () => {
     expect(eachNode.param.kind).toBe("core/lambda_param");
     expect(eachNode.body).toHaveLength(1);
   });
+
+  it("captures emitted statements (st/set) inside each body", () => {
+    const prog = app(($) => {
+      const counter = $.let(0);
+      $.each($.input.items, () => {
+        counter.set($.add(counter.get(), 1));
+      });
+      return counter.get();
+    });
+    const ast = strip(prog.ast) as any;
+    const eachNode = ast.statements.find((s: any) => s.kind === "control/each");
+    expect(eachNode.body).toHaveLength(1);
+    expect(eachNode.body[0].kind).toBe("st/set");
+  });
+
+  it("accepts a raw array via auto-lift", () => {
+    const prog = app(($) => {
+      const sum = $.let(0);
+      $.each([$.input.a, $.input.b, $.input.c] as any, (item: any) => {
+        sum.set($.add(sum.get(), item));
+      });
+      return sum.get();
+    });
+    const ast = strip(prog.ast) as any;
+    const eachNode = ast.statements.find((s: any) => s.kind === "control/each");
+    expect(eachNode).toBeDefined();
+    expect(eachNode.collection.kind).toBe("core/tuple");
+    expect(eachNode.collection.elements).toHaveLength(3);
+  });
 });
 
 describe("control: $.while()", () => {
@@ -35,12 +64,45 @@ describe("control: $.while()", () => {
   it("produces control/while with condition and body", () => {
     const prog = app(($) => {
       const counter = $.let(0);
-      $.while($.lt(counter.get(), 10)).body(counter.set($.add(counter.get(), 1)));
+      $.while($.lt(counter.get(), 10)).body(() => {
+        counter.set($.add(counter.get(), 1));
+      });
       return counter.get();
     });
     const ast = strip(prog.ast) as any;
     const whileNode = ast.statements.find((s: any) => s.kind === "control/while");
     expect(whileNode).toBeDefined();
     expect(whileNode.condition.kind).toBe("ord/lt");
+  });
+
+  it("captures emitted statements (st/set) inside while body", () => {
+    const prog = app(($) => {
+      const counter = $.let(0);
+      $.while($.lt(counter.get(), 10)).body(() => {
+        counter.set($.add(counter.get(), 1));
+      });
+      return counter.get();
+    });
+    const ast = strip(prog.ast) as any;
+    const whileNode = ast.statements.find((s: any) => s.kind === "control/while");
+    expect(whileNode.body).toHaveLength(1);
+    expect(whileNode.body[0].kind).toBe("st/set");
+  });
+
+  it("captures multiple statements in while body", () => {
+    const prog = app(($) => {
+      const a = $.let(0);
+      const b = $.let(0);
+      $.while($.lt(a.get(), 5)).body(() => {
+        a.set($.add(a.get(), 1));
+        b.set($.add(b.get(), 2));
+      });
+      return b.get();
+    });
+    const ast = strip(prog.ast) as any;
+    const whileNode = ast.statements.find((s: any) => s.kind === "control/while");
+    expect(whileNode.body).toHaveLength(2);
+    expect(whileNode.body[0].kind).toBe("st/set");
+    expect(whileNode.body[1].kind).toBe("st/set");
   });
 });

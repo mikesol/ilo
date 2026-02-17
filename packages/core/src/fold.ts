@@ -175,10 +175,16 @@ export async function foldAST(
   rootOrProgram: TypedNode | Program<string>,
   state?: FoldState,
 ): Promise<unknown> {
-  const root =
-    "ast" in rootOrProgram && "hash" in rootOrProgram
-      ? (rootOrProgram as Program<string>).ast.result
-      : (rootOrProgram as TypedNode);
+  const isProgram = "ast" in rootOrProgram && "hash" in rootOrProgram;
+  const ast = isProgram ? (rootOrProgram as Program<string>).ast : null;
+  const stmts: TypedNode[] = ast?.statements ?? [];
+  const resultNode = ast ? ast.result : (rootOrProgram as TypedNode);
+  // If there are emitted statements, wrap them with the result in a begin node
+  // so they execute before the result expression.
+  const root: TypedNode =
+    stmts.length > 0
+      ? { kind: "core/begin", steps: stmts, result: resultNode }
+      : resultNode;
   const { cache, tainted } = state ?? createFoldState();
   const stack: Frame[] = [];
   const scopeStack: Array<Map<number, unknown>> = [];

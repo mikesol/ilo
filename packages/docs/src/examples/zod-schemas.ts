@@ -6,10 +6,9 @@ const ZP = ["@mvfm/plugin-zod"];
 const examples: Record<string, NodeExample> = {
   "zod/any": {
     description: "Schema that accepts any value without validation",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.any().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.any().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -19,10 +18,9 @@ await foldAST(
   },
   "zod/array": {
     description: "Schema for validating arrays with element type and length constraints",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.array($.zod.string()).min(1).max(10).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.array($.zod.string()).min(1).max(10).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -32,10 +30,9 @@ await foldAST(
   },
   "zod/bigint": {
     description: "Schema for validating bigint values with range constraints",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.bigint().positive().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.bigint().positive().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -45,10 +42,9 @@ await foldAST(
   },
   "zod/boolean": {
     description: "Schema for validating boolean values",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.boolean().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.boolean().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -58,10 +54,9 @@ await foldAST(
   },
   "zod/custom": {
     description: "Schema with a custom validation function",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "number" }, ($) => {
-  const result = $.zod.custom((val) => $.gt(val, 0)).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.custom((val) => $.gt(val, 0)).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -71,10 +66,9 @@ await foldAST(
   },
   "zod/date": {
     description: "Schema for validating Date objects with range constraints",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.date().safeParse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.date().safeParse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -84,10 +78,9 @@ await foldAST(
   },
   "zod/enum": {
     description: "Schema for a fixed set of allowed string values",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.enum(["red", "green", "blue"]).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.enum(["red", "green", "blue"]).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -97,13 +90,12 @@ await foldAST(
   },
   "zod/intersection": {
     description: "Schema combining two schemas with logical AND",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.intersection(
+  return $.zod.intersection(
     $.zod.object({ name: $.zod.string() }),
     $.zod.object({ age: $.zod.number() }),
   ).parse($.input.value);
-  return $.begin($.console.log(result), result);
 });
 await foldAST(
   defaults(app),
@@ -113,10 +105,9 @@ await foldAST(
   },
   "zod/literal": {
     description: "Schema for an exact literal value",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.literal("hello").parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.literal("hello").parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -126,10 +117,9 @@ await foldAST(
   },
   "zod/map": {
     description: "Schema for validating Map objects with typed keys and values",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.map($.zod.string(), $.zod.number()).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.map($.zod.string(), $.zod.number()).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -139,10 +129,9 @@ await foldAST(
   },
   "zod/nan": {
     description: "Schema that only accepts NaN",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.nan().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.nan().parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -152,10 +141,9 @@ await foldAST(
   },
   "zod/native_enum": {
     description: "Schema for a TypeScript native enum or const object",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "number" }, ($) => {
-  const result = $.zod.nativeEnum({ Up: 0, Down: 1 }).parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.nativeEnum({ Up: 0, Down: 1 }).parse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -165,10 +153,9 @@ await foldAST(
   },
   "zod/never": {
     description: "Schema that rejects all values",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.never().safeParse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.never().safeParse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -178,10 +165,9 @@ await foldAST(
   },
   "zod/null": {
     description: "Schema that only accepts null",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "string" }, ($) => {
-  const result = $.zod.null().safeParse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.null().safeParse($.input.value);
 });
 await foldAST(
   defaults(app),
@@ -191,10 +177,9 @@ await foldAST(
   },
   "zod/number": {
     description: "Schema for validating numbers with range and type constraints",
-    code: `const app = mvfm(prelude, console_, zod);
+    code: `const app = mvfm(prelude, zod);
 const prog = app({ value: "number" }, ($) => {
-  const result = $.zod.number().min(0).max(100).int().parse($.input.value);
-  return $.begin($.console.log(result), result);
+  return $.zod.number().min(0).max(100).int().parse($.input.value);
 });
 await foldAST(
   defaults(app),

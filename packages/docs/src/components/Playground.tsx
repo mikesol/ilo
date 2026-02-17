@@ -4,34 +4,11 @@ import _Editor from "react-simple-code-editor";
 const Editor = (_Editor as any).default || _Editor;
 import { createHighlighter, type Highlighter } from "shiki";
 
+import { MONO_THEME } from "../themes/mono";
+
 interface PlaygroundProps {
   code: string;
 }
-
-const MONO_THEME = {
-  name: "mvfm-mono",
-  type: "dark" as const,
-  colors: {
-    "editor.background": "#0a0a0a",
-    "editor.foreground": "#a3a3a3",
-  },
-  settings: [
-    { scope: ["comment", "punctuation.definition.comment"], settings: { foreground: "#525252" } },
-    { scope: ["string", "string.quoted"], settings: { foreground: "#d4d4d4" } },
-    { scope: ["constant.numeric"], settings: { foreground: "#e5e5e5" } },
-    { scope: ["keyword", "storage.type", "storage.modifier"], settings: { foreground: "#737373" } },
-    { scope: ["entity.name.function", "support.function"], settings: { foreground: "#e5e5e5" } },
-    { scope: ["variable", "variable.other"], settings: { foreground: "#a3a3a3" } },
-    { scope: ["entity.name.type", "support.type"], settings: { foreground: "#a3a3a3" } },
-    { scope: ["punctuation", "meta.brace"], settings: { foreground: "#525252" } },
-    { scope: ["constant.language"], settings: { foreground: "#d4d4d4" } },
-    { scope: ["entity.name.tag"], settings: { foreground: "#737373" } },
-    { scope: ["support.class", "entity.other.inherited-class"], settings: { foreground: "#a3a3a3" } },
-    { scope: ["meta.property-name", "entity.name.property"], settings: { foreground: "#d4d4d4" } },
-    { scope: ["variable.other.property"], settings: { foreground: "#d4d4d4" } },
-    { scope: ["keyword.operator"], settings: { foreground: "#737373" } },
-  ],
-};
 
 let highlighterPromise: Promise<Highlighter> | null = null;
 
@@ -83,12 +60,20 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
 
     try {
       const { createPlaygroundScope } = await import("../playground-scope");
-      const { paramNames, paramValues } = await createPlaygroundScope(fakeConsole);
+      const scope = await createPlaygroundScope(fakeConsole);
       const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
-      const fn = new AsyncFunction(...paramNames, code);
-      await fn(...paramValues);
+      const fn = new AsyncFunction(...scope.paramNames, code);
+      await fn(...scope.paramValues);
       setIsError(false);
-      setOutput(logs.join("\n"));
+      const parts: string[] = [];
+      if (logs.length > 0) parts.push(logs.join("\n"));
+      if (scope.lastFoldResult !== undefined) {
+        const formatted = typeof scope.lastFoldResult === "string"
+          ? scope.lastFoldResult
+          : JSON.stringify(scope.lastFoldResult, null, 2);
+        parts.push(`→ ${formatted}`);
+      }
+      setOutput(parts.join("\n"));
     } catch (e: unknown) {
       const err = e instanceof Error ? e : new Error(String(e));
       let line: number | null = null;
@@ -106,32 +91,34 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
   }, [code]);
 
   return (
-    <div className="mt-10">
-      <div
-        ref={editorRef}
-        className="border border-base-800 focus-within:border-base-600 transition-colors"
-        onKeyDown={(e) => {
-          if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-            e.preventDefault();
-            run();
-          }
-        }}
-      >
-        <Editor
-          value={code}
-          onValueChange={setCode}
-          highlight={highlight}
-          padding={16}
-          style={{
-            fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace",
-            fontSize: "0.875rem",
-            lineHeight: "1.625",
-            backgroundColor: "#0a0a0a",
-            color: "#a3a3a3",
-            tabSize: 2,
+    <>
+      <div className={`playground-editor${highlighter ? " playground-ready" : ""}`}>
+        <div
+          ref={editorRef}
+          className="border border-base-800 focus-within:border-base-600 transition-colors"
+          onKeyDown={(e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+              e.preventDefault();
+              run();
+            }
           }}
-          textareaClassName="outline-none"
-        />
+        >
+          <Editor
+            value={code}
+            onValueChange={setCode}
+            highlight={highlight}
+            padding={16}
+            style={{
+              fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace",
+              fontSize: "0.875rem",
+              lineHeight: "1.625",
+              backgroundColor: "#0a0a0a",
+              color: "#a3a3a3",
+              tabSize: 2,
+            }}
+            textareaClassName="outline-none"
+          />
+        </div>
       </div>
       <div className="mt-2 flex items-center gap-3">
         <button
@@ -148,6 +135,6 @@ export default function Playground({ code: initialCode }: PlaygroundProps) {
           {isError && <span className="text-base-500">error — </span>}{output}
         </pre>
       )}
-    </div>
+    </>
   );
 }

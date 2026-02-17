@@ -108,6 +108,8 @@ export interface CoreProgram extends TypedNode<unknown> {
     kind: "core/program";
     // (undocumented)
     result: TypedNode;
+    // (undocumented)
+    statements: TypedNode[];
 }
 
 // @public

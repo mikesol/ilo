@@ -1587,6 +1587,38 @@
                 "startIndex": 1,
                 "endIndex": 2
               }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@mvfm/core!CoreProgram#statements:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "statements: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "TypedNode",
+                  "canonicalReference": "@mvfm/core!TypedNode:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "statements",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
             }
           ],
           "extendsTokenRanges": [
