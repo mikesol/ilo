@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createArrayInterpreter } from "./array";
 import { bigintInterpreter } from "./bigint";
 import { dateInterpreter } from "./date";
+import { createDiscriminatedUnionInterpreter } from "./discriminated-union";
 import { enumInterpreter } from "./enum";
 import type { SchemaInterpreterMap } from "./interpreter-utils";
 import { toZodError } from "./interpreter-utils";
@@ -42,7 +43,6 @@ const leafHandlers: SchemaInterpreterMap = {
 
 function createSchemaBuilder() {
   let schemaHandlers: SchemaInterpreterMap | undefined;
-
   const buildSchema = async function* (
     node: AnyZodSchemaNode,
   ): AsyncGenerator<TypedNode, z.ZodType, unknown> {
@@ -119,6 +119,7 @@ function createSchemaBuilder() {
         ...createObjectInterpreter(buildSchema),
         ...createArrayInterpreter(buildSchema),
         ...createUnionInterpreter(buildSchema),
+        ...createDiscriminatedUnionInterpreter(buildSchema),
         ...createIntersectionInterpreter(buildSchema),
         ...createRecordInterpreter(buildSchema),
         ...createMapSetInterpreter(buildSchema),

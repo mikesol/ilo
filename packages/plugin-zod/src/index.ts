@@ -7,6 +7,8 @@ import type { ZodCoerceNamespace } from "./coerce";
 import { coerceNamespace, coerceNodeKinds } from "./coerce";
 import type { ZodDateNamespace } from "./date";
 import { dateNamespace, dateNodeKinds } from "./date";
+import type { ZodDiscriminatedUnionNamespace } from "./discriminated-union";
+import { discriminatedUnionNamespace, discriminatedUnionNodeKinds } from "./discriminated-union";
 import type { ZodEnumNamespace } from "./enum";
 import { enumNamespace, enumNodeKinds } from "./enum";
 import { createZodInterpreter } from "./interpreter";
@@ -44,6 +46,7 @@ export { ZodArrayBuilder } from "./array";
 export { ZodSchemaBuilder, ZodWrappedBuilder } from "./base";
 export { ZodBigIntBuilder } from "./bigint";
 export { ZodDateBuilder } from "./date";
+export { ZodDiscriminatedUnionBuilder } from "./discriminated-union";
 export { ZodEnumBuilder, ZodNativeEnumBuilder } from "./enum";
 export { createZodInterpreter } from "./interpreter";
 export type { SchemaInterpreterMap } from "./interpreter-utils";
@@ -92,6 +95,7 @@ export interface ZodNamespace
     ZodStringNamespace,
     ZodBigIntNamespace,
     ZodDateNamespace,
+    ZodDiscriminatedUnionNamespace,
     ZodEnumNamespace,
     ZodIntersectionNamespace,
     ZodLazyNamespace,
@@ -148,6 +152,7 @@ export const zod = definePlugin({
     ...stringNodeKinds,
     ...bigintNodeKinds,
     ...dateNodeKinds,
+    ...discriminatedUnionNodeKinds,
     ...enumNodeKinds,
     ...intersectionNodeKinds,
     ...lazyNodeKinds,
@@ -173,6 +178,7 @@ export const zod = definePlugin({
         ...stringNamespace(ctx, parseError),
         ...bigintNamespace(ctx, parseError),
         ...dateNamespace(ctx, parseError),
+        ...discriminatedUnionNamespace(ctx, parseError),
         ...enumNamespace(ctx, parseError),
         ...intersectionNamespace(ctx, parseError),
         ...lazyNamespace(ctx),
