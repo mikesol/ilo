@@ -2,8 +2,7 @@ import type { NodeExample } from "./types";
 
 const examples: Record<string, NodeExample> = {
   "boolean/and": {
-    description:
-      "Logical AND — both conditions must be true",
+    description: "Logical AND — both conditions must be true",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -23,8 +22,7 @@ await foldAST(
 );`,
   },
   "boolean/or": {
-    description:
-      "Logical OR — at least one condition must be true",
+    description: "Logical OR — at least one condition must be true",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -44,8 +42,7 @@ await foldAST(
 );`,
   },
   "boolean/not": {
-    description:
-      "Logical NOT — negates a boolean expression",
+    description: "Logical NOT — negates a boolean expression",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -66,8 +63,7 @@ await foldAST(
 );`,
   },
   "boolean/eq": {
-    description:
-      "Boolean equality — compares two boolean expressions",
+    description: "Boolean equality — compares two boolean expressions",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -90,8 +86,7 @@ await foldAST(
 );`,
   },
   "boolean/ff": {
-    description:
-      "Boolean false literal — the heytingAlgebra identity for disjunction",
+    description: "Boolean false literal — the heytingAlgebra identity for disjunction",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -112,8 +107,7 @@ await foldAST(
 );`,
   },
   "boolean/tt": {
-    description:
-      "Boolean true literal — the heytingAlgebra identity for conjunction",
+    description: "Boolean true literal — the heytingAlgebra identity for conjunction",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -134,8 +128,7 @@ await foldAST(
 );`,
   },
   "boolean/implies": {
-    description:
-      "Logical implication — if A then B, equivalent to or(not(A), B)",
+    description: "Logical implication — if A then B, equivalent to or(not(A), B)",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -158,8 +151,7 @@ await foldAST(
 );`,
   },
   "boolean/show": {
-    description:
-      "Convert a boolean to its string representation via the Show typeclass",
+    description: "Convert a boolean to its string representation via the Show typeclass",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -182,8 +174,7 @@ await foldAST(
 );`,
   },
   "boolean/top": {
-    description:
-      "Bounded top for boolean — the maximum value (true)",
+    description: "Bounded top for boolean — the maximum value (true)",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -204,8 +195,7 @@ await foldAST(
 );`,
   },
   "boolean/bottom": {
-    description:
-      "Bounded bottom for boolean — the minimum value (false)",
+    description: "Bounded bottom for boolean — the minimum value (false)",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 

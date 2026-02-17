@@ -5,11 +5,7 @@ export async function createPlaygroundScope(
 ) {
   const core = await import("@mvfm/core");
   const pluginConsole = await import("@mvfm/plugin-console");
-  const {
-    console: _drop,
-    consoleInterpreter: _defaultInterp,
-    ...consoleRest
-  } = pluginConsole;
+  const { console: _drop, consoleInterpreter: _defaultInterp, ...consoleRest } = pluginConsole;
   const fakeConsoleInterpreter = pluginConsole.createConsoleInterpreter(
     pluginConsole.wrapConsole(fakeConsole as any),
   );

@@ -2,8 +2,7 @@ import type { NodeExample } from "./types";
 
 const examples: Record<string, NodeExample> = {
   "core/begin": {
-    description:
-      "Sequential composition. Evaluates each argument in order, returns the last.",
+    description: "Sequential composition. Evaluates each argument in order, returns the last.",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -25,8 +24,7 @@ await foldAST(
 );`,
   },
   "core/cond": {
-    description:
-      "Conditional branching. .t() for then, .f() for else. Either order.",
+    description: "Conditional branching. .t() for then, .f() for else. Either order.",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -51,8 +49,7 @@ await foldAST(
 );`,
   },
   "core/literal": {
-    description:
-      "Creating literal values — raw JS values become MVFM expressions automatically",
+    description: "Creating literal values — raw JS values become MVFM expressions automatically",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -74,8 +71,7 @@ await foldAST(
 );`,
   },
   "core/input": {
-    description:
-      "External input injection — access injected data via $.input",
+    description: "External input injection — access injected data via $.input",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -97,8 +93,7 @@ await foldAST(
 );`,
   },
   "core/record": {
-    description:
-      "Record construction — building an object with multiple named fields",
+    description: "Record construction — building an object with multiple named fields",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
@@ -120,8 +115,7 @@ await foldAST(
 );`,
   },
   "core/tuple": {
-    description:
-      "Tuple construction — building an ordered collection of values",
+    description: "Tuple construction — building an ordered collection of values",
     code: `// 1. make an app
 const app = mvfm(prelude, console_);
 
