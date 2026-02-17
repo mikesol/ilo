@@ -161,3 +161,35 @@ const _eqWrongType = typedInterpreter<"eq/neq">()({
     return node.operand;
   },
 });
+
+// --- boolean/num registrations ---
+
+const _booleanCorrect = typedInterpreter<"boolean/not">()({
+  // biome-ignore lint/correctness/useYield: type test
+  "boolean/not": async function* (_node) {
+    return true;
+  },
+});
+
+const _numCorrect = typedInterpreter<"num/neg">()({
+  // biome-ignore lint/correctness/useYield: type test
+  "num/neg": async function* (_node) {
+    return 0;
+  },
+});
+
+const _booleanBadAny = typedInterpreter<"boolean/not">()({
+  // @ts-expect-error handler with node:any must be rejected once registered
+  // biome-ignore lint/correctness/useYield: type test
+  "boolean/not": async function* (node: any) {
+    return node.operand;
+  },
+});
+
+const _numBadAny = typedInterpreter<"num/neg">()({
+  // @ts-expect-error handler with node:any must be rejected once registered
+  // biome-ignore lint/correctness/useYield: type test
+  "num/neg": async function* (node: any) {
+    return node.operand;
+  },
+});

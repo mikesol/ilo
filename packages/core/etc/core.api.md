@@ -24,7 +24,18 @@ export const boolean: PluginDefinition<BooleanMethods, {
 }>;
 
 // @public
-export const booleanInterpreter: Interpreter;
+export const booleanInterpreter: {
+    "boolean/and": (node: BooleanAndNode) => AsyncGenerator<TypedNode<unknown>, boolean, unknown>;
+    "boolean/or": (node: BooleanOrNode) => AsyncGenerator<TypedNode<unknown>, boolean, unknown>;
+    "boolean/not": (node: BooleanNotNode) => AsyncGenerator<TypedNode<unknown>, boolean, unknown>;
+    "boolean/eq": (node: BooleanEqNode) => AsyncGenerator<TypedNode<unknown>, boolean, unknown>;
+    "boolean/ff": (_node: BooleanFalseNode) => AsyncGenerator<never, false, unknown>;
+    "boolean/tt": (_node: BooleanTrueNode) => AsyncGenerator<never, true, unknown>;
+    "boolean/implies": (node: BooleanImpliesNode) => AsyncGenerator<TypedNode<unknown>, boolean, unknown>;
+    "boolean/show": (node: BooleanShowNode) => AsyncGenerator<TypedNode<unknown>, string, unknown>;
+    "boolean/top": (_node: BooleanTopNode) => AsyncGenerator<never, true, unknown>;
+    "boolean/bottom": (_node: BooleanBottomNode) => AsyncGenerator<never, false, unknown>;
+};
 
 // @public
 export type BooleanMethods = {};
@@ -343,7 +354,27 @@ export const num: PluginDefinition<NumMethods, {
 }>;
 
 // @public
-export const numInterpreter: Interpreter;
+export const numInterpreter: {
+    "num/add": (node: NumAddNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/sub": (node: NumSubNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/mul": (node: NumMulNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/div": (node: NumDivNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/mod": (node: NumModNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/compare": (node: NumCompareNode) => AsyncGenerator<TypedNode<unknown>, 1 | 0 | -1, unknown>;
+    "num/neg": (node: NumNegNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/abs": (node: NumAbsNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/floor": (node: NumFloorNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/ceil": (node: NumCeilNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/round": (node: NumRoundNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/min": (node: NumMinNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/max": (node: NumMaxNode) => AsyncGenerator<TypedNode<unknown>, number, unknown>;
+    "num/eq": (node: NumEqNode) => AsyncGenerator<TypedNode<unknown>, boolean, unknown>;
+    "num/zero": (_node: NumZeroNode) => AsyncGenerator<never, number, unknown>;
+    "num/one": (_node: NumOneNode) => AsyncGenerator<never, number, unknown>;
+    "num/show": (node: NumShowNode) => AsyncGenerator<TypedNode<unknown>, string, unknown>;
+    "num/top": (_node: NumTopNode) => AsyncGenerator<never, number, unknown>;
+    "num/bottom": (_node: NumBottomNode) => AsyncGenerator<never, number, unknown>;
+};
 
 // @public
 export interface NumMethods {
@@ -635,7 +666,36 @@ export const VOLATILE_KINDS: Set<string>;
 // dist/builder.d.ts:11:5 - (ae-forgotten-export) The symbol "CoreDollar" needs to be exported by the entry point index.d.ts
 // dist/builder.d.ts:11:5 - (ae-forgotten-export) The symbol "MergePlugins" needs to be exported by the entry point index.d.ts
 // dist/builder.d.ts:11:5 - (ae-forgotten-export) The symbol "FlattenPluginInputs" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:58:5 - (ae-forgotten-export) The symbol "BooleanAndNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:59:5 - (ae-forgotten-export) The symbol "BooleanOrNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:60:5 - (ae-forgotten-export) The symbol "BooleanNotNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:61:5 - (ae-forgotten-export) The symbol "BooleanEqNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:62:5 - (ae-forgotten-export) The symbol "BooleanFalseNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:63:5 - (ae-forgotten-export) The symbol "BooleanTrueNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:64:5 - (ae-forgotten-export) The symbol "BooleanImpliesNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:65:5 - (ae-forgotten-export) The symbol "BooleanShowNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:66:5 - (ae-forgotten-export) The symbol "BooleanTopNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/boolean/interpreter.d.ts:67:5 - (ae-forgotten-export) The symbol "BooleanBottomNode" needs to be exported by the entry point index.d.ts
 // dist/plugins/eq/interpreter.d.ts:13:5 - (ae-forgotten-export) The symbol "EqNeq" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:106:5 - (ae-forgotten-export) The symbol "NumAddNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:107:5 - (ae-forgotten-export) The symbol "NumSubNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:108:5 - (ae-forgotten-export) The symbol "NumMulNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:109:5 - (ae-forgotten-export) The symbol "NumDivNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:110:5 - (ae-forgotten-export) The symbol "NumModNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:111:5 - (ae-forgotten-export) The symbol "NumCompareNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:112:5 - (ae-forgotten-export) The symbol "NumNegNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:113:5 - (ae-forgotten-export) The symbol "NumAbsNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:114:5 - (ae-forgotten-export) The symbol "NumFloorNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:115:5 - (ae-forgotten-export) The symbol "NumCeilNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:116:5 - (ae-forgotten-export) The symbol "NumRoundNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:117:5 - (ae-forgotten-export) The symbol "NumMinNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:118:5 - (ae-forgotten-export) The symbol "NumMaxNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:119:5 - (ae-forgotten-export) The symbol "NumEqNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:120:5 - (ae-forgotten-export) The symbol "NumZeroNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:121:5 - (ae-forgotten-export) The symbol "NumOneNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:122:5 - (ae-forgotten-export) The symbol "NumShowNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:123:5 - (ae-forgotten-export) The symbol "NumTopNode" needs to be exported by the entry point index.d.ts
+// dist/plugins/num/interpreter.d.ts:124:5 - (ae-forgotten-export) The symbol "NumBottomNode" needs to be exported by the entry point index.d.ts
 // dist/plugins/ord/interpreter.d.ts:16:5 - (ae-forgotten-export) The symbol "OrdCmp" needs to be exported by the entry point index.d.ts
 // dist/plugins/str/interpreter.d.ts:104:5 - (ae-forgotten-export) The symbol "StrTemplateNode" needs to be exported by the entry point index.d.ts
 // dist/plugins/str/interpreter.d.ts:105:5 - (ae-forgotten-export) The symbol "StrConcatNode" needs to be exported by the entry point index.d.ts
