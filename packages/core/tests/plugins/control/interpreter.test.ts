@@ -58,10 +58,7 @@ describe("control: each end-to-end", () => {
       });
       return count.get();
     });
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { items: ["a", "b", "c"] }),
-    );
+    const result = await foldAST(defaults(app), injectInput(prog, { items: ["a", "b", "c"] }));
     expect(result).toBe(3);
   });
 
@@ -73,10 +70,7 @@ describe("control: each end-to-end", () => {
       });
       return sum.get();
     });
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { a: 10, b: 20, c: 30 }),
-    );
+    const result = await foldAST(defaults(app), injectInput(prog, { a: 10, b: 20, c: 30 }));
     expect(result).toBe(60);
   });
 
@@ -88,10 +82,7 @@ describe("control: each end-to-end", () => {
       });
       return sum.get();
     });
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { items: [10, 20, 30] }),
-    );
+    const result = await foldAST(defaults(app), injectInput(prog, { items: [10, 20, 30] }));
     expect(result).toBe(60);
   });
 
@@ -103,10 +94,7 @@ describe("control: each end-to-end", () => {
       });
       return count.get();
     });
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { items: [] }),
-    );
+    const result = await foldAST(defaults(app), injectInput(prog, { items: [] }));
     expect(result).toBe(0);
   });
 });
@@ -122,10 +110,7 @@ describe("control: while end-to-end", () => {
       });
       return i.get();
     });
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { limit: 5 }),
-    );
+    const result = await foldAST(defaults(app), injectInput(prog, { limit: 5 }));
     expect(result).toBe(5);
   });
 
@@ -137,10 +122,7 @@ describe("control: while end-to-end", () => {
       });
       return i.get();
     });
-    const result = await foldAST(
-      defaults(app),
-      injectInput(prog, { limit: 0 }),
-    );
+    const result = await foldAST(defaults(app), injectInput(prog, { limit: 0 }));
     expect(result).toBe(0);
   });
 

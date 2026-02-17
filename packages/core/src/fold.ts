@@ -182,9 +182,7 @@ export async function foldAST(
   // If there are emitted statements, wrap them with the result in a begin node
   // so they execute before the result expression.
   const root: TypedNode =
-    stmts.length > 0
-      ? { kind: "core/begin", steps: stmts, result: resultNode }
-      : resultNode;
+    stmts.length > 0 ? { kind: "core/begin", steps: stmts, result: resultNode } : resultNode;
   const { cache, tainted } = state ?? createFoldState();
   const stack: Frame[] = [];
   const scopeStack: Array<Map<number, unknown>> = [];
