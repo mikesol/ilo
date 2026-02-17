@@ -17,16 +17,15 @@ describe("lazy schemas (#117)", () => {
     });
   });
 
-  it("$.zod.lazy() produces zod/lazy AST with getter function", () => {
+  it("$.zod.lazy() produces zod/lazy AST with lazyId + target", () => {
     const app = mvfm(zod);
     const prog = app(($) => {
       return $.zod.lazy(() => $.zod.string()).parse($.input);
     });
-    const ast = prog.ast as any;
+    const ast = strip(prog.ast) as any;
     expect(ast.result.schema.kind).toBe("zod/lazy");
-    // The getter function is stored in the AST but won't survive JSON serialization
-    expect(ast.result.schema.getter).toBeDefined();
-    expect(typeof ast.result.schema.getter).toBe("function");
+    expect(ast.result.schema.lazyId).toMatch(/^zod_lazy_/);
+    expect(ast.result.schema.target.kind).toBe("zod/string");
   });
 
   it("self-referential schema produces finite AST", () => {
@@ -40,13 +39,18 @@ describe("lazy schemas (#117)", () => {
     });
 
     // Verify the AST is finite (doesn't have infinite nesting)
-    const ast = prog.ast as any;
+    const ast = strip(prog.ast) as any;
     expect(ast.result.schema.kind).toBe("zod/object");
     const shape = ast.result.schema.shape;
     expect(shape.name.kind).toBe("zod/string");
     expect(shape.subcategories.kind).toBe("zod/lazy");
-    // The lazy node should have a getter, not a fully expanded schema
-    expect(typeof shape.subcategories.getter).toBe("function");
+    expect(shape.subcategories.lazyId).toMatch(/^zod_lazy_/);
+    expect(shape.subcategories.target.kind).toBe("zod/array");
+    expect(shape.subcategories.target.element.kind).toBe("zod/object");
+    expect(shape.subcategories.target.element.shape.subcategories.kind).toBe("zod/lazy_ref");
+    expect(shape.subcategories.target.element.shape.subcategories.lazyId).toBe(
+      shape.subcategories.lazyId,
+    );
   });
 
   it("mutual recursion produces finite AST", () => {
@@ -64,12 +68,14 @@ describe("lazy schemas (#117)", () => {
     });
 
     // Verify both schemas produce finite ASTs
-    const ast = prog.ast as any;
+    const ast = strip(prog.ast) as any;
     expect(ast.result.schema.kind).toBe("zod/object");
     const userShape = ast.result.schema.shape;
     expect(userShape.email.kind).toBe("zod/string");
     expect(userShape.posts.kind).toBe("zod/lazy");
-    expect(typeof userShape.posts.getter).toBe("function");
+    expect(userShape.posts.target.kind).toBe("zod/array");
+    expect(userShape.posts.target.element.kind).toBe("zod/object");
+    expect(userShape.posts.target.element.shape.author.kind).toBe("zod/lazy");
   });
 
   it("lazy schema can be called multiple times", () => {
@@ -100,5 +106,12 @@ describe("lazy schemas (#117)", () => {
     const ast = strip(prog.ast) as any;
     expect(ast.result.schema.kind).toBe("zod/optional");
     expect(ast.result.schema.inner.kind).toBe("zod/lazy");
+  });
+
+  it("different lazy targets produce different program hashes", () => {
+    const app = mvfm(zod);
+    const stringProg = app(($) => $.zod.lazy(() => $.zod.string()).parse($.input));
+    const numberProg = app(($) => $.zod.lazy(() => $.zod.number()).parse($.input));
+    expect(stringProg.hash).not.toBe(numberProg.hash);
   });
 });

@@ -130,4 +130,22 @@ describe("lazy schema interpreter (#117)", () => {
     const result = await foldAST(defaults(app), injectInput(prog, { value: input }));
     expect(result).toEqual(input);
   });
+
+  it("validates after JSON round-trip (no runtime closures in AST)", async () => {
+    const app = mvfm(zod);
+    const prog = app({ value: "object" }, ($) => {
+      const Category = $.zod.object({
+        name: $.zod.string(),
+        subcategories: $.zod.lazy(() => $.zod.array(Category)),
+      });
+      return Category.parse($.input.value);
+    });
+
+    const serialized = JSON.stringify(prog);
+    const hydrated = JSON.parse(serialized);
+    const input = { value: { name: "Root", subcategories: [] } };
+
+    const result = await foldAST(defaults(app), injectInput(hydrated, input));
+    expect(result).toEqual(input.value);
+  });
 });
