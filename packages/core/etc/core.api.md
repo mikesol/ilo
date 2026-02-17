@@ -47,9 +47,9 @@ export const controlInterpreter: Interpreter<"control/each" | "control/while">;
 
 // @public
 export interface ControlMethods {
-    each<T>(collection: Expr<T[]>, body: (item: Expr<T>) => void): void;
+    each<T>(collection: Expr<T[]> | T[], body: (item: Expr<T>) => void): void;
     while(condition: Expr<boolean>): {
-        body: (...statements: unknown[]) => void;
+        body: (fn: () => void) => void;
     };
 }
 

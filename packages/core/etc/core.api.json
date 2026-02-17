@@ -695,7 +695,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "@mvfm/core!ControlMethods#each:member(1)",
-              "docComment": "/**\n * Iterate over each element of a collection, executing side effects.\n *\n * @param collection - The array expression to iterate.\n *\n * @param body - Callback receiving each element as an `Expr<T>`.\n */\n",
+              "docComment": "/**\n * Iterate over each element of a collection, executing side effects.\n *\n * @param collection - The array expression to iterate, or a raw array to auto-lift.\n *\n * @param body - Callback receiving each element as an `Expr<T>`.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -708,7 +708,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<T[]>"
+                  "text": "<T[]> | T[]"
                 },
                 {
                   "kind": "Content",
@@ -783,7 +783,7 @@
             {
               "kind": "MethodSignature",
               "canonicalReference": "@mvfm/core!ControlMethods#while:member(1)",
-              "docComment": "/**\n * Loop while a condition is true.\n *\n * @param condition - Boolean expression to evaluate each iteration.\n *\n * @returns A builder with a `body` method for the loop statements.\n */\n",
+              "docComment": "/**\n * Loop while a condition is true.\n *\n * @param condition - Boolean expression to evaluate each iteration.\n *\n * @returns A builder with a `body` callback for the loop statements.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -804,7 +804,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "{\n        body: (...statements: unknown[]) => void;\n    }"
+                  "text": "{\n        body: (fn: () => void) => void;\n    }"
                 },
                 {
                   "kind": "Content",
