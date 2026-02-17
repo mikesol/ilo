@@ -139,6 +139,9 @@ export interface CoreTuple extends TypedNode<unknown[]> {
 // @public
 export function createFoldState(): FoldState;
 
+// @public
+export function createStInterpreter(): Interpreter<"st/let" | "st/get" | "st/set" | "st/push">;
+
 // Warning: (ae-forgotten-export) The symbol "DefaultsArgs" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -495,6 +498,9 @@ export interface ShowFor<T> {
 
 // @public
 export const st: PluginDefinition<StMethods, {}, "st/let" | "st/get" | "st/set" | "st/push">;
+
+// @public
+export const stInterpreter: Interpreter<"st/let" | "st/get" | "st/set" | "st/push">;
 
 // @public
 export interface StMethods {
