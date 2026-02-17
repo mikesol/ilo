@@ -3,3 +3,4 @@ dist/
 .worktrees/
 temp/
 *.tsbuildinfo
+.astro/
