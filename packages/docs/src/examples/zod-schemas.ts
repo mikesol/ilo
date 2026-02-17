@@ -12,7 +12,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: "anything" })
 );`,
     plugins: ZP,
@@ -25,7 +25,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: ["a", "b", "c"] })
 );`,
     plugins: ZP,
@@ -38,7 +38,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: 42n })
 );`,
     plugins: ZP,
@@ -51,7 +51,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: true })
 );`,
     plugins: ZP,
@@ -64,7 +64,7 @@ const prog = app({ value: "number" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: 5 })
 );`,
     plugins: ZP,
@@ -77,7 +77,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: new Date() })
 );`,
     plugins: ZP,
@@ -90,7 +90,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: "green" })
 );`,
     plugins: ZP,
@@ -106,7 +106,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: { name: "Alice", age: 30 } })
 );`,
     plugins: ZP,
@@ -119,7 +119,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: "hello" })
 );`,
     plugins: ZP,
@@ -132,7 +132,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: new Map([["a", 1]]) })
 );`,
     plugins: ZP,
@@ -145,7 +145,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: NaN })
 );`,
     plugins: ZP,
@@ -158,7 +158,7 @@ const prog = app({ value: "number" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: 0 })
 );`,
     plugins: ZP,
@@ -171,7 +171,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: "anything" })
 );`,
     plugins: ZP,
@@ -184,7 +184,7 @@ const prog = app({ value: "string" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: null })
 );`,
     plugins: ZP,
@@ -197,7 +197,7 @@ const prog = app({ value: "number" }, ($) => {
   return $.begin($.console.log(result), result);
 });
 await foldAST(
-  defaults(app, { zod: createZodInterpreter() }),
+  defaults(app),
   injectInput(prog, { value: 42 })
 );`,
     plugins: ZP,
