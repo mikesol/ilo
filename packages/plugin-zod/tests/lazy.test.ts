@@ -77,7 +77,8 @@ describe("lazy schemas (#117)", () => {
     const prog = app(($) => {
       const getter = () => $.zod.string();
       const lazy1 = $.zod.lazy(getter);
-      const _lazy2 = $.zod.lazy(getter);
+      // We can call lazy() multiple times with the same getter
+      $.zod.lazy(getter);
       // Return just the first one - we're testing AST structure
       return lazy1.parse($.input.a);
     });

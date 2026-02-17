@@ -146,8 +146,11 @@ export function createLazyInterpreter(buildSchema: SchemaBuildFn): SchemaInterpr
           resolvedSchemaCache.set(getter, builtSchema);
         }
       } catch (_error) {
-        // If we get an error during pre-building (e.g., due to circular refs),
-        // that's okay - the lazy wrapper will handle deferred resolution
+        // Errors during pre-building can occur due to circular references
+        // where a lazy schema references itself before it's fully built.
+        // This is expected and safe - the lazy wrapper handles deferred resolution.
+        // The error is intentionally ignored because z.lazy() will properly
+        // handle the circular reference at validation time.
       }
 
       return lazySchema;
