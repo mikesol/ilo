@@ -44,6 +44,7 @@ export function fromZod(
   ctx: PluginContext,
 ): ZodSchemaBuilder<any> {
   const def = (zodSchema as any)._def;
+  const schema = zodSchema as any;
 
   if (!def || !def.type) {
     throw new Error("fromZod: Invalid Zod schema - missing _def.type");
@@ -72,15 +73,15 @@ export function fromZod(
   // Route to type-specific converter
   switch (def.type) {
     case "string":
-      return convertString(def, ctx);
+      return convertString(def, schema, ctx);
     case "number":
-      return convertNumber(def, ctx);
+      return convertNumber(def, schema, ctx);
     case "bigint":
-      return convertBigInt(def, ctx);
+      return convertBigInt(def, schema, ctx);
     case "boolean":
       return convertBoolean(ctx);
     case "date":
-      return convertDate(def, ctx);
+      return convertDate(def, schema, ctx);
     case "literal":
       return convertLiteral(def, ctx);
     case "enum":
@@ -88,7 +89,7 @@ export function fromZod(
     case "object":
       return convertObject(def, ctx);
     case "array":
-      return convertArray(def, ctx);
+      return convertArray(def, schema, ctx);
     case "tuple":
       return convertTuple(def, ctx);
     case "record":
@@ -117,20 +118,20 @@ export function fromZod(
   }
 }
 
-function convertString(def: any, ctx: PluginContext): ZodSchemaBuilder<any> {
-  const checks: CheckDescriptor[] = extractChecks(def.checks);
+function convertString(def: any, schema: any, ctx: PluginContext): ZodSchemaBuilder<any> {
+  const checks: CheckDescriptor[] = extractStringChecks(schema);
   const extra: Record<string, unknown> = def.coerce ? { coerce: true } : {};
   return new ZodStringBuilder(ctx, checks, [], undefined, extra) as unknown as ZodSchemaBuilder<any>;
 }
 
-function convertNumber(def: any, ctx: PluginContext): ZodSchemaBuilder<any> {
-  const checks: CheckDescriptor[] = extractChecks(def.checks);
+function convertNumber(def: any, schema: any, ctx: PluginContext): ZodSchemaBuilder<any> {
+  const checks: CheckDescriptor[] = extractNumberChecks(schema);
   const extra: Record<string, unknown> = def.coerce ? { coerce: true } : {};
   return new ZodNumberBuilder(ctx, checks, [], undefined, extra) as unknown as ZodSchemaBuilder<any>;
 }
 
-function convertBigInt(def: any, ctx: PluginContext): ZodSchemaBuilder<any> {
-  const checks: CheckDescriptor[] = extractChecks(def.checks);
+function convertBigInt(def: any, schema: any, ctx: PluginContext): ZodSchemaBuilder<any> {
+  const checks: CheckDescriptor[] = extractBigIntChecks(schema);
   return new ZodBigIntBuilder(ctx, checks, [], undefined, {}) as unknown as ZodSchemaBuilder<any>;
 }
 
@@ -138,8 +139,8 @@ function convertBoolean(ctx: PluginContext): ZodSchemaBuilder<any> {
   return new ZodPrimitiveBuilder<any>(ctx, "zod/boolean", [], [], undefined, {});
 }
 
-function convertDate(def: any, ctx: PluginContext): ZodSchemaBuilder<any> {
-  const checks: CheckDescriptor[] = extractChecks(def.checks);
+function convertDate(def: any, schema: any, ctx: PluginContext): ZodSchemaBuilder<any> {
+  const checks: CheckDescriptor[] = extractDateChecks(schema);
   return new ZodDateBuilder(ctx, checks, [], undefined, {});
 }
 
@@ -166,9 +167,9 @@ function convertObject(def: any, ctx: PluginContext): ZodObjectBuilder<any> {
   return new ZodObjectBuilder(ctx, [], [], undefined, { shape });
 }
 
-function convertArray(def: any, ctx: PluginContext): ZodArrayBuilder<any> {
+function convertArray(def: any, schema: any, ctx: PluginContext): ZodArrayBuilder<any> {
   const element = fromZod(def.element, ctx).__schemaNode;
-  const checks: CheckDescriptor[] = extractChecks(def.checks);
+  const checks: CheckDescriptor[] = extractArrayChecks(schema);
   return new ZodArrayBuilder(ctx, checks, [], undefined, { element });
 }
 
@@ -196,7 +197,7 @@ function convertUnion(def: any, ctx: PluginContext): ZodUnionBuilder<any> {
   const options = def.options
     ? def.options.map((opt: z.ZodType) => fromZod(opt, ctx).__schemaNode)
     : [];
-  return new ZodUnionBuilder(ctx, options, [], [], undefined, {});
+  return new ZodUnionBuilder(ctx, "zod/union", [], [], undefined, { options });
 }
 
 function convertOptional(def: any, ctx: PluginContext): ZodWrappedBuilder<any> {
@@ -224,85 +225,104 @@ function convertPrimitive(type: string, ctx: PluginContext): ZodSchemaBuilder<an
 }
 
 /**
- * Extracts check descriptors from Zod's internal check array.
- * Maps Zod check objects to our CheckDescriptor format.
+ * Extracts check descriptors from a Zod string schema.
+ * Maps Zod's property-based checks to our CheckDescriptor format.
  */
-function extractChecks(zodChecks: any[]): CheckDescriptor[] {
-  if (!zodChecks || !Array.isArray(zodChecks)) return [];
-
+function extractStringChecks(schema: any): CheckDescriptor[] {
   const checks: CheckDescriptor[] = [];
 
-  for (const check of zodChecks) {
-    if (!check || !check.def) continue;
+  // Length checks
+  if (schema.minLength !== null && schema.minLength !== undefined) {
+    checks.push({ kind: "min_length", value: schema.minLength });
+  }
+  if (schema.maxLength !== null && schema.maxLength !== undefined) {
+    checks.push({ kind: "max_length", value: schema.maxLength });
+  }
 
-    const checkDef = check.def;
-    const converted = convertCheck(checkDef);
-    if (converted) {
-      checks.push(converted);
-    }
+  // Format/pattern checks
+  if (schema.format) {
+    checks.push({ kind: "string_format", format: schema.format });
+  }
+  if (schema.regex) {
+    checks.push({
+      kind: "regex",
+      pattern: schema.regex.source || schema.regex.pattern,
+      flags: schema.regex.flags,
+    });
   }
 
   return checks;
 }
 
 /**
- * Converts a single Zod check definition to our CheckDescriptor format.
+ * Extracts check descriptors from a Zod number schema.
  */
-function convertCheck(checkDef: any): CheckDescriptor | null {
-  if (!checkDef || !checkDef.check) return null;
+function extractNumberChecks(schema: any): CheckDescriptor[] {
+  const checks: CheckDescriptor[] = [];
 
-  switch (checkDef.check) {
-    // String checks
-    case "string_format":
-      return checkDef.format ? { kind: "string_format", format: checkDef.format } : null;
-    case "min_length":
-      return { kind: "min_length", value: checkDef.value };
-    case "max_length":
-      return { kind: "max_length", value: checkDef.value };
-    case "length":
-      return { kind: "length", value: checkDef.value };
-    case "regex":
-      return { kind: "regex", pattern: checkDef.pattern, flags: checkDef.flags };
-    case "starts_with":
-      return { kind: "starts_with", value: checkDef.value };
-    case "ends_with":
-      return { kind: "ends_with", value: checkDef.value };
-    case "includes":
-      return { kind: "includes", value: checkDef.value };
-    case "trim":
-      return { kind: "trim" };
-    case "to_lower_case":
-      return { kind: "to_lower_case" };
-    case "to_upper_case":
-      return { kind: "to_upper_case" };
-
-    // Number/BigInt/Date checks
-    case "min":
-      return {
-        kind: checkDef.inclusive ? "gte" : "gt",
-        value: checkDef.value instanceof Date ? checkDef.value.toISOString() : 
-               typeof checkDef.value === "bigint" ? checkDef.value.toString() : 
-               checkDef.value,
-      };
-    case "max":
-      return {
-        kind: checkDef.inclusive ? "lte" : "lt",
-        value: checkDef.value instanceof Date ? checkDef.value.toISOString() : 
-               typeof checkDef.value === "bigint" ? checkDef.value.toString() : 
-               checkDef.value,
-      };
-    case "int":
-      return { kind: "int" };
-    case "finite":
-      return { kind: "finite" };
-    case "multipleOf":
-      return {
-        kind: "multiple_of",
-        value: typeof checkDef.value === "bigint" ? checkDef.value.toString() : checkDef.value,
-      };
-
-    default:
-      // Unknown check type - skip silently
-      return null;
+  if (schema.minValue !== null && schema.minValue !== undefined) {
+    checks.push({ kind: "gte", value: schema.minValue });
   }
+  if (schema.maxValue !== null && schema.maxValue !== undefined) {
+    checks.push({ kind: "lte", value: schema.maxValue });
+  }
+  if (schema.isInt) {
+    checks.push({ kind: "int" });
+  }
+  if (schema.isFinite === false) {
+    // Only add if explicitly set to false
+    checks.push({ kind: "finite" });
+  }
+
+  return checks;
+}
+
+/**
+ * Extracts check descriptors from a Zod bigint schema.
+ */
+function extractBigIntChecks(schema: any): CheckDescriptor[] {
+  const checks: CheckDescriptor[] = [];
+
+  if (schema.minValue !== null && schema.minValue !== undefined) {
+    checks.push({ kind: "gte", value: schema.minValue.toString() });
+  }
+  if (schema.maxValue !== null && schema.maxValue !== undefined) {
+    checks.push({ kind: "lte", value: schema.maxValue.toString() });
+  }
+
+  return checks;
+}
+
+/**
+ * Extracts check descriptors from a Zod date schema.
+ */
+function extractDateChecks(schema: any): CheckDescriptor[] {
+  const checks: CheckDescriptor[] = [];
+
+  if (schema.minValue !== null && schema.minValue !== undefined) {
+    const value = schema.minValue instanceof Date ? schema.minValue.toISOString() : schema.minValue;
+    checks.push({ kind: "gte", value });
+  }
+  if (schema.maxValue !== null && schema.maxValue !== undefined) {
+    const value = schema.maxValue instanceof Date ? schema.maxValue.toISOString() : schema.maxValue;
+    checks.push({ kind: "lte", value });
+  }
+
+  return checks;
+}
+
+/**
+ * Extracts check descriptors from a Zod array schema.
+ */
+function extractArrayChecks(schema: any): CheckDescriptor[] {
+  const checks: CheckDescriptor[] = [];
+
+  if (schema.minLength !== null && schema.minLength !== undefined) {
+    checks.push({ kind: "min_length", value: schema.minLength });
+  }
+  if (schema.maxLength !== null && schema.maxLength !== undefined) {
+    checks.push({ kind: "max_length", value: schema.maxLength });
+  }
+
+  return checks;
 }
