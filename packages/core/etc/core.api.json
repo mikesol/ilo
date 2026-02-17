@@ -355,9 +355,242 @@
               "text": "booleanInterpreter: "
             },
             {
+              "kind": "Content",
+              "text": "{\n    \"boolean/and\": (node: "
+            },
+            {
               "kind": "Reference",
-              "text": "Interpreter",
-              "canonicalReference": "@mvfm/core!Interpreter:type"
+              "text": "BooleanAndNode",
+              "canonicalReference": "@mvfm/core!~BooleanAndNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, boolean, unknown>;\n    \"boolean/or\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "BooleanOrNode",
+              "canonicalReference": "@mvfm/core!~BooleanOrNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, boolean, unknown>;\n    \"boolean/not\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "BooleanNotNode",
+              "canonicalReference": "@mvfm/core!~BooleanNotNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, boolean, unknown>;\n    \"boolean/eq\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "BooleanEqNode",
+              "canonicalReference": "@mvfm/core!~BooleanEqNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, boolean, unknown>;\n    \"boolean/ff\": (_node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "BooleanFalseNode",
+              "canonicalReference": "@mvfm/core!~BooleanFalseNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, false, unknown>;\n    \"boolean/tt\": (_node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "BooleanTrueNode",
+              "canonicalReference": "@mvfm/core!~BooleanTrueNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, true, unknown>;\n    \"boolean/implies\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "BooleanImpliesNode",
+              "canonicalReference": "@mvfm/core!~BooleanImpliesNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, boolean, unknown>;\n    \"boolean/show\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "BooleanShowNode",
+              "canonicalReference": "@mvfm/core!~BooleanShowNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, string, unknown>;\n    \"boolean/top\": (_node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "BooleanTopNode",
+              "canonicalReference": "@mvfm/core!~BooleanTopNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, true, unknown>;\n    \"boolean/bottom\": (_node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "BooleanBottomNode",
+              "canonicalReference": "@mvfm/core!~BooleanBottomNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, false, unknown>;\n}"
             }
           ],
           "fileUrlPath": "dist/plugins/boolean/interpreter.d.ts",
@@ -366,7 +599,7 @@
           "name": "booleanInterpreter",
           "variableTypeTokenRange": {
             "startIndex": 1,
-            "endIndex": 2
+            "endIndex": 54
           }
         },
         {
@@ -5182,9 +5415,485 @@
               "text": "numInterpreter: "
             },
             {
+              "kind": "Content",
+              "text": "{\n    \"num/add\": (node: "
+            },
+            {
               "kind": "Reference",
-              "text": "Interpreter",
-              "canonicalReference": "@mvfm/core!Interpreter:type"
+              "text": "NumAddNode",
+              "canonicalReference": "@mvfm/core!~NumAddNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/sub\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumSubNode",
+              "canonicalReference": "@mvfm/core!~NumSubNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/mul\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumMulNode",
+              "canonicalReference": "@mvfm/core!~NumMulNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/div\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumDivNode",
+              "canonicalReference": "@mvfm/core!~NumDivNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/mod\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumModNode",
+              "canonicalReference": "@mvfm/core!~NumModNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/compare\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumCompareNode",
+              "canonicalReference": "@mvfm/core!~NumCompareNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, 1 | 0 | -1, unknown>;\n    \"num/neg\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumNegNode",
+              "canonicalReference": "@mvfm/core!~NumNegNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/abs\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumAbsNode",
+              "canonicalReference": "@mvfm/core!~NumAbsNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/floor\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumFloorNode",
+              "canonicalReference": "@mvfm/core!~NumFloorNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/ceil\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumCeilNode",
+              "canonicalReference": "@mvfm/core!~NumCeilNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/round\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumRoundNode",
+              "canonicalReference": "@mvfm/core!~NumRoundNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/min\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumMinNode",
+              "canonicalReference": "@mvfm/core!~NumMinNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/max\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumMaxNode",
+              "canonicalReference": "@mvfm/core!~NumMaxNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, number, unknown>;\n    \"num/eq\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumEqNode",
+              "canonicalReference": "@mvfm/core!~NumEqNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, boolean, unknown>;\n    \"num/zero\": (_node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumZeroNode",
+              "canonicalReference": "@mvfm/core!~NumZeroNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, number, unknown>;\n    \"num/one\": (_node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumOneNode",
+              "canonicalReference": "@mvfm/core!~NumOneNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, number, unknown>;\n    \"num/show\": (node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumShowNode",
+              "canonicalReference": "@mvfm/core!~NumShowNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "TypedNode",
+              "canonicalReference": "@mvfm/core!TypedNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown>, string, unknown>;\n    \"num/top\": (_node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumTopNode",
+              "canonicalReference": "@mvfm/core!~NumTopNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, number, unknown>;\n    \"num/bottom\": (_node: "
+            },
+            {
+              "kind": "Reference",
+              "text": "NumBottomNode",
+              "canonicalReference": "@mvfm/core!~NumBottomNode:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "AsyncGenerator",
+              "canonicalReference": "!AsyncGenerator:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<never, number, unknown>;\n}"
             }
           ],
           "fileUrlPath": "dist/plugins/num/interpreter.d.ts",
@@ -5193,7 +5902,7 @@
           "name": "numInterpreter",
           "variableTypeTokenRange": {
             "startIndex": 1,
-            "endIndex": 2
+            "endIndex": 108
           }
         },
         {
