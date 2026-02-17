@@ -1,10 +1,14 @@
 /**
- * Compile-time tests for CompleteInterpreter + TypedProgram enforcement.
+ * Compile-time tests for CompleteInterpreter and TypedProgram enforcement.
  * Checked by `tsc` — no runtime execution needed.
  * If someone loosens the types, @ts-expect-error lines become "unused"
  * and tsc reports an error.
  *
  * See also: node-type-map.type-test.ts for typedInterpreter tests.
+ *
+ * NOTE: typedFoldAST does NOT reject node:any (CompleteInterpreter is a type
+ * alias, not a generic inference site). The any guard is in typedInterpreter
+ * at construction time. Tracked for end-to-end fix in #233.
  */
 
 import {
@@ -16,7 +20,7 @@ import {
 import type { CoreInput, CoreLiteral } from "../interpreters/core";
 
 // ============================================================
-// CompleteInterpreter tests (gates typedFoldAST)
+// CompleteInterpreter type alias tests
 // ============================================================
 
 // --- Positive: registered kind, correct handler type ---
@@ -41,18 +45,6 @@ const _ciMulti: CompleteInterpreter<"core/literal" | "core/input"> = {
   },
 };
 
-// --- Known gap: registered kind, node: any compiles through CompleteInterpreter ---
-// Handler<T> doesn't use RejectAnyParam — `any` is assignable to any function param.
-// The defense against `any` is in typedInterpreter (tested in node-type-map.type-test.ts),
-// which all plugins must use to build their interpreters.
-
-const _ciAnyPassesThrough: CompleteInterpreter<"core/literal"> = {
-  // biome-ignore lint/correctness/useYield: type test
-  "core/literal": async function* (node: any) {
-    return node.value;
-  },
-};
-
 // --- Negative: registered kind, wrong node type rejected ---
 
 const _ciBadWrongType: CompleteInterpreter<"core/literal"> = {
@@ -63,10 +55,10 @@ const _ciBadWrongType: CompleteInterpreter<"core/literal"> = {
   },
 };
 
-// --- Negative: unregistered kind produces never (cannot satisfy) ---
+// --- Negative: unregistered kind produces never ---
 
 const _ciUnregistered: CompleteInterpreter<"unregistered/kind"> = {
-  // @ts-expect-error unregistered kind maps to never — no valid handler exists
+  // @ts-expect-error unregistered kind maps to never
   // biome-ignore lint/correctness/useYield: type test
   "unregistered/kind": async function* (node: TypedNode) {
     return node;
@@ -76,14 +68,14 @@ const _ciUnregistered: CompleteInterpreter<"unregistered/kind"> = {
 // --- Negative: unregistered kind with node:any also rejected ---
 
 const _ciUnregisteredAny: CompleteInterpreter<"unregistered/kind"> = {
-  // @ts-expect-error unregistered kind maps to never — any handler also rejected
+  // @ts-expect-error unregistered kind maps to never
   // biome-ignore lint/correctness/useYield: type test
   "unregistered/kind": async function* (node: any) {
     return node;
   },
 };
 
-// --- Negative: missing kind from CompleteInterpreter ---
+// --- Negative: missing kind ---
 
 // @ts-expect-error missing "core/input" handler
 const _ciMissing: CompleteInterpreter<"core/literal" | "core/input"> = {
@@ -94,7 +86,7 @@ const _ciMissing: CompleteInterpreter<"core/literal" | "core/input"> = {
 };
 
 // ============================================================
-// TypedProgram + typedFoldAST assignment tests
+// TypedProgram assignment tests
 // ============================================================
 
 // --- Negative: unregistered kind in TypedProgram cannot get a valid interpreter ---
@@ -103,7 +95,7 @@ declare const _unregisteredProgram: TypedProgram<"unregistered/kind">;
 const _ciForUnregisteredProgram: CompleteInterpreter<
   typeof _unregisteredProgram extends TypedProgram<infer K> ? K : never
 > = {
-  // @ts-expect-error no valid CompleteInterpreter handler exists for unregistered kind in TypedProgram
+  // @ts-expect-error no valid handler for unregistered kind
   // biome-ignore lint/correctness/useYield: type test
   "unregistered/kind": async function* (_node: TypedNode) {
     return undefined;
@@ -111,13 +103,11 @@ const _ciForUnregisteredProgram: CompleteInterpreter<
 };
 
 // ============================================================
-// typedInterpreter: unregistered kind with TypedNode (non-any)
+// typedInterpreter: unregistered kind with TypedNode
 // ============================================================
 
-// --- Positive: unregistered kind with TypedNode compiles in typedInterpreter ---
-// NOTE: typedInterpreter allows this because NodeForKind falls back to TypedNode
-// for unregistered kinds. The real gate is CompleteInterpreter (tested above),
-// which maps unregistered kinds to `never`.
+// --- Positive: compiles because NodeForKind falls back to TypedNode ---
+// The real gate is CompleteInterpreter (tested above) which maps to never.
 
 const _unregisteredTypedNode = typedInterpreter<"unregistered/kind">()({
   // biome-ignore lint/correctness/useYield: type test
