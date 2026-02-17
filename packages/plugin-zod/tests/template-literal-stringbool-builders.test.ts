@@ -7,7 +7,7 @@ function strip(ast: unknown): unknown {
   return JSON.parse(JSON.stringify(ast, (k, v) => (k === "__id" ? undefined : v)));
 }
 
-describe("template literal and stringbool builders (#119, #156)", () => {
+describe("template literal and stringbool builders (#156)", () => {
   it("$.zod.templateLiteral([...]) produces zod/template_literal AST node", () => {
     const app = mvfm(zod);
     const prog = app(($) => $.zod.templateLiteral(["hello, ", $.zod.string(), "!"]).parse($.input));
