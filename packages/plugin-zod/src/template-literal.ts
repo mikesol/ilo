@@ -2,7 +2,6 @@ import type { PluginContext, TypedNode } from "@mvfm/core";
 import { z } from "zod";
 import { ZodSchemaBuilder } from "./base";
 import type { SchemaInterpreterMap } from "./interpreter-utils";
-import { toZodError } from "./interpreter-utils";
 import type {
 	CheckDescriptor,
 	ErrorConfig,
@@ -91,32 +90,40 @@ export function templateLiteralNamespace(
 	};
 }
 
-/** Interpreter for template literal schemas. */
-export const templateLiteralInterpreter: SchemaInterpreterMap = {
-	"zod/template_literal": async function* (
-		node: ZodTemplateLiteralNode,
-	): AsyncGenerator<TypedNode, z.ZodType, unknown> {
-		const { parts, error } = node;
-		const errorMsg = typeof error === "string" ? error : undefined;
+/**
+ * Build a Zod schema from a part's AST node by delegating to the
+ * interpreter's buildSchemaGen.
+ */
+type SchemaBuildFn = (node: ZodSchemaNodeBase) => AsyncGenerator<TypedNode, z.ZodType, unknown>;
 
-		// Build template parts - alternate between static strings and schemas
-		const builtParts: (string | number | boolean | null | undefined | z.ZodType)[] = [];
-		for (const part of parts as (string | number | boolean | null | undefined | ZodSchemaNodeBase)[]) {
-			if (
-				typeof part === "string" ||
-				typeof part === "number" ||
-				typeof part === "boolean" ||
-				part === null ||
-				part === undefined
-			) {
-				builtParts.push(part);
-			} else {
-				// Recursively build schema for dynamic parts
-				const schema = (yield part) as z.ZodType;
-				builtParts.push(schema);
+/** Create template literal interpreter handlers with access to the shared schema builder. */
+export function createTemplateLiteralInterpreter(buildSchema: SchemaBuildFn): SchemaInterpreterMap {
+	return {
+		"zod/template_literal": async function* (
+			node: ZodTemplateLiteralNode,
+		): AsyncGenerator<TypedNode, z.ZodType, unknown> {
+			const { parts, error } = node;
+			const errorMsg = typeof error === "string" ? error : undefined;
+
+			// Build template parts - alternate between static strings and schemas
+			const builtParts: (string | number | boolean | null | undefined | z.ZodType)[] = [];
+			for (const part of parts as (string | number | boolean | null | undefined | ZodSchemaNodeBase)[]) {
+				if (
+					typeof part === "string" ||
+					typeof part === "number" ||
+					typeof part === "boolean" ||
+					part === null ||
+					part === undefined
+				) {
+					builtParts.push(part);
+				} else {
+					// Recursively build schema for dynamic parts
+					const schema = yield* buildSchema(part);
+					builtParts.push(schema);
+				}
 			}
-		}
 
-		return z.templateLiteral(builtParts as any, errorMsg);
-	},
-};
+			return z.templateLiteral(builtParts as any, errorMsg);
+		},
+	};
+}
