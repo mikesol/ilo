@@ -26,16 +26,7 @@ export interface ClientHandlerOptions {
 export function clientInterpreter(options: ClientHandlerOptions, nodeKinds: string[]): Interpreter;
 
 // @public
-export function createPostgresInterpreter(client: PostgresClient): {
-    "postgres/query": (node: PostgresQueryNode) => AsyncGenerator<TypedNode<unknown>, unknown[], unknown>;
-    "postgres/begin": (_node: PostgresBeginNode) => AsyncGenerator<never, never, unknown>;
-    "postgres/savepoint": (_node: PostgresSavepointNode) => AsyncGenerator<never, never, unknown>;
-    "postgres/cursor": (_node: PostgresCursorNode) => AsyncGenerator<never, never, unknown>;
-    "postgres/cursor_batch": (_node: PostgresCursorBatchNode) => AsyncGenerator<never, never, unknown>;
-    "postgres/identifier": (_node: PostgresIdentifierNode) => AsyncGenerator<never, never, unknown>;
-    "postgres/insert_helper": (_node: PostgresInsertHelperNode) => AsyncGenerator<never, never, unknown>;
-    "postgres/set_helper": (_node: PostgresSetHelperNode) => AsyncGenerator<never, never, unknown>;
-};
+export function createPostgresInterpreter(client: PostgresClient): Interpreter<"postgres/query" | "postgres/identifier" | "postgres/insert_helper" | "postgres/set_helper" | "postgres/begin" | "postgres/savepoint" | "postgres/cursor" | "postgres/cursor_batch">;
 
 // @public
 export function createPostgresServerInterpreter(client: PostgresClient, baseInterpreter: Interpreter): Interpreter;
@@ -46,7 +37,7 @@ export function escapeIdentifier(name: string): string;
 // Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
 //
 // @public
-export function postgres(config?: PostgresConfig | string): PluginDefinition<PostgresMethods>;
+export function postgres(config?: PostgresConfig | string): PluginDefinition<PostgresMethods, {}, "postgres/query" | "postgres/identifier" | "postgres/insert_helper" | "postgres/set_helper" | "postgres/begin" | "postgres/savepoint" | "postgres/cursor" | "postgres/cursor_batch">;
 
 // @public
 export interface PostgresBeginNode extends TypedNode<unknown> {
