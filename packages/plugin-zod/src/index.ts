@@ -9,6 +9,7 @@ import type { ZodDateNamespace } from "./date";
 import { dateNamespace, dateNodeKinds } from "./date";
 import type { ZodEnumNamespace } from "./enum";
 import { enumNamespace, enumNodeKinds } from "./enum";
+import { fromZod } from "./from-zod";
 import { createZodInterpreter } from "./interpreter";
 import type { ZodIntersectionNamespace } from "./intersection";
 import { intersectionNamespace, intersectionNodeKinds } from "./intersection";
@@ -43,6 +44,7 @@ export { ZodSchemaBuilder, ZodWrappedBuilder } from "./base";
 export { ZodBigIntBuilder } from "./bigint";
 export { ZodDateBuilder } from "./date";
 export { ZodEnumBuilder, ZodNativeEnumBuilder } from "./enum";
+export { fromZod } from "./from-zod";
 export { createZodInterpreter } from "./interpreter";
 export type { SchemaInterpreterMap } from "./interpreter-utils";
 export { ZodIntersectionBuilder } from "./intersection";
@@ -104,6 +106,34 @@ export interface ZodNamespace
     ZodUnionNamespace {
   /** Coercion constructors -- convert input before validating. */
   coerce: ZodCoerceNamespace;
+  
+  /**
+   * Converts a Zod schema into a schema builder.
+   *
+   * Takes an existing Zod schema (created with `z.string()`, `z.object(...)`, etc.)
+   * and converts it to our AST representation. Useful for integrating with
+   * existing Zod schemas or third-party libraries that export Zod schemas.
+   *
+   * @param zodSchema - The Zod schema to convert
+   * @returns Schema builder that can be used with `.parse()` or `.safeParse()`
+   * @throws Error if the schema contains unconvertible constructs (closures, async transforms)
+   *
+   * @example
+   * ```ts
+   * import { z } from "zod";
+   * 
+   * const UserSchema = z.object({
+   *   name: z.string().min(1),
+   *   age: z.number().min(0),
+   * });
+   *
+   * const prog = app(($) => {
+   *   const schema = $.zod.fromZod(UserSchema);
+   *   return schema.parse($.input);
+   * });
+   * ```
+   */
+  fromZod(zodSchema: import("zod").ZodType): import("./base").ZodSchemaBuilder<any>;
   // ^^^ Each new schema type adds ONE extends clause here
 }
 
@@ -182,6 +212,7 @@ export const zod = definePlugin({
         ...transformNamespace(ctx),
         ...tupleNamespace(ctx, parseError),
         ...unionNamespace(ctx, parseError),
+        fromZod: (zodSchema: any) => fromZod(zodSchema, ctx),
         // ^^^ Each new schema type adds ONE spread here
       } as ZodNamespace,
     };
