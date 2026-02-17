@@ -71,6 +71,7 @@ export type { ShowFor } from "./plugins/show";
 export { show } from "./plugins/show";
 export type { StMethods } from "./plugins/st";
 export { st } from "./plugins/st";
+export { createStInterpreter, stInterpreter } from "./plugins/st/interpreter";
 export type { StrMethods } from "./plugins/str";
 export { str } from "./plugins/str";
 export { strInterpreter } from "./plugins/str/interpreter";

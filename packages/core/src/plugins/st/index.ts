@@ -1,5 +1,6 @@
 import type { Expr, PluginContext } from "../../core";
 import { definePlugin } from "../../core";
+import { stInterpreter } from "./interpreter";
 
 /**
  * Mutable state operations for local variables within a program.
@@ -26,6 +27,7 @@ export interface StMethods {
 export const st = definePlugin({
   name: "st",
   nodeKinds: ["st/let", "st/get", "st/set", "st/push"],
+  defaultInterpreter: stInterpreter,
   build(ctx: PluginContext): StMethods {
     let refCounter = 0;
 
