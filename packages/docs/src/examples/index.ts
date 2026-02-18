@@ -23,6 +23,7 @@ import s3 from "./s3";
 import st from "./st";
 import stripe from "./stripe";
 import str from "./str";
+import twilio from "./twilio";
 import type { ExampleEntry } from "./types";
 import zodSchemas from "./zod-schemas";
 import zodSchemasMore from "./zod-schemas-more";
@@ -51,6 +52,7 @@ const modules: Record<string, ExampleEntry>[] = [
   redisStrings,
   s3,
   stripe,
+  twilio,
   cloudflareKv,
   zodSchemas,
   zodSchemasMore,
