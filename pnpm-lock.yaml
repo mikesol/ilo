@@ -88,6 +88,9 @@ importers:
       '@mvfm/plugin-stripe':
         specifier: workspace:*
         version: link:../plugin-stripe
+      '@mvfm/plugin-twilio':
+        specifier: workspace:*
+        version: link:../plugin-twilio
       '@mvfm/plugin-zod':
         specifier: workspace:*
         version: link:../plugin-zod
