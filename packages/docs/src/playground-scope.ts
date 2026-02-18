@@ -1,6 +1,7 @@
 import {
   createCrystalBallAnthropicClient,
   createCrystalBallOpenAIClient,
+  createCrystalBallStripeClient,
 } from "./crystal-ball-clients";
 
 /** Builds the injected scope for playground code execution. */
@@ -60,6 +61,11 @@ export async function createPlaygroundScope(
     createCrystalBallAnthropicClient(),
   );
 
+  const pluginStripe = await import("@mvfm/plugin-stripe");
+  const crystalBallStripeInterpreter = pluginStripe.createStripeInterpreter(
+    createCrystalBallStripeClient(),
+  );
+
   const injected: Record<string, unknown> = {
     ...core,
     console_: pluginConsole.consolePlugin(),
@@ -75,6 +81,8 @@ export async function createPlaygroundScope(
     crystalBallOpenAIInterpreter,
     anthropic_: pluginAnthropic.anthropic({ apiKey: "sk-ant-crystal-ball" }),
     crystalBallAnthropicInterpreter,
+    stripe_: pluginStripe.stripe({ apiKey: "sk_test_crystal_ball" }),
+    crystalBallStripeInterpreter,
   };
 
   // Wire PGLite-backed postgres when a db instance is provided
