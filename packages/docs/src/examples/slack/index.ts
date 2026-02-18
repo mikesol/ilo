@@ -127,7 +127,7 @@ export function generateSlackExamples(): Record<string, ExampleEntry> {
 
     const code = generateCodeString(accessor, nodeKind, true);
     const description = `Call the Slack ${apiMethod} API method`;
-    const mockInterpreter = `({ "${nodeKind}": () => (${JSON.stringify(mockData)}) })`;
+    const mockInterpreter = `({ "${nodeKind}": async function* () { return (${JSON.stringify(mockData)}); } })`;
 
     const example: NodeExample = {
       description,

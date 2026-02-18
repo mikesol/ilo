@@ -52,9 +52,15 @@ importers:
       '@mvfm/plugin-anthropic':
         specifier: workspace:*
         version: link:../plugin-anthropic
+      '@mvfm/plugin-cloudflare-kv':
+        specifier: workspace:*
+        version: link:../plugin-cloudflare-kv
       '@mvfm/plugin-console':
         specifier: workspace:*
         version: link:../plugin-console
+      '@mvfm/plugin-fal':
+        specifier: workspace:*
+        version: link:../plugin-fal
       '@mvfm/plugin-fetch':
         specifier: workspace:*
         version: link:../plugin-fetch
@@ -76,6 +82,9 @@ importers:
       '@mvfm/plugin-slack':
         specifier: workspace:*
         version: link:../plugin-slack
+      '@mvfm/plugin-stripe':
+        specifier: workspace:*
+        version: link:../plugin-stripe
       '@mvfm/plugin-zod':
         specifier: workspace:*
         version: link:../plugin-zod
