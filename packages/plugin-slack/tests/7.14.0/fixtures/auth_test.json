@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "auth.test"
+  },
+  "response": {
+    "ok": true,
+    "url": "https://mikesolworkspace.slack.com/",
+    "team": "mikesol",
+    "user": "token_tester",
+    "team_id": "T08V79L1BSP",
+    "user_id": "U0AFFKPUVH9",
+    "bot_id": "B0AFJJLP7JR",
+    "is_enterprise_install": false,
+    "response_metadata": {
+      "scopes": [
+        "channels:read",
+        "users:read"
+      ]
+    }
+  }
+}
