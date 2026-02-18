@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/2010-04-01/Accounts/AC_test_123/Messages/SM00000000000000000000000000000001.json"
+  },
+  "response": {
+    "sid": "SM00000000000000000000000000000001",
+    "account_sid": "AC_test_123",
+    "to": "+15551234567",
+    "from": "+15559876543",
+    "body": "Hello",
+    "status": "delivered",
+    "direction": "outbound-api",
+    "date_created": "Wed, 01 Jan 2025 00:00:00 +0000",
+    "date_updated": "Wed, 01 Jan 2025 00:00:01 +0000",
+    "date_sent": "Wed, 01 Jan 2025 00:00:00 +0000",
+    "num_segments": "1",
+    "num_media": "0",
+    "price": "-0.0075",
+    "price_unit": "USD",
+    "api_version": "2010-04-01",
+    "uri": "/2010-04-01/Accounts/AC_test_123/Messages/SM00000000000000000000000000000001.json"
+  }
+}

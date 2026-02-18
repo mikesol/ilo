@@ -2,6 +2,7 @@ import {
   createCrystalBallAnthropicClient,
   createCrystalBallFalClient,
   createCrystalBallOpenAIClient,
+  createCrystalBallStripeClient,
 } from "./crystal-ball-clients";
 
 /** Builds the injected scope for playground code execution. */
@@ -11,6 +12,7 @@ export async function createPlaygroundScope(
   pgliteDb?: unknown,
   redis?: true,
   s3?: true,
+  cloudflareKv?: true,
 ) {
   const core = await import("@mvfm/core");
   const pluginConsole = await import("@mvfm/plugin-console");
@@ -64,6 +66,11 @@ export async function createPlaygroundScope(
   const pluginFal = await import("@mvfm/plugin-fal");
   const crystalBallFalInterpreter = pluginFal.createFalInterpreter(createCrystalBallFalClient());
 
+  const pluginStripe = await import("@mvfm/plugin-stripe");
+  const crystalBallStripeInterpreter = pluginStripe.createStripeInterpreter(
+    createCrystalBallStripeClient(),
+  );
+
   const injected: Record<string, unknown> = {
     ...core,
     console_: pluginConsole.consolePlugin(),
@@ -81,6 +88,9 @@ export async function createPlaygroundScope(
     crystalBallAnthropicInterpreter,
     fal_: pluginFal.fal({ credentials: "key-crystal-ball" }),
     crystalBallFalInterpreter,
+
+    stripe_: pluginStripe.stripe({ apiKey: "sk_test_crystal_ball" }),
+    crystalBallStripeInterpreter,
   };
 
   // Wire PGLite-backed postgres when a db instance is provided
@@ -125,6 +135,15 @@ export async function createPlaygroundScope(
     const client = new MemoryRedisClient();
     injected.redis = pluginRedis.redis();
     injected.memoryRedisInterpreter = pluginRedis.createRedisInterpreter(client);
+  }
+
+  // Wire in-memory Cloudflare KV when cloudflareKv flag is set
+  if (cloudflareKv) {
+    const { MemoryCloudflareKvClient } = await import("./memory-cloudflare-kv-client");
+    const pluginCfKv = await import("@mvfm/plugin-cloudflare-kv");
+    const client = new MemoryCloudflareKvClient();
+    injected.cloudflareKv = pluginCfKv.cloudflareKv;
+    injected.memoryCloudflareKvInterpreter = pluginCfKv.createCloudflareKvInterpreter(client);
   }
 
   // Wire in-memory S3 when s3 flag is set

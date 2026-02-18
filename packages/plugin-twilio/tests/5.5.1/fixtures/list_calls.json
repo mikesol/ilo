@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/2010-04-01/Accounts/AC_test_123/Calls.json",
+    "params": {
+      "limit": 20
+    }
+  },
+  "response": {
+    "calls": [
+      { "sid": "CA00000000000000000000000000000001", "status": "completed", "direction": "outbound-api" },
+      { "sid": "CA00000000000000000000000000000002", "status": "in-progress", "direction": "outbound-api" }
+    ],
+    "uri": "/2010-04-01/Accounts/AC_test_123/Calls.json",
+    "page": 0,
+    "page_size": 50,
+    "first_page_uri": "/2010-04-01/Accounts/AC_test_123/Calls.json?PageSize=50&Page=0",
+    "next_page_uri": null,
+    "previous_page_uri": null
+  }
+}
