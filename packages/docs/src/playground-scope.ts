@@ -3,6 +3,7 @@ export async function createPlaygroundScope(
   fakeConsole: Record<string, (...args: unknown[]) => void>,
   mockInterpreter?: Record<string, unknown>,
   pgliteDb?: unknown,
+  redis?: true,
 ) {
   const core = await import("@mvfm/core");
   const pluginConsole = await import("@mvfm/plugin-console");
@@ -71,6 +72,15 @@ export async function createPlaygroundScope(
       Object.assign(interp, fakeConsoleInterpreter);
       return interp;
     };
+  }
+
+  // Wire in-memory Redis when redis flag is set
+  if (redis) {
+    const { MemoryRedisClient } = await import("./memory-redis-client");
+    const pluginRedis = await import("@mvfm/plugin-redis");
+    const client = new MemoryRedisClient();
+    injected.redis = pluginRedis.redis();
+    injected.memoryRedisInterpreter = pluginRedis.createRedisInterpreter(client);
   }
 
   injected.foldAST = async (...args: any[]) => {
