@@ -10,6 +10,7 @@ interface PlaygroundProps {
   code: string;
   pglite?: { seedSQL: string };
   mockInterpreter?: string;
+  redis?: true;
 }
 
 type DbState = "idle" | "loading" | "ready" | "error";
@@ -26,7 +27,7 @@ function getHighlighter() {
   return highlighterPromise;
 }
 
-export default function Playground({ code: initialCode, pglite, mockInterpreter }: PlaygroundProps) {
+export default function Playground({ code: initialCode, pglite, mockInterpreter, redis }: PlaygroundProps) {
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState<string>("");
   const [isError, setIsError] = useState(false);
@@ -109,6 +110,7 @@ export default function Playground({ code: initialCode, pglite, mockInterpreter 
         fakeConsole,
         parsedMockInterpreter.current,
         pglite ? dbRef.current : undefined,
+        redis,
       );
       const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
       const fn = new AsyncFunction(...scope.paramNames, code);

@@ -15,6 +15,7 @@
     "@mvfm/core": "workspace:*",
     "@mvfm/plugin-console": "workspace:*",
     "@mvfm/plugin-postgres": "workspace:*",
+    "@mvfm/plugin-redis": "workspace:*",
     "@mvfm/plugin-zod": "workspace:*",
     "astro": "^5.9.4",
     "react": "^19.1.0",

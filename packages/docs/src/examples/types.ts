@@ -9,6 +9,8 @@ export interface NodeExample {
   mockInterpreter?: string;
   /** When set, the playground loads PGLite and seeds it with this SQL. */
   pglite?: { seedSQL: string };
+  /** When set, the playground provides an in-memory Redis client. */
+  redis?: true;
 }
 
 /** Prose landing page for a plugin namespace (e.g. /core, /postgres). */
