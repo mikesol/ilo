@@ -55,6 +55,9 @@ importers:
       '@mvfm/plugin-console':
         specifier: workspace:*
         version: link:../plugin-console
+      '@mvfm/plugin-fal':
+        specifier: workspace:*
+        version: link:../plugin-fal
       '@mvfm/plugin-fetch':
         specifier: workspace:*
         version: link:../plugin-fetch

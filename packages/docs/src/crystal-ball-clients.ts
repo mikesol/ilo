@@ -232,3 +232,50 @@ export function createCrystalBallAnthropicClient(): import("@mvfm/plugin-anthrop
     },
   };
 }
+
+// ---- Fal crystal-ball client -----------------------------------
+
+/** Creates a Fal mock client returning prefab crystal-ball responses. */
+export function createCrystalBallFalClient(): import("@mvfm/plugin-fal").FalClient {
+  return {
+    async run(endpointId: string) {
+      return {
+        requestId: "req-crystal-ball-001",
+        endpointId,
+        data: { text: nextReply() },
+      } as any;
+    },
+    async subscribe(endpointId: string) {
+      return {
+        requestId: "req-crystal-ball-001",
+        endpointId,
+        data: { text: nextReply() },
+      } as any;
+    },
+    async queueSubmit(endpointId: string) {
+      return {
+        request_id: "req-crystal-ball-001",
+        endpoint_id: endpointId,
+        status: "IN_QUEUE",
+      };
+    },
+    async queueStatus(endpointId: string, options: Record<string, unknown>) {
+      return {
+        endpoint_id: endpointId,
+        request_id: options.requestId,
+        status: "COMPLETED",
+        logs: [{ message: `Crystal ball completed ${String(options.requestId)}` }],
+      } as any;
+    },
+    async queueResult(endpointId: string, options: Record<string, unknown>) {
+      return {
+        request_id: options.requestId,
+        endpoint_id: endpointId,
+        data: { text: nextReply() },
+      };
+    },
+    async queueCancel() {
+      return;
+    },
+  };
+}

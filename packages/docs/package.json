@@ -15,6 +15,7 @@
     "@mvfm/core": "workspace:*",
     "@mvfm/plugin-anthropic": "workspace:*",
     "@mvfm/plugin-console": "workspace:*",
+    "@mvfm/plugin-fal": "workspace:*",
     "@mvfm/plugin-fetch": "workspace:*",
     "@mvfm/plugin-openai": "workspace:*",
     "@mvfm/plugin-pino": "workspace:*",

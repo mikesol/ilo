@@ -1,5 +1,6 @@
 import {
   createCrystalBallAnthropicClient,
+  createCrystalBallFalClient,
   createCrystalBallOpenAIClient,
 } from "./crystal-ball-clients";
 
@@ -60,6 +61,9 @@ export async function createPlaygroundScope(
     createCrystalBallAnthropicClient(),
   );
 
+  const pluginFal = await import("@mvfm/plugin-fal");
+  const crystalBallFalInterpreter = pluginFal.createFalInterpreter(createCrystalBallFalClient());
+
   const injected: Record<string, unknown> = {
     ...core,
     console_: pluginConsole.consolePlugin(),
@@ -75,6 +79,8 @@ export async function createPlaygroundScope(
     crystalBallOpenAIInterpreter,
     anthropic_: pluginAnthropic.anthropic({ apiKey: "sk-ant-crystal-ball" }),
     crystalBallAnthropicInterpreter,
+    fal_: pluginFal.fal({ credentials: "key-crystal-ball" }),
+    crystalBallFalInterpreter,
   };
 
   // Wire PGLite-backed postgres when a db instance is provided
