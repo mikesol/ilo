@@ -32,6 +32,7 @@ import { openai as openaiPlugin } from "../packages/plugin-openai/src/6.21.0/ind
 import { anthropic as anthropicPlugin } from "../packages/plugin-anthropic/src/0.74.0/index.js";
 import { fal as falPlugin } from "../packages/plugin-fal/src/1.9.1/index.js";
 import { stripe as stripePlugin } from "../packages/plugin-stripe/src/2025-04-30.basil/index.js";
+import { resend as resendPlugin } from "../packages/plugin-resend/src/6.9.2/index.js";
 import { cloudflareKv as cloudflareKvPlugin } from "../packages/plugin-cloudflare-kv/src/4.20260213.0/index.js";
 import { getAllExamples } from "../packages/docs/src/examples/index.js";
 
@@ -72,6 +73,7 @@ const plugins: Array<{ nodeKinds: string[]; traits?: any }> = [
   anthropicPlugin({ apiKey: "unused" }),
   falPlugin({ credentials: "unused" }),
   stripePlugin({ apiKey: "unused" }),
+  resendPlugin({ apiKey: "unused" }),
   cloudflareKvPlugin({ namespaceId: "unused" }),
 ];
 

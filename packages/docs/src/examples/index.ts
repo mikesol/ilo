@@ -15,6 +15,7 @@ import openai from "./openai";
 import ord from "./ord";
 import pino from "./pino";
 import postgres from "./postgres";
+import resend from "./resend";
 import redisHashes from "./redis-hashes";
 import redisKeys from "./redis-keys";
 import redisLists from "./redis-lists";
@@ -53,6 +54,7 @@ const modules: Record<string, ExampleEntry>[] = [
   s3,
   slack,
   stripe,
+  resend,
   cloudflareKv,
   zodSchemas,
   zodSchemasMore,
