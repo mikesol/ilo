@@ -74,6 +74,19 @@ export async function createPlaygroundScope(
     createCrystalBallStripeClient(),
   );
 
+  const pluginTwilio = await import("@mvfm/plugin-twilio");
+  const crystalBallTwilioInterpreter = pluginTwilio.createTwilioInterpreter({
+    async request(method: string, path: string, params?: Record<string, unknown>) {
+      return {
+        method,
+        path,
+        params: params ?? null,
+        sid: "TWILIO_CRYSTAL_BALL",
+        status: "queued",
+      };
+    },
+  });
+
   const pluginResend = await import("@mvfm/plugin-resend");
   const crystalBallResendInterpreter = pluginResend.createResendInterpreter(
     createCrystalBallResendClient(),
@@ -99,6 +112,8 @@ export async function createPlaygroundScope(
 
     stripe_: pluginStripe.stripe({ apiKey: "sk_test_crystal_ball" }),
     crystalBallStripeInterpreter,
+    twilio_: pluginTwilio.twilio,
+    crystalBallTwilioInterpreter,
     slack_: pluginSlack.slack({ token: "xoxb-mock-token" }),
 
     resend_: pluginResend.resend({ apiKey: "re_crystal_ball" }),

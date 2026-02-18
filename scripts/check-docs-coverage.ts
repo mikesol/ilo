@@ -34,6 +34,7 @@ import { fal as falPlugin } from "../packages/plugin-fal/src/1.9.1/index.js";
 import { stripe as stripePlugin } from "../packages/plugin-stripe/src/2025-04-30.basil/index.js";
 import { resend as resendPlugin } from "../packages/plugin-resend/src/6.9.2/index.js";
 import { cloudflareKv as cloudflareKvPlugin } from "../packages/plugin-cloudflare-kv/src/4.20260213.0/index.js";
+import { twilio as twilioPlugin } from "../packages/plugin-twilio/src/5.5.1/index.js";
 import { getAllExamples } from "../packages/docs/src/examples/index.js";
 
 // Internal node kinds excluded from coverage requirements.
@@ -75,6 +76,7 @@ const plugins: Array<{ nodeKinds: string[]; traits?: any }> = [
   stripePlugin({ apiKey: "unused" }),
   resendPlugin({ apiKey: "unused" }),
   cloudflareKvPlugin({ namespaceId: "unused" }),
+  twilioPlugin({ accountSid: "unused", authToken: "unused" }),
 ];
 
 // Also include core node kinds that aren't from plugins

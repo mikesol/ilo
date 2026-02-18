@@ -25,6 +25,7 @@ import slack from "./slack";
 import st from "./st";
 import stripe from "./stripe";
 import str from "./str";
+import twilio from "./twilio";
 import type { ExampleEntry } from "./types";
 import zodSchemas from "./zod-schemas";
 import zodSchemasMore from "./zod-schemas-more";
@@ -54,6 +55,7 @@ const modules: Record<string, ExampleEntry>[] = [
   s3,
   slack,
   stripe,
+  twilio,
   resend,
   cloudflareKv,
   zodSchemas,
