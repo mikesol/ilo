@@ -50,6 +50,12 @@ describe("docs examples", () => {
         const { paramNames, paramValues } = await createPlaygroundScope(fakeConsole, mock);
         const fn = new AsyncFunction(...paramNames, example.code);
         await fn(...paramValues);
+      } else if (example.redis) {
+        // Redis examples: spin up in-memory Redis client
+        const { paramNames, paramValues } = await createPlaygroundScope(fakeConsole, undefined, undefined, true);
+        const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor;
+        const fn = new AsyncFunction(...paramNames, example.code);
+        await fn(...paramValues);
       } else if (example.pglite) {
         // PGLite examples: spin up in-browser Postgres via PGLite
         const { PGlite } = await import("@electric-sql/pglite");
