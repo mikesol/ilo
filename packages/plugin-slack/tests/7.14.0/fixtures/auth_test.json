@@ -4,12 +4,12 @@
   },
   "response": {
     "ok": true,
-    "url": "https://mikesolworkspace.slack.com/",
-    "team": "mikesol",
+    "url": "https://test-workspace.slack.com/",
+    "team": "test-workspace",
     "user": "token_tester",
-    "team_id": "T08V79L1BSP",
-    "user_id": "U0AFFKPUVH9",
-    "bot_id": "B0AFJJLP7JR",
+    "team_id": "T00000000AA",
+    "user_id": "U00000000AA",
+    "bot_id": "B00000000AA",
     "is_enterprise_install": false,
     "response_metadata": {
       "scopes": [

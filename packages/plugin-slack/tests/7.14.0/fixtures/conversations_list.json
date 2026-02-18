@@ -9,15 +9,15 @@
     "ok": true,
     "channels": [
       {
-        "id": "C08V79L6H35",
+        "id": "C00000000AA",
         "created": 1749056104,
-        "creator": "U08V79L1C0K",
+        "creator": "U00000000BB",
         "is_org_shared": false,
         "is_im": false,
-        "context_team_id": "T08V79L1BSP",
+        "context_team_id": "T00000000AA",
         "updated": 1751805355042,
-        "name": "all-mikesol",
-        "name_normalized": "all-mikesol",
+        "name": "general",
+        "name_normalized": "general",
         "is_channel": true,
         "is_group": false,
         "is_mpim": false,
@@ -31,8 +31,8 @@
         "pending_shared": [],
         "parent_conversation": null,
         "purpose": {
-          "value": "Share announcements and updates about company news, upcoming events, or teammates who deserve some kudos. ⭐",
-          "creator": "U08V79L1C0K",
+          "value": "Share announcements and updates about company news, upcoming events, or teammates who deserve some kudos.",
+          "creator": "U00000000BB",
           "last_set": 1749056104
         },
         "topic": {
@@ -41,47 +41,24 @@
           "last_set": 0
         },
         "shared_team_ids": [
-          "T08V79L1BSP"
+          "T00000000AA"
         ],
         "pending_connected_team_ids": [],
         "is_member": false,
         "num_members": 1,
         "properties": {
-          "tabs": [
-            {
-              "id": "Ct09015T33CJ",
-              "type": "canvas",
-              "data": {
-                "file_id": "F09015T336E",
-                "shared_ts": "1749056109.210099"
-              },
-              "label": ""
-            }
-          ],
-          "tabz": [
-            {
-              "id": "Ct09015T33CJ",
-              "type": "canvas",
-              "data": {
-                "file_id": "F09015T336E",
-                "shared_ts": "1749056109.210099"
-              }
-            }
-          ],
           "use_case": "welcome",
           "is_dormant": true
         },
-        "previous_names": [
-          "all-new-workspace"
-        ]
+        "previous_names": []
       },
       {
-        "id": "C08V79LC943",
+        "id": "C00000000BB",
         "created": 1749056104,
-        "creator": "U08V79L1C0K",
+        "creator": "U00000000BB",
         "is_org_shared": false,
         "is_im": false,
-        "context_team_id": "T08V79L1BSP",
+        "context_team_id": "T00000000AA",
         "updated": 1751805355740,
         "name": "social",
         "name_normalized": "social",
@@ -98,8 +75,8 @@
         "pending_shared": [],
         "parent_conversation": null,
         "purpose": {
-          "value": "Other channels are for work. This one’s just for fun. Get to know your teammates and show your lighter side. 🎈",
-          "creator": "U08V79L1C0K",
+          "value": "Other channels are for work. This one's just for fun.",
+          "creator": "U00000000BB",
           "last_set": 1749056104
         },
         "topic": {
@@ -108,45 +85,24 @@
           "last_set": 0
         },
         "shared_team_ids": [
-          "T08V79L1BSP"
+          "T00000000AA"
         ],
         "pending_connected_team_ids": [],
         "is_member": false,
         "num_members": 1,
         "properties": {
-          "tabs": [
-            {
-              "id": "Ct0901Q5BD9A",
-              "type": "canvas",
-              "data": {
-                "file_id": "F0901Q53YBE",
-                "shared_ts": "1749056109.340769"
-              },
-              "label": ""
-            }
-          ],
-          "tabz": [
-            {
-              "id": "Ct0901Q5BD9A",
-              "type": "canvas",
-              "data": {
-                "file_id": "F0901Q53YBE",
-                "shared_ts": "1749056109.340769"
-              }
-            }
-          ],
           "use_case": "random",
           "is_dormant": true
         },
         "previous_names": []
       },
       {
-        "id": "C0901QGQ3N0",
+        "id": "C00000000CC",
         "created": 1749056132,
-        "creator": "U08V79L1C0K",
+        "creator": "U00000000BB",
         "is_org_shared": false,
         "is_im": false,
-        "context_team_id": "T08V79L1BSP",
+        "context_team_id": "T00000000AA",
         "updated": 1751805355255,
         "name": "new-channel",
         "name_normalized": "new-channel",
@@ -163,8 +119,8 @@
         "pending_shared": [],
         "parent_conversation": null,
         "purpose": {
-          "value": "This channel is for everything #new-channel. Hold meetings, share docs, and make decisions together with your team.",
-          "creator": "U08V79L1C0K",
+          "value": "This channel is for everything #new-channel.",
+          "creator": "U00000000BB",
           "last_set": 1749056132
         },
         "topic": {
@@ -173,7 +129,7 @@
           "last_set": 0
         },
         "shared_team_ids": [
-          "T08V79L1BSP"
+          "T00000000AA"
         ],
         "pending_connected_team_ids": [],
         "is_member": false,
