@@ -1,0 +1,3 @@
+[submodule "packages/plugin-slack/vendor/node-slack-sdk"]
+	path = packages/plugin-slack/vendor/node-slack-sdk
+	url = https://github.com/slackapi/node-slack-sdk.git
