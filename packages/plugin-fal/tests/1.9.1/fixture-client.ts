@@ -97,10 +97,7 @@ export function createReplayClient(fixturePath: string): FixtureClient {
  * captures every request/response pair, and writes them to disk on
  * {@link FixtureClient.save}.
  */
-export function createRecordingClient(
-  real: FalClient,
-  fixturePath: string,
-): FixtureClient {
+export function createRecordingClient(real: FalClient, fixturePath: string): FixtureClient {
   const entries: FixtureEntry[] = [];
 
   function record(method: string, endpointId: string, input: unknown, response: unknown): void {
@@ -138,7 +135,7 @@ export function createRecordingClient(
       record("queueCancel", endpointId, options, undefined);
     },
     async save() {
-      writeFileSync(fixturePath, JSON.stringify(entries, null, 2) + "\n");
+      writeFileSync(fixturePath, `${JSON.stringify(entries, null, 2)}\n`);
     },
   };
 }
