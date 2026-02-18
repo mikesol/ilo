@@ -1,0 +1,437 @@
+[
+  {
+    "method": "run",
+    "endpointId": "fal-ai/fast-sdxl",
+    "input": {
+      "input": {
+        "prompt": "a cat sitting on a windowsill"
+      }
+    },
+    "response": {
+      "data": {
+        "images": [
+          {
+            "url": "https://v3b.fal.media/files/b/0a8eefee/htvjKR7fXo9GXsTwhlI4v.jpg",
+            "width": 1024,
+            "height": 1024,
+            "content_type": "image/jpeg"
+          }
+        ],
+        "timings": {
+          "inference": 1.2425928940065205
+        },
+        "seed": 7533879203071655000,
+        "has_nsfw_concepts": [
+          false
+        ],
+        "prompt": "a cat sitting on a windowsill"
+      },
+      "requestId": "2a7919da-72f6-4f02-8f48-ebcf70906f4b"
+    }
+  },
+  {
+    "method": "subscribe",
+    "endpointId": "fal-ai/fast-sdxl",
+    "input": {
+      "input": {
+        "prompt": "a dog in a park"
+      },
+      "mode": "polling",
+      "pollInterval": 1000
+    },
+    "response": {
+      "data": {
+        "images": [
+          {
+            "url": "https://v3b.fal.media/files/b/0a8eefee/aSKwQsKXKeqnax-aBcwLO.jpg",
+            "width": 1024,
+            "height": 1024,
+            "content_type": "image/jpeg"
+          }
+        ],
+        "timings": {
+          "inference": 1.208077979972586
+        },
+        "seed": 16510644661374190000,
+        "has_nsfw_concepts": [
+          false
+        ],
+        "prompt": "a dog in a park"
+      },
+      "requestId": "06eac368-7361-43c2-9873-ca0e126e9baa"
+    }
+  },
+  {
+    "method": "queueSubmit",
+    "endpointId": "fal-ai/fast-sdxl",
+    "input": {
+      "input": {
+        "prompt": "a mountain landscape"
+      }
+    },
+    "response": {
+      "status": "IN_QUEUE",
+      "request_id": "8062c205-3a9c-4796-b4a2-fe66d78dc63a",
+      "response_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/8062c205-3a9c-4796-b4a2-fe66d78dc63a",
+      "status_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/8062c205-3a9c-4796-b4a2-fe66d78dc63a/status",
+      "cancel_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/8062c205-3a9c-4796-b4a2-fe66d78dc63a/cancel",
+      "logs": null,
+      "metrics": {},
+      "queue_position": 0
+    }
+  },
+  {
+    "method": "queueSubmit",
+    "endpointId": "fal-ai/fast-sdxl",
+    "input": {
+      "input": {
+        "prompt": "status check target"
+      }
+    },
+    "response": {
+      "status": "IN_QUEUE",
+      "request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+      "response_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/d6562d8b-943e-4b08-b730-42ee91b34254",
+      "status_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/d6562d8b-943e-4b08-b730-42ee91b34254/status",
+      "cancel_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/d6562d8b-943e-4b08-b730-42ee91b34254/cancel",
+      "logs": null,
+      "metrics": {},
+      "queue_position": 0
+    }
+  },
+  {
+    "method": "queueStatus",
+    "endpointId": "fal-ai/fast-sdxl",
+    "input": {
+      "requestId": "d6562d8b-943e-4b08-b730-42ee91b34254",
+      "logs": true
+    },
+    "response": {
+      "status": "COMPLETED",
+      "request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+      "response_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/d6562d8b-943e-4b08-b730-42ee91b34254",
+      "status_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/d6562d8b-943e-4b08-b730-42ee91b34254/status",
+      "cancel_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/d6562d8b-943e-4b08-b730-42ee91b34254/cancel",
+      "logs": [
+        {
+          "timestamp": "2026-02-18T06:42:27.821178",
+          "message": "  0%|          | 0/25 [00:00<?, ?it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:27.821178+00:00",
+            "message": "  0%_          _ 0/25 [00:00<?, ?it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:27.962076",
+          "message": " 16%|█▌        | 4/25 [00:00<00:00, 28.44it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:27.962076+00:00",
+            "message": " 16%_█▌        _ 4/25 [00:00<00:00, 28.44it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:28.089493",
+          "message": " 28%|██▊       | 7/25 [00:00<00:00, 25.67it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:28.089493+00:00",
+            "message": " 28%_██▊       _ 7/25 [00:00<00:00, 25.67it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:28.216089",
+          "message": " 40%|████      | 10/25 [00:00<00:00, 24.80it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:28.216089+00:00",
+            "message": " 40%_████      _ 10/25 [00:00<00:00, 24.80it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:28.343012",
+          "message": " 52%|█████▏    | 13/25 [00:00<00:00, 24.35it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:28.343012+00:00",
+            "message": " 52%_█████▏    _ 13/25 [00:00<00:00, 24.35it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:28.470206",
+          "message": " 64%|██████▍   | 16/25 [00:00<00:00, 24.08it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:28.470206+00:00",
+            "message": " 64%_██████▍   _ 16/25 [00:00<00:00, 24.08it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:28.597776",
+          "message": " 76%|███████▌  | 19/25 [00:00<00:00, 23.89it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:28.597776+00:00",
+            "message": " 76%_███████▌  _ 19/25 [00:00<00:00, 23.89it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:28.726774",
+          "message": " 88%|████████▊ | 22/25 [00:00<00:00, 23.68it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:28.726774+00:00",
+            "message": " 88%_████████▊ _ 22/25 [00:00<00:00, 23.68it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:28.859575",
+          "message": "100%|██████████| 25/25 [00:01<00:00, 23.32it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:28.859575+00:00",
+            "message": "100%_██████████_ 25/25 [00:01<00:00, 23.32it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:28.860137",
+          "message": "100%|██████████| 25/25 [00:01<00:00, 24.07it/s]",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:28.860137+00:00",
+            "message": "100%_██████████_ 25/25 [00:01<00:00, 24.07it/s]",
+            "source": "gateway"
+          }
+        },
+        {
+          "timestamp": "2026-02-18T06:42:29.001645",
+          "message": "INFO:     100.74.122.43:41528 - \"POST / HTTP/1.1\" 200 OK",
+          "labels": {
+            "app": "github_110602490-fast-sdxl",
+            "app_id": "c2cd5c22-caf2-4139-b212-62f58317bc21",
+            "fal_endpoint": "fal-ai/fast-sdxl",
+            "fal_env": "prod",
+            "fal_job_id": "7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "fal_multiplexing_app": "1",
+            "fal_node_id": "c53ed2d2-f19d-afab-0a40-47eed33aa444",
+            "fal_public_logs": "1",
+            "fal_request_id": "d6562d8b-943e-4b08-b730-42ee91b34254",
+            "fal_user_nickname": "fal-ai",
+            "fal_worker_id": "fal-jobs/GPU-A100_GPU-A100-80GB_GPU-H100_GPU-A6000/7b06be80-c0cc-4306-bdaa-5d9415335bfa",
+            "isolate_source": "USER",
+            "level": "INFO",
+            "logged_at": "2026-02-18T06:42:29.001645+00:00",
+            "message": "INFO:     100.74.122.43:41528 - \"POST / HTTP/1.1\" 200 OK",
+            "source": "gateway"
+          }
+        }
+      ],
+      "metrics": {
+        "inference_time": 1.4416329860687256
+      }
+    }
+  },
+  {
+    "method": "queueSubmit",
+    "endpointId": "fal-ai/fast-sdxl",
+    "input": {
+      "input": {
+        "prompt": "result target"
+      }
+    },
+    "response": {
+      "status": "IN_QUEUE",
+      "request_id": "0cb05e30-83d5-48a7-8ad3-72472e1f5d78",
+      "response_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/0cb05e30-83d5-48a7-8ad3-72472e1f5d78",
+      "status_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/0cb05e30-83d5-48a7-8ad3-72472e1f5d78/status",
+      "cancel_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/0cb05e30-83d5-48a7-8ad3-72472e1f5d78/cancel",
+      "logs": null,
+      "metrics": {},
+      "queue_position": 0
+    }
+  },
+  {
+    "method": "queueResult",
+    "endpointId": "fal-ai/fast-sdxl",
+    "input": {
+      "requestId": "0cb05e30-83d5-48a7-8ad3-72472e1f5d78"
+    },
+    "response": {
+      "data": {
+        "images": [
+          {
+            "url": "https://v3b.fal.media/files/b/0a8eefef/qFGNT361jZGI3PnOspd4k.jpg",
+            "width": 1024,
+            "height": 1024,
+            "content_type": "image/jpeg"
+          }
+        ],
+        "timings": {
+          "inference": 1.2322204670635983
+        },
+        "seed": 11056070687577606000,
+        "has_nsfw_concepts": [
+          false
+        ],
+        "prompt": "result target"
+      },
+      "requestId": "0cb05e30-83d5-48a7-8ad3-72472e1f5d78"
+    }
+  },
+  {
+    "method": "queueSubmit",
+    "endpointId": "fal-ai/fast-sdxl",
+    "input": {
+      "input": {
+        "prompt": "cancel me"
+      }
+    },
+    "response": {
+      "status": "IN_QUEUE",
+      "request_id": "47e26a4f-b7d7-40a8-bc61-fced11722bcd",
+      "response_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/47e26a4f-b7d7-40a8-bc61-fced11722bcd",
+      "status_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/47e26a4f-b7d7-40a8-bc61-fced11722bcd/status",
+      "cancel_url": "https://queue.fal.run/fal-ai/fast-sdxl/requests/47e26a4f-b7d7-40a8-bc61-fced11722bcd/cancel",
+      "logs": null,
+      "metrics": {},
+      "queue_position": 0
+    }
+  },
+  {
+    "method": "queueCancel",
+    "endpointId": "fal-ai/fast-sdxl",
+    "input": {
+      "requestId": "47e26a4f-b7d7-40a8-bc61-fced11722bcd"
+    }
+  }
+]
