@@ -128,9 +128,9 @@ export class MemoryRedisClient implements RedisClient {
       }
       case "HGETALL": {
         const h = this.hashes.get(s(args[0]));
-        if (!h) return {};
-        const out: Record<string, string> = {};
-        for (const [k, v] of h) out[k] = v;
+        if (!h) return [];
+        const out: string[] = [];
+        for (const [k, v] of h) out.push(k, v);
         return out;
       }
       case "HDEL": {

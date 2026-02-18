@@ -53,7 +53,7 @@ await foldAST(
   },
 
   "redis/hgetall": {
-    description: "Get all fields and values from a hash",
+    description: "Get all fields and values from a hash as a flat key/value array",
     code: `const app = mvfm(prelude, redis);
 const prog = app({}, ($) => {
   return $.begin(
