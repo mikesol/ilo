@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "auth.test"
+  },
+  "response": {
+    "ok": true,
+    "url": "https://test-workspace.slack.com/",
+    "team": "test-workspace",
+    "user": "token_tester",
+    "team_id": "T00000000AA",
+    "user_id": "U00000000AA",
+    "bot_id": "B00000000AA",
+    "is_enterprise_install": false,
+    "response_metadata": {
+      "scopes": [
+        "channels:read",
+        "users:read"
+      ]
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "request": {
+    "method": "conversations.list",
+    "params": {
+      "limit": 5
+    }
+  },
+  "response": {
+    "ok": true,
+    "channels": [
+      {
+        "id": "C00000000AA",
+        "created": 1749056104,
+        "creator": "U00000000BB",
+        "is_org_shared": false,
+        "is_im": false,
+        "context_team_id": "T00000000AA",
+        "updated": 1751805355042,
+        "name": "general",
+        "name_normalized": "general",
+        "is_channel": true,
+        "is_group": false,
+        "is_mpim": false,
+        "is_private": false,
+        "is_archived": false,
+        "is_general": true,
+        "is_shared": false,
+        "is_ext_shared": false,
+        "unlinked": 0,
+        "is_pending_ext_shared": false,
+        "pending_shared": [],
+        "parent_conversation": null,
+        "purpose": {
+          "value": "Share announcements and updates about company news, upcoming events, or teammates who deserve some kudos.",
+          "creator": "U00000000BB",
+          "last_set": 1749056104
+        },
+        "topic": {
+          "value": "",
+          "creator": "",
+          "last_set": 0
+        },
+        "shared_team_ids": [
+          "T00000000AA"
+        ],
+        "pending_connected_team_ids": [],
+        "is_member": false,
+        "num_members": 1,
+        "properties": {
+          "use_case": "welcome",
+          "is_dormant": true
+        },
+        "previous_names": []
+      },
+      {
+        "id": "C00000000BB",
+        "created": 1749056104,
+        "creator": "U00000000BB",
+        "is_org_shared": false,
+        "is_im": false,
+        "context_team_id": "T00000000AA",
+        "updated": 1751805355740,
+        "name": "social",
+        "name_normalized": "social",
+        "is_channel": true,
+        "is_group": false,
+        "is_mpim": false,
+        "is_private": false,
+        "is_archived": false,
+        "is_general": false,
+        "is_shared": false,
+        "is_ext_shared": false,
+        "unlinked": 0,
+        "is_pending_ext_shared": false,
+        "pending_shared": [],
+        "parent_conversation": null,
+        "purpose": {
+          "value": "Other channels are for work. This one's just for fun.",
+          "creator": "U00000000BB",
+          "last_set": 1749056104
+        },
+        "topic": {
+          "value": "",
+          "creator": "",
+          "last_set": 0
+        },
+        "shared_team_ids": [
+          "T00000000AA"
+        ],
+        "pending_connected_team_ids": [],
+        "is_member": false,
+        "num_members": 1,
+        "properties": {
+          "use_case": "random",
+          "is_dormant": true
+        },
+        "previous_names": []
+      },
+      {
+        "id": "C00000000CC",
+        "created": 1749056132,
+        "creator": "U00000000BB",
+        "is_org_shared": false,
+        "is_im": false,
+        "context_team_id": "T00000000AA",
+        "updated": 1751805355255,
+        "name": "new-channel",
+        "name_normalized": "new-channel",
+        "is_channel": true,
+        "is_group": false,
+        "is_mpim": false,
+        "is_private": false,
+        "is_archived": false,
+        "is_general": false,
+        "is_shared": false,
+        "is_ext_shared": false,
+        "unlinked": 0,
+        "is_pending_ext_shared": false,
+        "pending_shared": [],
+        "parent_conversation": null,
+        "purpose": {
+          "value": "This channel is for everything #new-channel.",
+          "creator": "U00000000BB",
+          "last_set": 1749056132
+        },
+        "topic": {
+          "value": "",
+          "creator": "",
+          "last_set": 0
+        },
+        "shared_team_ids": [
+          "T00000000AA"
+        ],
+        "pending_connected_team_ids": [],
+        "is_member": false,
+        "num_members": 1,
+        "properties": {
+          "use_case": "project",
+          "is_dormant": true
+        },
+        "previous_names": []
+      }
+    ],
+    "response_metadata": {
+      "next_cursor": "",
+      "scopes": [
+        "channels:read",
+        "users:read"
+      ],
+      "acceptedScopes": [
+        "channels:read",
+        "groups:read",
+        "mpim:read",
+        "im:read",
+        "read"
+      ]
+    }
+  }
+}
