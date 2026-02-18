@@ -6,6 +6,7 @@ import control from "./control";
 import core from "./core";
 import eq from "./eq";
 import error from "./error";
+import fal from "./fal";
 import fetch from "./fetch";
 import fiber from "./fiber";
 import indexes from "./indexes";
@@ -40,6 +41,7 @@ const modules: Record<string, ExampleEntry>[] = [
   fiber,
   console_,
   anthropic,
+  fal,
   fetch,
   openai,
   postgres,

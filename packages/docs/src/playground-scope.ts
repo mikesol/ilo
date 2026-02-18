@@ -1,5 +1,6 @@
 import {
   createCrystalBallAnthropicClient,
+  createCrystalBallFalClient,
   createCrystalBallOpenAIClient,
   createCrystalBallStripeClient,
 } from "./crystal-ball-clients";
@@ -62,6 +63,9 @@ export async function createPlaygroundScope(
     createCrystalBallAnthropicClient(),
   );
 
+  const pluginFal = await import("@mvfm/plugin-fal");
+  const crystalBallFalInterpreter = pluginFal.createFalInterpreter(createCrystalBallFalClient());
+
   const pluginStripe = await import("@mvfm/plugin-stripe");
   const crystalBallStripeInterpreter = pluginStripe.createStripeInterpreter(
     createCrystalBallStripeClient(),
@@ -82,6 +86,9 @@ export async function createPlaygroundScope(
     crystalBallOpenAIInterpreter,
     anthropic_: pluginAnthropic.anthropic({ apiKey: "sk-ant-crystal-ball" }),
     crystalBallAnthropicInterpreter,
+    fal_: pluginFal.fal({ credentials: "key-crystal-ball" }),
+    crystalBallFalInterpreter,
+
     stripe_: pluginStripe.stripe({ apiKey: "sk_test_crystal_ball" }),
     crystalBallStripeInterpreter,
   };
