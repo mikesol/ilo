@@ -16,10 +16,20 @@ import type { NExpr, RuntimeEntry } from "./00-expr";
 
 // ─── Interpreter types ──────────────────────────────────────────────
 
+/** Context provided to handlers during fold evaluation. */
+export interface FoldContext {
+  /** Current scope bindings (top of scope stack), or undefined if no scope active. */
+  getScope(): Record<string, unknown> | undefined;
+}
+
+/** What a handler can yield: child index or scoped child request. */
+export type FoldYield = number | { child: number; scope: Record<string, unknown> };
+
 /** A handler evaluates a single node kind via an async generator. */
 export type Handler = (
   entry: RuntimeEntry,
-) => AsyncGenerator<number, unknown, unknown>;
+  ctx: FoldContext,
+) => AsyncGenerator<FoldYield, unknown, unknown>;
 
 /** Maps node kind strings to their handlers. */
 export type Interpreter = Record<string, Handler>;
@@ -83,10 +93,12 @@ export interface FoldOptions {
 
 interface Frame {
   id: string;
-  gen: AsyncGenerator<number, unknown, unknown>;
+  gen: AsyncGenerator<FoldYield, unknown, unknown>;
   pendingValue: unknown;
   pendingError: unknown;
   tainted: boolean;
+  /** Scope stack depth when this frame was pushed (for cleanup on pop). */
+  scopeDepthOnPush: number;
 }
 
 // ─── foldFrom() ─────────────────────────────────────────────────────
@@ -117,23 +129,33 @@ export async function foldFrom<T>(
   const tainted: Set<string> = new Set();
   const volatile = options?.volatileKinds ?? VOLATILE_KINDS;
   const stack: Frame[] = [];
+  const scopeStack: Array<Record<string, unknown>> = [];
+
+  const ctx: FoldContext = {
+    getScope() {
+      return scopeStack.length > 0
+        ? scopeStack[scopeStack.length - 1]
+        : undefined;
+    },
+  };
 
   function isVolatile(id: string): boolean {
     const entry = adj[id];
     return entry !== undefined && volatile.has(entry.kind);
   }
 
-  function pushNode(id: string): void {
+  function pushNode(id: string, scopeDepth?: number): void {
     const entry = adj[id];
     if (!entry) throw new Error(`fold: missing node "${id}"`);
     const handler = interp[entry.kind];
     if (!handler) throw new Error(`fold: no handler for "${entry.kind}"`);
     stack.push({
       id,
-      gen: handler(entry),
+      gen: handler(entry, ctx),
       pendingValue: undefined,
       pendingError: undefined,
       tainted: false,
+      scopeDepthOnPush: scopeDepth ?? scopeStack.length,
     });
   }
 
@@ -148,7 +170,7 @@ export async function foldFrom<T>(
       continue;
     }
 
-    let iterResult: IteratorResult<number, unknown>;
+    let iterResult: IteratorResult<FoldYield, unknown>;
     try {
       if (frame.pendingError !== undefined) {
         const err = frame.pendingError;
@@ -160,6 +182,8 @@ export async function foldFrom<T>(
     } catch (err) {
       // Handler threw (uncaught) — propagate up
       stack.pop();
+      // Restore scope stack to frame's depth
+      scopeStack.length = frame.scopeDepthOnPush;
       if (stack.length > 0) {
         stack[stack.length - 1].pendingError = err;
       } else {
@@ -175,6 +199,8 @@ export async function foldFrom<T>(
         tainted.add(frame.id);
       }
       stack.pop();
+      // Restore scope stack to frame's depth
+      scopeStack.length = frame.scopeDepthOnPush;
       if (stack.length > 0) {
         const parent = stack[stack.length - 1];
         parent.pendingValue = iterResult.value;
@@ -186,13 +212,28 @@ export async function foldFrom<T>(
       continue;
     }
 
-    const childIndex = iterResult.value;
+    // Parse yield value: number or { child, scope }
+    const yieldVal = iterResult.value;
+    let childIndex: number;
+    let scopeBinding: Record<string, unknown> | undefined;
+    if (typeof yieldVal === "number") {
+      childIndex = yieldVal;
+    } else {
+      childIndex = yieldVal.child;
+      scopeBinding = yieldVal.scope;
+    }
+
     const entry = adj[frame.id];
     const childId = entry.children[childIndex];
     if (childId === undefined) {
       throw new Error(
         `fold: node "${frame.id}" (${entry.kind}) has no child at index ${childIndex}`,
       );
+    }
+
+    // Push scope if this is a scoped yield
+    if (scopeBinding !== undefined) {
+      scopeStack.push(scopeBinding);
     }
 
     // If child is volatile or tainted, always re-evaluate
@@ -204,6 +245,10 @@ export async function foldFrom<T>(
 
     if (childId in memo) {
       frame.pendingValue = memo[childId];
+      // If we pushed a scope for a cached child, pop it immediately
+      if (scopeBinding !== undefined) {
+        scopeStack.pop();
+      }
       continue;
     }
 
