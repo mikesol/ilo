@@ -89,27 +89,30 @@ interface Frame {
   tainted: boolean;
 }
 
-// ─── fold() ─────────────────────────────────────────────────────────
+// ─── foldFrom() ─────────────────────────────────────────────────────
 
 /**
- * Evaluate an NExpr DAG using an async-generator interpreter.
+ * Evaluate a sub-expression rooted at `rootId` within an adjacency map.
+ *
+ * Creates an independent trampoline with its own memo and tainted sets.
+ * Used by fiber handlers to spawn parallel evaluations of sub-DAGs
+ * that share the same (read-only) adjacency map.
  *
  * Each handler yields child indices to request their evaluated values,
  * then returns its own result. The trampoline drives the generators
  * using an explicit stack, making it stack-safe for arbitrarily deep
- * DAGs. Shared nodes are memoized and evaluated exactly once.
+ * DAGs. Shared nodes are memoized and evaluated exactly once per call.
  *
  * Volatile nodes (kinds in volatileKinds) always re-evaluate.
  * Taint propagates transitively: any node depending on a volatile
  * or tainted child is itself tainted and will re-evaluate.
  */
-export async function fold<O>(
-  expr: NExpr<O, string, unknown, string>,
+export async function foldFrom<T>(
+  rootId: string,
+  adj: Record<string, RuntimeEntry>,
   interp: Interpreter,
   options?: FoldOptions,
-): Promise<O> {
-  const rootId = expr.__id;
-  const adj = expr.__adj;
+): Promise<T> {
   const memo: Record<string, unknown> = {};
   const tainted: Set<string> = new Set();
   const volatile = options?.volatileKinds ?? VOLATILE_KINDS;
@@ -210,5 +213,21 @@ export async function fold<O>(
   if (!(rootId in memo)) {
     throw new Error(`fold: root "${rootId}" was not evaluated`);
   }
-  return memo[rootId] as O;
+  return memo[rootId] as T;
+}
+
+// ─── fold() ─────────────────────────────────────────────────────────
+
+/**
+ * Evaluate an NExpr DAG using an async-generator interpreter.
+ *
+ * Delegates to {@link foldFrom} with the expression's root ID and
+ * adjacency map. See foldFrom for full implementation details.
+ */
+export async function fold<O>(
+  expr: NExpr<O, string, unknown, string>,
+  interp: Interpreter,
+  options?: FoldOptions,
+): Promise<O> {
+  return foldFrom<O>(expr.__id, expr.__adj, interp, options);
 }
