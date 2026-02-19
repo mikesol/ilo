@@ -85,6 +85,7 @@ interface Frame {
   id: string;
   gen: AsyncGenerator<number, unknown, unknown>;
   pendingValue: unknown;
+  pendingError: unknown;
   tainted: boolean;
 }
 
@@ -128,6 +129,7 @@ export async function fold<O>(
       id,
       gen: handler(entry),
       pendingValue: undefined,
+      pendingError: undefined,
       tainted: false,
     });
   }
@@ -143,9 +145,25 @@ export async function fold<O>(
       continue;
     }
 
-    const iterResult: IteratorResult<number, unknown> = await frame.gen.next(
-      frame.pendingValue,
-    );
+    let iterResult: IteratorResult<number, unknown>;
+    try {
+      if (frame.pendingError !== undefined) {
+        const err = frame.pendingError;
+        frame.pendingError = undefined;
+        iterResult = await frame.gen.throw(err);
+      } else {
+        iterResult = await frame.gen.next(frame.pendingValue);
+      }
+    } catch (err) {
+      // Handler threw (uncaught) — propagate up
+      stack.pop();
+      if (stack.length > 0) {
+        stack[stack.length - 1].pendingError = err;
+      } else {
+        throw err;
+      }
+      continue;
+    }
 
     if (iterResult.done) {
       memo[frame.id] = iterResult.value;
