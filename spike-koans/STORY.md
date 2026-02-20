@@ -48,7 +48,7 @@ A `TraitInstance<ForType, Kind>` links a phantom type to a node kind: "for type 
 ```ts
 const numPlugin = {
   ctors: { numLit, add, mul },
-  instances: [{ _forType: number, kind: "num/eq", prefix: "num", ctor: numEq }],
+  instances: [{ _forType: number, kind: "num/eq", forTypeTag: "number", ctor: numEq }],
 };
 ```
 
@@ -63,7 +63,7 @@ eq(numLit(3), strLit("b")); // ✗ compile error: number ≠ string
 
 `mvfm(...plugins)` composes plugins into a `$` record: all constructors spread in, plus trait dispatchers typed as the intersection of all registered instances. If you load `numPlugin` but not `strPlugin`, `$.eq` rejects string arguments at the type level.
 
-At runtime, dispatch is a simple prefix match on the left argument's node kind.
+At runtime, dispatch matches the left argument's output type tag to find the correct instance.
 
 ## Koan 04: The app boundary (normalization)
 
