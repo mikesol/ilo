@@ -16,7 +16,7 @@
  *   npx tsx spike-koans/04-normalize.ts
  */
 
-export * from "./03-traits";
+export * from "./03a-composition";
 
 import type {
   NodeEntry,
@@ -33,8 +33,11 @@ import type {
   StdRegistry,
   LiftKind,
   TypeKey,
-} from "./03-traits";
-import { makeNExpr, incrementId, isCExpr, add, mul, sub, eq } from "./03-traits";
+} from "./03a-composition";
+import {
+  makeNExpr, incrementId, isCExpr, add, mul, sub, eq,
+  buildLiftMap, buildTraitMap, buildKindInputs, stdPlugins,
+} from "./03a-composition";
 
 // ═══════════════════════════════════════════════════════════════════════
 // TYPE-LEVEL ELABORATOR
@@ -233,25 +236,10 @@ export type AppResult<Reg, Expr> =
 // RUNTIME app()
 // ═══════════════════════════════════════════════════════════════════════
 
-// Runtime registry for lifting and validation
-export const LIFT_MAP: Record<string, string> = {
-  number: "num/literal",
-  string: "str/literal",
-  boolean: "bool/literal",
-};
-
-export const TRAIT_MAP: Record<string, Record<string, string>> = {
-  eq: { number: "num/eq", string: "str/eq", boolean: "bool/eq" },
-};
-
-export const KIND_INPUTS: Record<string, string[]> = {
-  "num/add": ["number", "number"],
-  "num/mul": ["number", "number"],
-  "num/sub": ["number", "number"],
-  "num/eq": ["number", "number"],
-  "str/eq": ["string", "string"],
-  "bool/eq": ["boolean", "boolean"],
-};
+// Runtime registry — derived from plugins, not hardcoded
+export const LIFT_MAP: Record<string, string> = buildLiftMap(stdPlugins);
+export const TRAIT_MAP: Record<string, Record<string, string>> = buildTraitMap(stdPlugins);
+export const KIND_INPUTS: Record<string, string[]> = buildKindInputs(stdPlugins);
 
 export function app<
   Expr extends CExpr<any, string, readonly unknown[]>,
