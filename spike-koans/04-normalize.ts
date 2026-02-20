@@ -46,7 +46,7 @@ import { makeNExpr, incrementId, isCExpr, add, mul, sub, eq } from "./03-traits"
 // `never` is the bottom type and extends everything, so
 // `never extends [infer A, infer B]` matches and infers unknown.
 // Wrapping in [X] extends [never] catches this before matching.
-type NeverGuard<T, Then> = [T] extends [never] ? never : Then;
+export type NeverGuard<T, Then> = [T] extends [never] ? never : Then;
 
 // ─── ElaborateArg: elaborate one argument against an expected type ───
 // If arg is a CExpr: recursively elaborate, check output matches expected.
