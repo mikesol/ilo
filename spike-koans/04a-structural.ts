@@ -5,22 +5,28 @@
  * find CExprs inside, elaborate them, and validate types against the
  * registry. Invalid structures produce `never` at compile time.
  *
+ * Record children use named maps ({x: nodeId, y: nodeId}) so the
+ * representation is self-describing and order-independent. Tuples
+ * use positional arrays (ordering is well-defined for tuples).
+ *
  * Gate:
  *   npx tsc --noEmit --strict spike-koans/04a-structural.ts
  *   npx tsx spike-koans/04a-structural.ts
  */
 
 import type {
-  CExpr,
-  NExpr,
-  NodeEntry,
-  RuntimeEntry,
-  KindSpec,
-  Increment,
-  NeverGuard,
-  LiftKind,
+  CExpr, NExpr, KindSpec, Increment, NeverGuard, LiftKind,
 } from "./04-normalize";
 import { makeCExpr, makeNExpr, isCExpr, incrementId, add, mul } from "./04-normalize";
+
+// ═══════════════════════════════════════════════════════════════════════
+// LOCAL TYPES (flexible children — not constrained to string[])
+// ═══════════════════════════════════════════════════════════════════════
+
+// ChildRef: string | Record<string, ChildRef> | ChildRef[]
+type SNodeEntry<Kind extends string = string, Ch = unknown, O = unknown> = {
+  readonly kind: Kind; readonly children: Ch; readonly out: O;
+};
 
 // ═══════════════════════════════════════════════════════════════════════
 // STRUCTURAL REGISTRY
@@ -30,19 +36,18 @@ type StructuralRegistry = {
   "num/literal": KindSpec<[], number>;
   "num/add": KindSpec<[number, number], number>;
   "num/mul": KindSpec<[number, number], number>;
-  "geom/point": KindSpec<[{ x: number; y: number }], { x: number; y: number }>;
+  "geom/point": KindSpec<
+    [{ x: number; y: number }], { x: number; y: number }>;
   "geom/line": KindSpec<
     [{ start: { x: number; y: number }; end: { x: number; y: number } }],
-    { start: { x: number; y: number }; end: { x: number; y: number } }
-  >;
+    { start: { x: number; y: number }; end: { x: number; y: number } }>;
   "data/pair": KindSpec<[[number, number]], [number, number]>;
 };
 
 // ═══════════════════════════════════════════════════════════════════════
-// TYPE-LEVEL: DeepResolve + UnionToTuple
+// TYPE-LEVEL HELPERS
 // ═══════════════════════════════════════════════════════════════════════
 
-// Replace CExprs with their declared output types (for structural check)
 type DeepResolve<T> =
   T extends CExpr<infer O, any, any> ? O
   : T extends readonly [] ? []
@@ -51,7 +56,9 @@ type DeepResolve<T> =
   : T extends object ? { [K in keyof T]: DeepResolve<T[K]> }
   : T;
 
-// Convert union to tuple (deterministic key ordering for records)
+// UnionToTuple — iteration order is implementation-defined, but that's
+// fine: record children are named maps, so the result is the same
+// regardless of which key is processed first.
 type _UTI<U> =
   (U extends any ? (k: U) => void : never) extends (k: infer I) => void
     ? I : never;
@@ -60,121 +67,109 @@ type _LastOf<U> =
 type UnionToTuple<U, Last = _LastOf<U>> =
   [U] extends [never] ? [] : [...UnionToTuple<Exclude<U, Last>>, Last];
 
-// Extract record values as tuple (in key order)
-type ValuesAsTuple<T, Keys extends readonly any[]> =
-  Keys extends readonly [] ? []
-  : Keys extends readonly [infer K extends keyof T, ...infer Rest]
-    ? [T[K], ...ValuesAsTuple<T, Rest>]
-  : [];
-
 // ═══════════════════════════════════════════════════════════════════════
-// TYPE-LEVEL: ELABORATOR WITH STRUCTURAL SUPPORT
+// TYPE-LEVEL ELABORATOR — named children for records
 // ═══════════════════════════════════════════════════════════════════════
 
-// Results: [Adj, NextCtr, ThisNodeId, OutputType]
-
-// All results: [Adj, NextCtr, ChildIds[], OutputType]
-// ChildIds is always an array — singleton for CExpr/primitive, multiple for structural.
-
+// ElaborateArg returns [Adj, Ctr, ChildRef, OutputType]
+// where ChildRef is string (leaf) | Record (named) | array (tuple).
 type ElaborateArg<Reg, Arg, Expected, Adj, Ctr extends string> =
-  // Case 1: CExpr — recurse
   Arg extends CExpr<any, infer K extends string, infer A extends readonly unknown[]>
     ? NeverGuard<
         ElaborateExpr<Reg, K, A, Adj, Ctr>,
         ElaborateExpr<Reg, K, A, Adj, Ctr> extends [
           infer A2, infer C2 extends string, infer Id extends string, infer O,
-        ]
-          ? O extends Expected ? [A2, C2, [Id], O] : never
-          : never
+        ] ? O extends Expected ? [A2, C2, Id, O] : never : never
       >
-    // Case 2: check if Expected is a liftable primitive
     : [LiftKind<Expected>] extends [never]
-      // Expected is NOT a primitive — must be structural
       ? DeepResolve<Arg> extends Expected
         ? ElaborateStructural<Reg, Arg, Expected, Adj, Ctr>
         : never
-      // Expected IS a primitive — try to lift
       : Arg extends Expected
-        ? [
-            Adj & Record<Ctr, NodeEntry<LiftKind<Expected>, [], Expected>>,
-            Increment<Ctr>,
-            [Ctr],
-            Expected,
-          ]
-        // Arg has CExprs inside — try structural resolve
+        ? [Adj & Record<Ctr, SNodeEntry<LiftKind<Expected>, [], Expected>>,
+           Increment<Ctr>, Ctr, Expected]
         : DeepResolve<Arg> extends Expected
           ? ElaborateStructural<Reg, Arg, Expected, Adj, Ctr>
           : never;
 
-// ─── ElaborateStructural: walk a structure, elaborate CExprs inside ──
-// Returns [Adj, Ctr, ChildIds[], ResolvedType]
+// Walk a structure, returning [Adj, Ctr, ChildRef, ResolvedType]
 type ElaborateStructural<
   Reg, Value, Expected, Adj, Ctr extends string,
 > =
-  // CExpr inside structure
+  // CExpr leaf
   Value extends CExpr<any, infer K extends string, infer A extends readonly unknown[]>
     ? NeverGuard<
         ElaborateExpr<Reg, K, A, Adj, Ctr>,
         ElaborateExpr<Reg, K, A, Adj, Ctr> extends [
           infer A2, infer C2 extends string, infer Id extends string, infer O,
-        ] ? [A2, C2, [Id], O] : never
+        ] ? [A2, C2, Id, O] : never
       >
     // Empty tuple
     : Value extends readonly []
-      ? Expected extends readonly []
-        ? [Adj, Ctr, [], []]
-        : never
-    // Non-empty tuple
+      ? Expected extends readonly [] ? [Adj, Ctr, [], []] : never
+    // Non-empty tuple — positional [CR, ...CRest]
     : Value extends readonly [infer H, ...infer Rest]
       ? Expected extends readonly [infer EH, ...infer ERest]
         ? NeverGuard<
             ElaborateLeaf<Reg, H, EH, Adj, Ctr>,
             ElaborateLeaf<Reg, H, EH, Adj, Ctr> extends [
-              infer A2, infer C2 extends string, infer Ids1 extends string[],
-            ]
-              ? NeverGuard<
+              infer A2, infer C2 extends string, infer CR,
+            ] ? NeverGuard<
                   ElaborateStructural<Reg, Rest, ERest, A2, C2>,
                   ElaborateStructural<Reg, Rest, ERest, A2, C2> extends [
-                    infer A3, infer C3 extends string, infer Ids2 extends string[], any,
-                  ] ? [A3, C3, [...Ids1, ...Ids2], Expected] : never
-                >
-              : never
-          >
-        : never
-    // Record — convert to value tuples using key ordering from Expected
+                    infer A3, infer C3 extends string, infer CRest extends unknown[], any,
+                  ] ? [A3, C3, [CR, ...CRest], Expected] : never
+                > : never
+          > : never
+    // Record — named map {key: ChildRef}
     : Value extends object
       ? Expected extends object
         ? NeverGuard<
-            ElaborateStructural<
-              Reg,
-              ValuesAsTuple<Value, UnionToTuple<keyof Expected>>,
-              ValuesAsTuple<Expected, UnionToTuple<keyof Expected>>,
-              Adj, Ctr
-            >,
-            ElaborateStructural<
-              Reg,
-              ValuesAsTuple<Value, UnionToTuple<keyof Expected>>,
-              ValuesAsTuple<Expected, UnionToTuple<keyof Expected>>,
-              Adj, Ctr
-            > extends [infer A2, infer C2 extends string, infer Ids extends string[], any]
-              ? [A2, C2, Ids, Expected]
-              : never
-          >
-        : never
-    // Raw primitive — lift
+            ElaborateRecordFields<Reg, Value, Expected,
+              UnionToTuple<keyof Expected & string> extends infer K extends string[]
+                ? K : [], Adj, Ctr>,
+            ElaborateRecordFields<Reg, Value, Expected,
+              UnionToTuple<keyof Expected & string> extends infer K extends string[]
+                ? K : [], Adj, Ctr
+            > extends [infer A2, infer C2 extends string, infer Map]
+              ? [A2, C2, Map, Expected] : never
+          > : never
+    // Primitive lift
     : Value extends number
-      ? [Adj & Record<Ctr, NodeEntry<"num/literal", [], number>>,
-         Increment<Ctr>, [Ctr], number]
+      ? [Adj & Record<Ctr, SNodeEntry<"num/literal", [], number>>,
+         Increment<Ctr>, Ctr, number]
     : Value extends string
-      ? [Adj & Record<Ctr, NodeEntry<"str/literal", [], string>>,
-         Increment<Ctr>, [Ctr], string]
+      ? [Adj & Record<Ctr, SNodeEntry<"str/literal", [], string>>,
+         Increment<Ctr>, Ctr, string]
     : Value extends boolean
-      ? [Adj & Record<Ctr, NodeEntry<"bool/literal", [], boolean>>,
-         Increment<Ctr>, [Ctr], boolean]
+      ? [Adj & Record<Ctr, SNodeEntry<"bool/literal", [], boolean>>,
+         Increment<Ctr>, Ctr, boolean]
     : never;
 
-// Helper: elaborate a leaf value in a structure (CExpr, primitive, or sub-structure)
-// Returns [Adj, Ctr, ChildIds[]] (no output type — caller handles that)
+// Iterate keys, producing {key: ChildRef, ...}
+type ElaborateRecordFields<
+  Reg, Value, Expected, Keys extends readonly string[],
+  Adj, Ctr extends string,
+> =
+  Keys extends readonly []
+    ? [Adj, Ctr, {}]
+    : Keys extends readonly [
+        infer K extends string & keyof Expected & keyof Value,
+        ...infer Rest extends string[],
+      ]
+      ? NeverGuard<
+          ElaborateLeaf<Reg, Value[K], Expected[K], Adj, Ctr>,
+          ElaborateLeaf<Reg, Value[K], Expected[K], Adj, Ctr> extends [
+            infer A2, infer C2 extends string, infer CR,
+          ] ? NeverGuard<
+                ElaborateRecordFields<Reg, Value, Expected, Rest, A2, C2>,
+                ElaborateRecordFields<Reg, Value, Expected, Rest, A2, C2> extends [
+                  infer A3, infer C3 extends string, infer RestMap,
+                ] ? [A3, C3, Record<K, CR> & RestMap] : never
+              > : never
+        > : never;
+
+// Elaborate a leaf value — returns [Adj, Ctr, ChildRef]
 type ElaborateLeaf<
   Reg, Value, Expected, Adj, Ctr extends string,
 > =
@@ -183,26 +178,21 @@ type ElaborateLeaf<
         ElaborateExpr<Reg, K, A, Adj, Ctr>,
         ElaborateExpr<Reg, K, A, Adj, Ctr> extends [
           infer A2, infer C2 extends string, infer Id extends string, infer O,
-        ]
-          ? O extends Expected ? [A2, C2, [Id]] : never
-          : never
+        ] ? O extends Expected ? [A2, C2, Id] : never : never
       >
     : [LiftKind<Expected>] extends [never]
-      // Expected is structural — recurse, strip output type
       ? ElaborateStructural<Reg, Value, Expected, Adj, Ctr> extends [
-          infer A2, infer C2 extends string, infer Ids extends string[], any,
-        ] ? [A2, C2, Ids] : never
-      // Expected is a primitive
+          infer A2, infer C2 extends string, infer CR, any,
+        ] ? [A2, C2, CR] : never
       : Value extends Expected
-        ? [Adj & Record<Ctr, NodeEntry<LiftKind<Expected>, [], Expected>>,
-           Increment<Ctr>, [Ctr]]
+        ? [Adj & Record<Ctr, SNodeEntry<LiftKind<Expected>, [], Expected>>,
+           Increment<Ctr>, Ctr]
         : DeepResolve<Value> extends Expected
           ? ElaborateStructural<Reg, Value, Expected, Adj, Ctr> extends [
-              infer A2, infer C2 extends string, infer Ids extends string[], any,
-            ] ? [A2, C2, Ids] : never
+              infer A2, infer C2 extends string, infer CR, any,
+            ] ? [A2, C2, CR] : never
           : never;
 
-// ─── ElaborateExpr (re-implemented to use structural ElaborateArg) ───
 type ElaborateExpr<
   Reg, Kind extends string, Args extends readonly unknown[],
   Adj, Ctr extends string,
@@ -212,16 +202,13 @@ type ElaborateExpr<
       ? NeverGuard<
           ElaborateChildren<Reg, Args, Inputs, Adj, Ctr>,
           ElaborateChildren<Reg, Args, Inputs, Adj, Ctr> extends [
-            infer A2, infer C2 extends string, infer Ids extends string[],
-          ]
-            ? [A2 & Record<C2, NodeEntry<Kind, Ids, O>>,
-               Increment<C2>, C2, O]
-            : never
-        >
-      : never
+            infer A2, infer C2 extends string, infer Ch,
+          ] ? [A2 & Record<C2, SNodeEntry<Kind, Ch, O>>,
+               Increment<C2>, C2, O] : never
+        > : never
     : never;
 
-// ─── ElaborateChildren: each arg returns ChildIds[], we spread them ──
+// Collect per-arg ChildRefs into tuple [CR0, CR1, ...]
 type ElaborateChildren<
   Reg, Args extends readonly unknown[], Expected extends readonly unknown[],
   Adj, Ctr extends string,
@@ -233,29 +220,23 @@ type ElaborateChildren<
         ? NeverGuard<
             ElaborateArg<Reg, AH, EH, Adj, Ctr>,
             ElaborateArg<Reg, AH, EH, Adj, Ctr> extends [
-              infer A2, infer C2 extends string, infer Ids0 extends string[], any,
-            ]
-              ? NeverGuard<
+              infer A2, infer C2 extends string, infer CR, any,
+            ] ? NeverGuard<
                   ElaborateChildren<Reg, AT, ET, A2, C2>,
                   ElaborateChildren<Reg, AT, ET, A2, C2> extends [
-                    infer A3, infer C3 extends string, infer Ids1 extends string[],
-                  ] ? [A3, C3, [...Ids0, ...Ids1]] : never
-                >
-              : never
-          >
-        : never
+                    infer A3, infer C3 extends string, infer CRest extends unknown[],
+                  ] ? [A3, C3, [CR, ...CRest]] : never
+                > : never
+          > : never
       : never;
 
-// ─── AppResult ───────────────────────────────────────────────────────
 type AppResult<Expr> =
   Expr extends CExpr<any, infer K extends string, infer A extends readonly unknown[]>
     ? NeverGuard<
         ElaborateExpr<StructuralRegistry, K, A, {}, "a">,
         ElaborateExpr<StructuralRegistry, K, A, {}, "a"> extends [
           infer Adj, infer C extends string, infer R extends string, infer O,
-        ]
-          ? NExpr<O, R, Adj, C>
-          : never
+        ] ? NExpr<O, R, Adj, C> : never
       >
     : never;
 
@@ -283,246 +264,190 @@ function pair<A, B>(a: A, b: B): CExpr<[number, number], "data/pair", [[A, B]]> 
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// RUNTIME: structural-aware app()
+// RUNTIME: structural-aware app() with named children
 // ═══════════════════════════════════════════════════════════════════════
 
 const LIFT_MAP: Record<string, string> = {
-  number: "num/literal",
-  string: "str/literal",
-  boolean: "bool/literal",
+  number: "num/literal", string: "str/literal", boolean: "bool/literal",
 };
-
 const KIND_INPUTS: Record<string, string[] | "structural"> = {
-  "num/add": ["number", "number"],
-  "num/mul": ["number", "number"],
-  "geom/point": "structural",
-  "geom/line": "structural",
+  "num/add": ["number", "number"], "num/mul": ["number", "number"],
+  "geom/point": "structural", "geom/line": "structural",
   "data/pair": "structural",
 };
-
-// Expected structural shapes for validation
 const STRUCTURAL_SHAPES: Record<string, unknown> = {
   "geom/point": { x: "number", y: "number" },
-  "geom/line": {
-    start: { x: "number", y: "number" },
-    end: { x: "number", y: "number" },
-  },
+  "geom/line": { start: { x: "number", y: "number" },
+                 end: { x: "number", y: "number" } },
   "data/pair": ["number", "number"],
 };
+
+type SRuntimeEntry = { kind: string; children: unknown; out: unknown };
 
 function appS<Expr extends CExpr<any, string, readonly unknown[]>>(
   expr: Expr,
 ): AppResult<Expr> {
-  const entries: Record<string, RuntimeEntry> = {};
+  const entries: Record<string, SRuntimeEntry> = {};
   let counter = "a";
+  function alloc() { const id = counter; counter = incrementId(counter); return id; }
 
-  // Visit a structural value, elaborate CExprs and lift primitives
-  function visitStructural(
-    value: unknown,
-    shape: unknown,
-  ): string[] {
-    if (isCExpr(value)) {
-      const [id] = visit(value);
-      return [id];
-    }
+  // Returns structured ChildRef: string | Record<string,CR> | CR[]
+  function visitStructural(value: unknown, shape: unknown): unknown {
+    if (isCExpr(value)) return visit(value)[0];
     if (Array.isArray(shape) && Array.isArray(value)) {
-      const ids: string[] = [];
-      for (let i = 0; i < value.length; i++) {
-        ids.push(...visitStructural(value[i], shape[i]));
-      }
-      return ids;
+      return value.map((v, i) => visitStructural(v, shape[i]));
     }
     if (typeof shape === "object" && shape !== null && !Array.isArray(shape)) {
-      const ids: string[] = [];
-      for (const key of Object.keys(shape as object).sort()) {
-        ids.push(
-          ...visitStructural(
-            (value as Record<string, unknown>)[key],
-            (shape as Record<string, unknown>)[key],
-          ),
+      const result: Record<string, unknown> = {};
+      for (const key of Object.keys(shape as object)) {
+        result[key] = visitStructural(
+          (value as Record<string, unknown>)[key],
+          (shape as Record<string, unknown>)[key],
         );
       }
-      return ids;
+      return result;
     }
-    // Primitive — lift
     const typeTag = typeof value;
     const liftKind = LIFT_MAP[typeTag];
     if (!liftKind) throw new Error(`Cannot lift ${typeTag}`);
     if (shape !== typeTag) throw new Error(`Expected ${shape}, got ${typeTag}`);
-    const nodeId = counter;
-    counter = incrementId(counter);
-    entries[nodeId] = { kind: liftKind, children: [], out: value };
-    return [nodeId];
+    const id = alloc();
+    entries[id] = { kind: liftKind, children: [], out: value };
+    return id;
   }
 
   function visit(arg: unknown): [string, string] {
     if (!isCExpr(arg)) throw new Error("visit expects CExpr");
     const cexpr = arg as CExpr<unknown>;
-    const kind = cexpr.__kind;
-    const args = cexpr.__args;
-
+    const { __kind: kind, __args: args } = cexpr;
     const inputSpec = KIND_INPUTS[kind];
     if (inputSpec === "structural") {
-      const shape = STRUCTURAL_SHAPES[kind];
-      // Structural kinds: single arg that's a structure
-      const childIds = visitStructural(args[0], shape);
-      const nodeId = counter;
-      counter = incrementId(counter);
-      entries[nodeId] = { kind, children: childIds, out: undefined };
-      return [nodeId, "object"];
+      const childRef = visitStructural(args[0], STRUCTURAL_SHAPES[kind]);
+      const id = alloc();
+      entries[id] = { kind, children: [childRef], out: undefined };
+      return [id, "object"];
     }
-
-    // Regular kind
     const expectedInputs = inputSpec as string[] | undefined;
     const childIds: string[] = [];
     for (let i = 0; i < args.length; i++) {
-      const exp = expectedInputs ? expectedInputs[i] : undefined;
+      const exp = expectedInputs?.[i];
       if (isCExpr(args[i])) {
         const [childId, childType] = visit(args[i]);
-        if (exp && childType !== exp) {
+        if (exp && childType !== exp)
           throw new Error(`${kind}: expected ${exp} for arg ${i}, got ${childType}`);
-        }
         childIds.push(childId);
       } else {
         const typeTag = typeof args[i];
-        if (exp && typeTag !== exp) {
-          throw new Error(`Expected ${exp}, got ${typeTag}`);
-        }
+        if (exp && typeTag !== exp) throw new Error(`Expected ${exp}, got ${typeTag}`);
         const liftKind = LIFT_MAP[typeTag];
         if (!liftKind) throw new Error(`Cannot lift ${typeTag}`);
-        const nodeId = counter;
-        counter = incrementId(counter);
-        entries[nodeId] = { kind: liftKind, children: [], out: args[i] };
-        childIds.push(nodeId);
+        const id = alloc();
+        entries[id] = { kind: liftKind, children: [], out: args[i] };
+        childIds.push(id);
       }
     }
-    const nodeId = counter;
-    counter = incrementId(counter);
-    const outputType = kind.startsWith("num/") ? "number" : "object";
-    entries[nodeId] = { kind, children: childIds, out: undefined };
-    return [nodeId, outputType];
+    const id = alloc();
+    entries[id] = { kind, children: childIds, out: undefined };
+    return [id, kind.startsWith("num/") ? "number" : "object"];
   }
 
   const [rootId] = visit(expr);
-  return makeNExpr(rootId, entries, counter) as any;
+  return makeNExpr(rootId, entries as any, counter) as any;
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// COMPILE-TIME TESTS
+// COMPILE-TIME TESTS — navigate by NAME, not by hardcoded node ID
 // ═══════════════════════════════════════════════════════════════════════
 
 import type { IdOf, AdjOf, OutOf } from "./04-normalize";
 type AssertNever<T extends never> = T;
 
-// --- point({x: 3, y: 4}): all primitives ---
+// p1: point({x: 3, y: 4}) — root is geom/point, children is [{x:id, y:id}]
 const p1 = appS(point({ x: 3, y: 4 }));
-type P1Adj = AdjOf<typeof p1>;
-const _p1x: P1Adj["a"]["kind"] = "num/literal";
-const _p1y: P1Adj["b"]["kind"] = "num/literal";
-const _p1p: P1Adj["c"]["kind"] = "geom/point";
-const _p1ch: P1Adj["c"]["children"] = ["a", "b"];
+type P1Root = AdjOf<typeof p1>[IdOf<typeof p1>];
+const _p1k: P1Root["kind"] = "geom/point";
 
-// --- point({x: add(1,2), y: 3}): CExpr mixed with primitive ---
+// p2: point({x: add(1,2), y: 3}) — children.x points to num/add
 const p2 = appS(point({ x: add(1, 2), y: 3 }));
-type P2Adj = AdjOf<typeof p2>;
-const _p2a: P2Adj["a"]["kind"] = "num/literal";
-const _p2b: P2Adj["b"]["kind"] = "num/literal";
-const _p2c: P2Adj["c"]["kind"] = "num/add";
-const _p2d: P2Adj["d"]["kind"] = "num/literal";
-const _p2e: P2Adj["e"]["kind"] = "geom/point";
-const _p2ch: P2Adj["e"]["children"] = ["c", "d"];
+type P2Root = AdjOf<typeof p2>[IdOf<typeof p2>];
+type P2XId = P2Root["children"] extends [{ x: infer X extends string }] ? X : never;
+const _p2xk: AdjOf<typeof p2>[P2XId]["kind"] = "num/add";
 
-// --- pair(add(1,2), 3): tuple with CExpr ---
+// p3: pair(add(1,2), 3) — tuple children
 const p3 = appS(pair(add(1, 2), 3));
-type P3Adj = AdjOf<typeof p3>;
-const _p3c: P3Adj["c"]["kind"] = "num/add";
-const _p3d: P3Adj["d"]["kind"] = "num/literal";
-const _p3e: P3Adj["e"]["kind"] = "data/pair";
-const _p3ch: P3Adj["e"]["children"] = ["c", "d"];
+type P3Root = AdjOf<typeof p3>[IdOf<typeof p3>];
+const _p3k: P3Root["kind"] = "data/pair";
 
-// --- line({start: {x: 1, y: 2}, end: {x: add(3,4), y: 5}}): nested records ---
+// p4: line({start:{x:1,y:2}, end:{x:add(3,4),y:5}})
 const p4 = appS(line({ start: { x: 1, y: 2 }, end: { x: add(3, 4), y: 5 } }));
-type P4Adj = AdjOf<typeof p4>;
-// Keys processed alphabetically: "end" before "start", "x" before "y"
-const _p4a: P4Adj["a"]["kind"] = "num/literal"; // end.x arg 1 = 3
-const _p4b: P4Adj["b"]["kind"] = "num/literal"; // end.x arg 2 = 4
-const _p4c: P4Adj["c"]["kind"] = "num/add";     // end.x = add(3,4)
-const _p4d: P4Adj["d"]["kind"] = "num/literal"; // end.y = 5
-const _p4e: P4Adj["e"]["kind"] = "num/literal"; // start.x = 1
-const _p4f: P4Adj["f"]["kind"] = "num/literal"; // start.y = 2
-const _p4g: P4Adj["g"]["kind"] = "geom/line";
-const _p4ch: P4Adj["g"]["children"] = ["c", "d", "e", "f"];
+type P4Root = AdjOf<typeof p4>[IdOf<typeof p4>];
+const _p4k: P4Root["kind"] = "geom/line";
+// Navigate to end.x — should be num/add
+type P4EndXId = P4Root["children"] extends
+  [{ end: { x: infer X extends string } }] ? X : never;
+const _p4exk: AdjOf<typeof p4>[P4EndXId]["kind"] = "num/add";
+// Navigate to start.x — should be num/literal
+type P4StartXId = P4Root["children"] extends
+  [{ start: { x: infer X extends string } }] ? X : never;
+const _p4sxk: AdjOf<typeof p4>[P4StartXId]["kind"] = "num/literal";
 
-// --- NEGATIVE: point({x: "wrong", y: 3}) → never ---
+// NEGATIVE tests
 type _BadPoint = AssertNever<
   AppResult<ReturnType<typeof point<{ x: "wrong"; y: 3 }>>>
 >;
-
-// --- NEGATIVE: point({x: mul(add(1,2), 3), y: add(false, "bad")}) → never ---
-// The inner add(false, "bad") is invalid even though mul's output is number
 type _BadNested = AssertNever<
-  AppResult<
-    ReturnType<
-      typeof point<{
-        x: ReturnType<typeof mul<ReturnType<typeof add<1, 2>>, 3>>;
-        y: ReturnType<typeof add<false, "bad">>;
-      }>
-    >
-  >
+  AppResult<ReturnType<typeof point<{
+    x: ReturnType<typeof mul<ReturnType<typeof add<1, 2>>, 3>>;
+    y: ReturnType<typeof add<false, "bad">>;
+  }>>>
 >;
 
 // ═══════════════════════════════════════════════════════════════════════
-// RUNTIME TESTS
+// RUNTIME TESTS — navigate by name, order-independent
 // ═══════════════════════════════════════════════════════════════════════
 
 let passed = 0;
 let failed = 0;
-
 function assert(cond: boolean, msg: string) {
-  if (cond) { passed++; }
-  else { failed++; console.error(`  FAIL: ${msg}`); }
+  if (cond) { passed++; } else { failed++; console.error(`  FAIL: ${msg}`); }
 }
+function adj(p: any): Record<string, SRuntimeEntry> { return p.__adj; }
+function root(p: any): SRuntimeEntry { return adj(p)[p.__id]; }
 
-// point({x: 3, y: 4})
-assert(p1.__adj["a"].kind === "num/literal", "p1: x literal");
-assert(p1.__adj["a"].out === 3, "p1: x = 3");
-assert(p1.__adj["b"].kind === "num/literal", "p1: y literal");
-assert(p1.__adj["b"].out === 4, "p1: y = 4");
-assert(p1.__adj["c"].kind === "geom/point", "p1: point node");
-assert(
-  JSON.stringify(p1.__adj["c"].children) === '["a","b"]',
-  "p1: children [a,b]",
-);
+// p1: point({x: 3, y: 4})
+assert(root(p1).kind === "geom/point", "p1: root is point");
+const p1ch = (root(p1).children as [Record<string, string>])[0];
+assert(adj(p1)[p1ch.x].kind === "num/literal", "p1: x → literal");
+assert(adj(p1)[p1ch.x].out === 3, "p1: x = 3");
+assert(adj(p1)[p1ch.y].kind === "num/literal", "p1: y → literal");
+assert(adj(p1)[p1ch.y].out === 4, "p1: y = 4");
 
-// point({x: add(1,2), y: 3})
-assert(p2.__adj["c"].kind === "num/add", "p2: add node");
-assert(p2.__adj["d"].out === 3, "p2: y literal");
-assert(p2.__adj["e"].kind === "geom/point", "p2: point node");
-assert(
-  JSON.stringify(p2.__adj["e"].children) === '["c","d"]',
-  "p2: children [c,d]",
-);
+// p2: point({x: add(1,2), y: 3})
+const p2ch = (root(p2).children as [Record<string, string>])[0];
+assert(adj(p2)[p2ch.x].kind === "num/add", "p2: x → add");
+assert(adj(p2)[p2ch.y].kind === "num/literal", "p2: y → literal");
+assert(adj(p2)[p2ch.y].out === 3, "p2: y = 3");
 
-// pair(add(1,2), 3)
-assert(p3.__adj["e"].kind === "data/pair", "p3: pair node");
-assert(
-  JSON.stringify(p3.__adj["e"].children) === '["c","d"]',
-  "p3: children [c,d]",
-);
+// p3: pair(add(1,2), 3) — tuple children
+assert(root(p3).kind === "data/pair", "p3: root is pair");
+const p3ch = (root(p3).children as [string[]])[0];
+assert(Array.isArray(p3ch) && p3ch.length === 2, "p3: pair tuple has 2 elts");
 
-// line with nested records
-assert(p4.__adj["g"].kind === "geom/line", "p4: line node");
-assert(p4.__adj["c"].kind === "num/add", "p4: add inside end.x");
-assert(Object.keys(p4.__adj).length === 7, "p4: 7 total nodes");
+// p4: line — nested named records
+assert(root(p4).kind === "geom/line", "p4: root is line");
+const p4ch = (root(p4).children as [Record<string, Record<string, string>>])[0];
+assert(adj(p4)[p4ch.end.x].kind === "num/add", "p4: end.x → add");
+assert(adj(p4)[p4ch.end.y].kind === "num/literal", "p4: end.y → literal");
+assert(adj(p4)[p4ch.start.x].kind === "num/literal", "p4: start.x → literal");
+assert(adj(p4)[p4ch.start.x].out === 1, "p4: start.x = 1");
+assert(adj(p4)[p4ch.start.y].kind === "num/literal", "p4: start.y → literal");
+assert(adj(p4)[p4ch.start.y].out === 2, "p4: start.y = 2");
+assert(Object.keys(adj(p4)).length === 7, "p4: 7 total nodes");
 
-// Runtime error: point({x: "wrong", y: 3})
-let threwBadPoint = false;
-try {
-  appS(point({ x: "wrong", y: 3 }) as any);
-} catch {
-  threwBadPoint = true;
-}
-assert(threwBadPoint, "point({x:'wrong'}) throws at runtime");
+// Runtime error for invalid input
+let threw = false;
+try { appS(point({ x: "wrong", y: 3 }) as any); } catch { threw = true; }
+assert(threw, "point({x:'wrong'}) throws at runtime");
 
 console.log(`\n04a-structural: ${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);
