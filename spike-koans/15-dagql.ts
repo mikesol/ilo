@@ -23,7 +23,7 @@
  *   npx tsx spike-koans/14-dagql.ts
  */
 
-export * from "./13-named";
+export * from "./14-named";
 
 import type {
   NodeEntry,
@@ -32,7 +32,7 @@ import type {
   IdOf,
   OutOf,
   PredBase,
-} from "./13-named";
+} from "./14-named";
 import {
   numLit,
   add,
@@ -43,7 +43,7 @@ import {
   mapWhere,
   replaceWhere,
   spliceWhere,
-} from "./13-named";
+} from "./14-named";
 
 // ─── pipe: functional chaining with full type flow ──────────────────
 // Overloads for 1–5 operations. Each step is NExpr → NExpr.

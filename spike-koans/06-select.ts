@@ -20,7 +20,7 @@
  *   npx tsx spike-koans/05-select.ts
  */
 
-export * from "./04-predicates";
+export * from "./05-predicates";
 
 import type {
   NExpr,
@@ -28,7 +28,7 @@ import type {
   NodeEntry,
   PredBase,
   SelectKeys,
-} from "./04-predicates";
+} from "./05-predicates";
 import {
   numLit,
   add,
@@ -40,7 +40,7 @@ import {
   hasChildCount,
   not,
   and,
-} from "./04-predicates";
+} from "./05-predicates";
 
 // ─── selectWhere: runtime selection with type-level key tracking ─────
 export function selectWhere<

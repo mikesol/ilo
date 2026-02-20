@@ -1,5 +1,5 @@
 /**
- * Koan 15: Fold — async generator interpreters over DAG adjacency maps
+ * Koan 16: Bridge — fold, interpreters, and the full pipeline
  *
  * RULE: Never rewrite this file.
  *
@@ -13,17 +13,21 @@
  * - End-to-end: pipe(rewrite) → defaults(plugins) → fold()
  * - Stack safety: 10k-deep chain folds without blowing the stack
  * - Handler runs exactly once per node (no re-execution)
+ * - FULL PIPELINE: mvfm(plugins) → $ with traits → CExpr → app → dagql → fold
+ *   - Trait dispatch (eq) produces correct specialized node kinds
+ *   - dagql transforms work on trait-produced nodes
+ *   - fold evaluates the entire pipeline end-to-end
  *
- * Imports: 14-dagql (re-exports chain)
+ * Imports: 15-dagql (re-exports chain)
  *
  * Gate:
- *   npx tsc --noEmit --strict spike-koans/15-bridge.ts
- *   npx tsx spike-koans/15-bridge.ts
+ *   npx tsc --noEmit --strict spike-koans/16-bridge.ts
+ *   npx tsx spike-koans/16-bridge.ts
  */
 
-export * from "./14-dagql";
+export * from "./15-dagql";
 
-import type { RuntimeEntry } from "./14-dagql";
+import type { RuntimeEntry, CAdjOf } from "./15-dagql";
 import {
   numLit,
   add,
@@ -32,7 +36,16 @@ import {
   replaceWhere,
   byKind,
   pipe,
-} from "./14-dagql";
+  strLit,
+  boolLit,
+  mvfm,
+  numEqInstance,
+  strEqInstance,
+  boolEqInstance,
+  type TraitInstance,
+  type PluginShape,
+  selectWhere,
+} from "./15-dagql";
 
 // ─── Handler: async generator yielding child indices ────────────────
 // yield <index> → receives the evaluated result of child at that index.
@@ -486,7 +499,152 @@ async function run() {
   }
   assert(threwNode, "fold throws on missing node");
 
-  console.log(`\n15-fold: ${passed} passed, ${failed} failed`);
+  // ═══════════════════════════════════════════════════════════════════
+  // END-TO-END: mvfm → $ with traits → CExpr → app → dagql → fold
+  // ═══════════════════════════════════════════════════════════════════
+
+  // --- Build an eq interpreter alongside num/str/bool ---
+  const eqInterp: Interpreter = {
+    "num/eq": async function* (_entry) {
+      const l = (yield 0) as number;
+      const r = (yield 1) as number;
+      return l === r;
+    },
+    "str/eq": async function* (_entry) {
+      const l = (yield 0) as string;
+      const r = (yield 1) as string;
+      return l === r;
+    },
+    "bool/eq": async function* (_entry) {
+      const l = (yield 0) as boolean;
+      const r = (yield 1) as boolean;
+      return l === r;
+    },
+  };
+
+  // --- Full-pipeline plugin defs (with interpreters) ---
+  const fpNum: PluginDef = numPlugin;
+  const fpStr: PluginDef = strPlugin;
+  const fpBool: PluginDef = boolPlugin;
+  const fpEq: PluginDef = {
+    name: "eq",
+    nodeKinds: ["num/eq", "str/eq", "bool/eq"],
+    defaultInterpreter: () => eqInterp,
+  };
+
+  // Compose interpreters for all plugins
+  const fullInterp = defaults([fpNum, fpStr, fpBool, fpEq]);
+
+  // --- Trait-aware plugin shapes for mvfm (reuse instances from 03-traits) ---
+  const fpNumPlugin = {
+    ctors: { numLit, add, mul },
+    instances: [numEqInstance] as const,
+  } satisfies PluginShape<any, readonly TraitInstance<any, any>[]>;
+
+  const fpStrPlugin = {
+    ctors: { strLit },
+    instances: [strEqInstance] as const,
+  } satisfies PluginShape<any, readonly TraitInstance<any, any>[]>;
+
+  const fpBoolPlugin = {
+    ctors: { boolLit },
+    instances: [boolEqInstance] as const,
+  } satisfies PluginShape<any, readonly TraitInstance<any, any>[]>;
+
+  // --- mvfm: compose into $ ---
+  const $ = mvfm(fpNumPlugin, fpStrPlugin, fpBoolPlugin);
+
+  // --- Build a program using trait dispatch ---
+  // add(eq(3, 4) ? 10 : 20, 5) — eq dispatches to num/eq
+  const eqExpr = $.eq($.numLit(3), $.numLit(4));
+
+  // Verify: at the type level, the eq node has kind "num/eq"
+  type PipelineEqAdj = CAdjOf<typeof eqExpr>;
+  const _pipeEqKind: PipelineEqAdj["E(L3,L4)"]["kind"] = "num/eq";
+
+  // Build a simple program: add(eq(3,4) as 0|1, 100)
+  // We can't directly add a boolean to a number, but we can test eq → app → fold
+  const eqProg = app(eqExpr);
+  const eqResult = await fold<boolean>(eqProg.__id, eqProg.__adj, fullInterp);
+  assert(eqResult === false, "pipeline: eq(3,4) = false");
+
+  // --- Pipeline with dagql transform ---
+  // Build eq(3,3) → true, then transform num/eq → str/eq via dagql
+  const eqTrue = app($.eq($.numLit(3), $.numLit(3)));
+  assert(
+    await fold<boolean>(eqTrue.__id, eqTrue.__adj, fullInterp) === true,
+    "pipeline: eq(3,3) = true before transform",
+  );
+
+  // Use selectWhere to find eq nodes in the normalized graph
+  const eqNodes = selectWhere(eqTrue, byKind("num/eq"));
+  assert(eqNodes.size === 1, `pipeline: found ${eqNodes.size} num/eq node(s)`);
+
+  // Replace num/eq with num/add via dagql, then fold
+  const eqToAdd = pipe(
+    eqTrue,
+    (e) => replaceWhere(e, byKind("num/eq"), "num/add"),
+  );
+  const addResult = await fold<number>(eqToAdd.__id, eqToAdd.__adj, fullInterp);
+  assert(addResult === 6, `pipeline: eq(3,3) rewritten to add(3,3) = ${addResult}`);
+
+  // --- String eq through the full pipeline ---
+  const strEqProg = app($.eq($.strLit("hello"), $.strLit("hello")));
+  assert(
+    await fold<boolean>(strEqProg.__id, strEqProg.__adj, fullInterp) === true,
+    "pipeline: str eq('hello','hello') = true",
+  );
+  const strNeqProg = app($.eq($.strLit("a"), $.strLit("b")));
+  assert(
+    await fold<boolean>(strNeqProg.__id, strNeqProg.__adj, fullInterp) === false,
+    "pipeline: str eq('a','b') = false",
+  );
+
+  // --- Bool eq through the full pipeline ---
+  const boolEqProg = app($.eq(boolLit(true), boolLit(true)));
+  assert(
+    await fold<boolean>(boolEqProg.__id, boolEqProg.__adj, fullInterp) === true,
+    "pipeline: bool eq(true,true) = true",
+  );
+
+  // --- Nested eq through the full pipeline ---
+  // eq(eq(3,3), eq(5,5)) → eq(true, true) → true
+  // This tests that eq's boolean output dispatches to bool/eq at runtime
+  const nestedEqProg = app($.eq(
+    $.eq($.numLit(3), $.numLit(3)),
+    $.eq($.numLit(5), $.numLit(5)),
+  ));
+  assert(
+    await fold<boolean>(nestedEqProg.__id, nestedEqProg.__adj, fullInterp) === true,
+    "pipeline: eq(eq(3,3), eq(5,5)) = true",
+  );
+  // eq(eq(3,4), eq(5,5)) → eq(false, true) → false
+  const nestedEqProg2 = app($.eq(
+    $.eq($.numLit(3), $.numLit(4)),
+    $.eq($.numLit(5), $.numLit(5)),
+  ));
+  assert(
+    await fold<boolean>(nestedEqProg2.__id, nestedEqProg2.__adj, fullInterp) === false,
+    "pipeline: eq(eq(3,4), eq(5,5)) = false",
+  );
+
+  // --- Full pipeline: build + transform + fold ---
+  // mul(add(3, 4), 5) = 35, then rewrite add→sub: mul(sub(3,4), 5) = -5
+  const fullProg = app($.mul($.add($.numLit(3), $.numLit(4)), $.numLit(5)));
+  assert(
+    await fold<number>(fullProg.__id, fullProg.__adj, fullInterp) === 35,
+    "full pipeline: (3+4)*5 = 35",
+  );
+  const rewritten2 = pipe(
+    fullProg,
+    (e) => replaceWhere(e, byKind("num/add"), "num/sub"),
+  );
+  assert(
+    await fold<number>(rewritten2.__id, rewritten2.__adj, fullInterp) === -5,
+    "full pipeline: (3-4)*5 = -5 after dagql rewrite",
+  );
+
+  console.log(`\n16-bridge: ${passed} passed, ${failed} failed`);
   if (failed > 0) process.exit(1);
 }
 

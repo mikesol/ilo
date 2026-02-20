@@ -16,7 +16,7 @@
  *   npx tsx spike-koans/07-replace.ts
  */
 
-export * from "./06-map";
+export * from "./07-map";
 
 import type {
   NodeEntry,
@@ -28,7 +28,7 @@ import type {
   MapAdj,
   MapOut,
   MatchingEntries,
-} from "./06-map";
+} from "./07-map";
 import {
   mapWhere,
   numLit,
@@ -39,7 +39,7 @@ import {
   byKindGlob,
   isLeaf,
   and,
-} from "./06-map";
+} from "./07-map";
 
 // ─── ReplaceKind: swap kind, preserve children + out ─────────────────
 // Distributes over union of matching entries

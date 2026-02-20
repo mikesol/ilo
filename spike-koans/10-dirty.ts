@@ -24,10 +24,10 @@
  *   npx tsc --noEmit --strict spike-koans/09-dirty.ts
  */
 
-export * from "./08-gc";
+export * from "./09-gc";
 
-import type { NodeEntry, NExpr, AdjOf, IdOf, CtrOf, RuntimeEntry } from "./08-gc";
-import { numLit, add, mul, app } from "./08-gc";
+import type { NodeEntry, NExpr, AdjOf, IdOf, CtrOf, RuntimeEntry } from "./09-gc";
+import { numLit, add, mul, app } from "./09-gc";
 
 // ─── DirtyExpr: phantom-branded, incompatible with NExpr ─────────────
 declare const dirtyBrand: unique symbol;

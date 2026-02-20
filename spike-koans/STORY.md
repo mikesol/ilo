@@ -39,7 +39,33 @@ Adjacency maps merge via intersection: `CAdjOf<L> & CAdjOf<R> & Record<newId, ..
 
 The content-addressed IDs look ugly (`"M(A(L3,L4),L5)"`), but they're ephemeral. Nobody ever sees them.
 
-## Koan 03: The app boundary (normalization)
+## Koan 03: Traits — typeclass-style polymorphism
+
+Before we enter the DAG world, we prove that **multiple types can share a single polymorphic interface** — the Haskell typeclass pattern, adapted for CExpr.
+
+A `TraitInstance<ForType, Kind>` links a phantom type to a node kind: "for type `number`, eq produces `num/eq` nodes." Plugins bundle constructors with their trait instances:
+
+```ts
+const numPlugin = {
+  ctors: { numLit, add, mul },
+  instances: [{ _forType: number, kind: "num/eq", prefix: "num", ctor: numEq }],
+};
+```
+
+`composeEq(instances)` builds a polymorphic `eq` function. At the type level, `NoInfer<O>` on the right argument prevents TypeScript from widening to a union — so `eq(numLit(3), strLit("b"))` is a compile error, not a runtime surprise. `ResolveKind<O, Instances>` selects the correct node kind:
+
+```ts
+const eq = composeEq([numEqInstance, strEqInstance]);
+eq(numLit(3), numLit(4));   // ✓ → CExpr<boolean> with kind "num/eq"
+eq(strLit("a"), strLit("b")); // ✓ → CExpr<boolean> with kind "str/eq"
+eq(numLit(3), strLit("b")); // ✗ compile error: number ≠ string
+```
+
+`mvfm(...plugins)` composes plugins into a `$` record: all constructors spread in, plus trait dispatchers typed as the intersection of all registered instances. If you load `numPlugin` but not `strPlugin`, `$.eq` rejects string arguments at the type level.
+
+At runtime, dispatch is a simple prefix match on the left argument's node kind.
+
+## Koan 04: The app boundary (normalization)
 
 `app` is where construction ends and the real world begins. It performs a **type-level post-order DFS** that replaces content-addressed IDs with clean sequential ones:
 
@@ -62,7 +88,7 @@ The normalizer tracks visited nodes so DAG sharing is preserved — if the same 
 
 Everything downstream — predicates, transforms, GC, the fluent API — operates on `NExpr` with its clean, flat adjacency map.
 
-## Koan 04–05: Asking questions about the graph
+## Koan 05–06: Asking questions about the graph
 
 Predicates are objects that work at both levels — runtime (boolean filter) and type level (computed key set):
 
@@ -80,7 +106,7 @@ const binaryNums = selectWhere(prog, and(byKindGlob("num/"), hasChildCount(2)));
 
 The type system tracks which keys matched. You can assign `"c"` to an `AddKeys` variable but not `"a"` — that's a compile error.
 
-## Koan 06–07: Transforming nodes
+## Koan 07–08: Transforming nodes
 
 `mapWhere` applies a function to every matching node. The result type updates precisely:
 
@@ -112,7 +138,7 @@ const stringified = mapWhere(prog, byKind("num/mul"), (_e) => ({
 const replaced = replaceWhere(prog, byKind("num/add"), "num/sub");
 ```
 
-## Koan 08: Garbage collection
+## Koan 09: Garbage collection
 
 After mutations, orphan nodes may exist — nodes reachable from nothing. `CollectReachable` finds what's alive by walking forward from the root:
 
@@ -144,7 +170,7 @@ const clean = commit(d3);
 
 Stress-tested to ~900 chain nodes and ~8000 tree nodes before hitting TS recursion limits. Realistic programs are well within these bounds.
 
-## Koan 09–10: The sharp knives
+## Koan 10–11: The sharp knives
 
 Sometimes you need to do surgery — add a node, remove one, rewire children. These operations are unsafe (you could create dangling references), so they produce a `DirtyExpr` that **cannot** be used where an `NExpr` is expected:
 
@@ -164,7 +190,7 @@ const clean = commit(d5); // ✓ — root exists, all children exist
 
 `commit` throws if the graph is broken (missing root, dangling children). It's the airlock between "I'm doing surgery" and "this is safe to use."
 
-## Koan 11: Wrapping nodes
+## Koan 12: Wrapping nodes
 
 You want to insert a telemetry span around every fetch call, or a debug wrapper around a specific node:
 
@@ -183,7 +209,7 @@ const wrappedRoot = wrapByName(prog, "e", "debug/root");
 // wrappedRoot.__id === "f", wrappedRoot.__adj["f"].children === ["e"]
 ```
 
-## Koan 12: Splicing nodes out
+## Koan 13: Splicing nodes out
 
 The inverse of wrapping — remove a node and reconnect:
 
@@ -202,7 +228,7 @@ const noLiterals = spliceWhere(prog, byKind("num/literal"));
 
 Previous spikes returned `Expr<any, any>` here — full type erasure. This koan's job is to do better. At minimum, the surviving nodes' types should be preserved.
 
-## Koan 13: Named nodes
+## Koan 14: Named nodes
 
 Sometimes you want to refer to a node by name rather than by ID:
 
@@ -219,7 +245,7 @@ const replaced = replaceWhere(named, byName("the-sum"), "num/sub");
 
 Aliases are `@name` entries in the adj that point to the target ID. The tricky part: gc must not kill them (they're not in any node's `children` array, so forward-reachability misses them).
 
-## Koan 14: Fluent chaining
+## Koan 15: Fluent chaining
 
 For multi-step transforms, a fluent API reads better:
 
@@ -230,24 +256,36 @@ const result = dagql(prog)
   .result();
 ```
 
-## Koan 15: The bridge to foldAST
+## Koan 16: The bridge — fold, traits, and the full pipeline
 
-Everything connects back to the existing interpreter. `toDAG` flattens a tree AST into an adjacency map. `toAST` reconstructs the tree. `foldAST` doesn't care how the tree was built:
+Everything connects back. `fold()` is a trampoline-based async stack machine that drives generator handlers over the DAG adjacency map. Each handler yields child indices and receives evaluated results:
 
 ```ts
-const myApp = mvfm(num, str, semiring);
-const interp = defaults(myApp);
+const interp: Interpreter = {
+  "num/literal": async function* (entry) { return entry.out as number; },
+  "num/add": async function* () {
+    const l = (yield 0) as number;
+    const r = (yield 1) as number;
+    return l + r;
+  },
+};
+```
 
-const prog = myApp(($) => $.mul($.add(3, 4), 5));
-const dag = toDAG(prog.ast);
+The full pipeline ties everything together — `mvfm` composes plugins with trait dispatch, builds a CExpr, normalizes to NExpr, transforms with dagql, and folds to a result:
 
-// Transform: swap add → mul
-for (const [id, entry] of Object.entries(dag.entries)) {
-  if (entry.kind === "num/add") dag.entries[id] = { ...entry, kind: "num/mul" };
-}
+```ts
+const $ = mvfm(fpNumPlugin, fpStrPlugin, fpBoolPlugin);
 
-const result = await foldAST(interp, toAST(dag.rootId, dag.entries));
-// (3 * 4) * 5 = 60
+// Trait dispatch: eq specializes to num/eq at the call site
+const eqExpr = $.eq($.numLit(3), $.numLit(3));  // CExpr<boolean>, kind = "num/eq"
+const prog = app(eqExpr);                        // NExpr
+
+// dagql transform: rewrite num/eq → num/add
+const transformed = pipe(prog, (e) => replaceWhere(e, byKind("num/eq"), "num/add"));
+
+// fold: evaluate the rewritten program
+const result = await fold(transformed.__id, transformed.__adj, interp);
+// 3 + 3 = 6 (eq was rewritten to add)
 ```
 
 ---
@@ -264,6 +302,9 @@ const result = await foldAST(interp, toAST(dag.rootId, dag.entries));
 | `DirtyExpr<O, R>` | Mutable, uncommitted expression |
 | `RuntimeEntry` | Untyped runtime node |
 | `NameAlias<Name, TargetID, Out>` | Named reference to a node |
+| `TraitInstance<ForType, Kind>` | Links a type to its trait node kind |
+| `PluginShape<Ctors, Instances>` | Plugin: constructors + trait instances |
+| `ComposedEq<Instances>` | Polymorphic eq built from instances |
 
 ### Extractors
 
@@ -280,8 +321,17 @@ const result = await foldAST(interp, toAST(dag.rootId, dag.entries));
 | Function | Produces |
 |---|---|
 | `numLit(n)` | `CExpr<number, "L{n}", ...>` |
+| `strLit(s)` | `CExpr<string, "S{s}", ...>` |
+| `boolLit(b)` | `CExpr<boolean, "B{b}", ...>` |
 | `add(a, b)` | `CExpr<number, "A({aId},{bId})", ...>` |
 | `mul(a, b)` | `CExpr<number, "M({aId},{bId})", ...>` |
+
+### Trait Composition
+
+| Function | Does |
+|---|---|
+| `composeEq(instances)` | Builds polymorphic eq from trait instances |
+| `mvfm(...plugins)` | Composes plugins into `$` with constructors + trait dispatchers |
 
 ### Normalization
 
@@ -338,9 +388,9 @@ const result = await foldAST(interp, toAST(dag.rootId, dag.entries));
 dagql(expr).mapWhere(...).replaceWhere(...).spliceWhere(...).result()
 ```
 
-### Bridge
+### Fold & Interpreters
 
 | Function | Does |
 |---|---|
-| `toDAG(ast)` | Tree → `{ rootId, entries }` |
-| `toAST(rootId, entries)` | Entries → tree for foldAST |
+| `fold(rootId, adj, interp)` | Async trampoline fold over DAG |
+| `defaults(plugins)` | Merge plugin interpreters |

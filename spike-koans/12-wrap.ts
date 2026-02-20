@@ -26,7 +26,7 @@
  *   npx tsx spike-koans/11-wrap.ts
  */
 
-export * from "./10-commit";
+export * from "./11-commit";
 
 import type {
   NodeEntry,
@@ -37,8 +37,8 @@ import type {
   RuntimeEntry,
   Increment,
   RewireAdj,
-} from "./10-commit";
-import { makeNExpr, incrementId, numLit, add, mul, app } from "./10-commit";
+} from "./11-commit";
+import { makeNExpr, incrementId, numLit, add, mul, app } from "./11-commit";
 
 // ─── TargetOut: extract output type of target node ───────────────────
 type TargetOut<Adj, ID extends string> = ID extends keyof Adj

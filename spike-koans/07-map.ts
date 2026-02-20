@@ -20,7 +20,7 @@
  *   npx tsx spike-koans/06-map.ts
  */
 
-export * from "./05-select";
+export * from "./06-select";
 
 import type {
   NodeEntry,
@@ -31,7 +31,7 @@ import type {
   RuntimeEntry,
   PredBase,
   EvalPred,
-} from "./05-select";
+} from "./06-select";
 import {
   makeNExpr,
   numLit,
@@ -42,7 +42,7 @@ import {
   byKindGlob,
   isLeaf,
   and,
-} from "./05-select";
+} from "./06-select";
 
 // ─── MapAdj: replace matched entries, preserve the rest ──────────────
 export type MapAdj<

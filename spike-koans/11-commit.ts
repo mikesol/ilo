@@ -20,7 +20,7 @@
  *   npx tsx spike-koans/10-commit.ts
  */
 
-export * from "./09-dirty";
+export * from "./10-dirty";
 
 import type {
   NodeEntry,
@@ -32,7 +32,7 @@ import type {
   LiveAdj,
   DirtyExpr,
   DirtyAdjOf,
-} from "./09-dirty";
+} from "./10-dirty";
 import {
   makeNExpr,
   numLit,
@@ -45,7 +45,7 @@ import {
   removeEntry,
   swapEntry,
   setRoot,
-} from "./09-dirty";
+} from "./10-dirty";
 
 // ─── gc: remove unreachable nodes from DirtyExpr ─────────────────────
 export function gc<

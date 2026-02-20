@@ -21,7 +21,7 @@
  *   npx tsx spike-koans/12-splice.ts
  */
 
-export * from "./11-wrap";
+export * from "./12-wrap";
 
 import type {
   NodeEntry,
@@ -31,7 +31,7 @@ import type {
   RuntimeEntry,
   PredBase,
   SelectKeys,
-} from "./11-wrap";
+} from "./12-wrap";
 import {
   makeNExpr,
   numLit,
@@ -41,7 +41,7 @@ import {
   wrapByName,
   byKind,
   isLeaf,
-} from "./11-wrap";
+} from "./12-wrap";
 
 // ─── SpliceList: replace matched children with their own children ────
 // Recursive: if a replaced child's children are also matched, they're spliced too.

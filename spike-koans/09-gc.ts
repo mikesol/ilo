@@ -30,9 +30,9 @@
  *   npx tsx spike-koans/08-gc.ts
  */
 
-export * from "./07-replace";
+export * from "./08-replace";
 
-import type { NodeEntry, RuntimeEntry } from "./07-replace";
+import type { NodeEntry, RuntimeEntry } from "./08-replace";
 
 // ─── CollectReachable: type-level forward DFS ────────────────────────
 // Queue is a tuple, Visited is a union. Each step pops the head:

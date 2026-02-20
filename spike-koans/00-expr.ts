@@ -52,6 +52,7 @@ export interface CExpr<
   readonly [cexprBrand]: { readonly o: O; readonly id: Id; readonly adj: Adj };
   readonly __id: string;
   readonly __adj: Record<string, RuntimeEntry>;
+  readonly __outType: string;
 }
 
 // ─── NExpr: normalized expression (sequential IDs) ───────────────────
@@ -92,8 +93,8 @@ export function makeCExpr<
   O,
   Id extends string,
   Adj,
->(id: Id, adj: Record<string, RuntimeEntry>): CExpr<O, Id, Adj> {
-  return { __id: id, __adj: adj } as unknown as CExpr<O, Id, Adj>;
+>(id: Id, adj: Record<string, RuntimeEntry>, outType: string): CExpr<O, Id, Adj> {
+  return { __id: id, __adj: adj, __outType: outType } as unknown as CExpr<O, Id, Adj>;
 }
 
 export function makeNExpr<
@@ -202,6 +203,7 @@ const _re2: RuntimeEntry = { kind: "num/add", children: ["a", "b"], out: 7 };
 const testCExpr = makeCExpr<number, "L3", TestCAdj>(
   "L3",
   { L3: { kind: "num/literal", children: [], out: 3 } },
+  "number",
 );
 const _checkMakeCId: CIdOf<typeof testCExpr> = "L3";
 

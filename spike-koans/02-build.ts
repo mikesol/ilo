@@ -48,7 +48,7 @@ export function numLit<V extends number>(
     number,
     `L${V}`,
     Record<`L${V}`, NodeEntry<"num/literal", [], number>>
-  >(id, { [id]: entry } as Record<string, RuntimeEntry>);
+  >(id, { [id]: entry } as Record<string, RuntimeEntry>, "number");
 }
 
 // ─── add: binary addition node ───────────────────────────────────────
@@ -81,7 +81,7 @@ export function add<
     number,
     NewId,
     LA & RA & Record<NewId, NodeEntry<"num/add", [LId, RId], number>>
-  >(id, adj);
+  >(id, adj, "number");
 }
 
 // ─── mul: binary multiplication node ─────────────────────────────────
@@ -113,7 +113,7 @@ export function mul<
     number,
     NewId,
     LA & RA & Record<NewId, NodeEntry<"num/mul", [LId, RId], number>>
-  >(id, adj);
+  >(id, adj, "number");
 }
 
 // ═══════════════════════════════════════════════════════════════════════

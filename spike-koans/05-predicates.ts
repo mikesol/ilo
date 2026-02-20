@@ -24,9 +24,9 @@
  *   npx tsc --noEmit --strict spike-koans/04-predicates.ts
  */
 
-export * from "./03-normalize";
+export * from "./04-normalize";
 
-import type { NodeEntry, RuntimeEntry } from "./03-normalize";
+import type { NodeEntry, RuntimeEntry } from "./04-normalize";
 
 // ─── Runtime predicate interface ─────────────────────────────────────
 export interface PredBase {
@@ -173,8 +173,8 @@ export function byName<N extends string>(name: N): NamePred<N> {
 // COMPILE-TIME TESTS
 // ═══════════════════════════════════════════════════════════════════════
 
-import type { AdjOf, IdOf } from "./03-normalize";
-import { numLit, add, mul, app } from "./03-normalize";
+import type { AdjOf, IdOf } from "./04-normalize";
+import { numLit, add, mul, app } from "./04-normalize";
 
 // Reference program: (3+4)*5 → normalized adj {a,b,c,d,e}
 const prog = app(mul(add(numLit(3), numLit(4)), numLit(5)));

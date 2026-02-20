@@ -30,7 +30,7 @@
  *   npx tsx spike-koans/03-normalize.ts
  */
 
-export * from "./02-build";
+export * from "./03-traits";
 
 import type {
   NodeEntry,
@@ -43,8 +43,8 @@ import type {
   AdjOf,
   CtrOf,
   RuntimeEntry,
-} from "./02-build";
-import { makeNExpr, incrementId, numLit, add, mul } from "./02-build";
+} from "./03-traits";
+import { makeNExpr, incrementId, numLit, add, mul } from "./03-traits";
 
 // ─── Type-level normalizer ───────────────────────────────────────────
 // Result tuple: [Map, Entries, Counter, NewId]
@@ -112,7 +112,7 @@ export type ProcessChildren<
       : never
     : never;
 
-import type { Increment } from "./02-build";
+import type { Increment } from "./03-traits";
 
 export type Normalize<
   Adj,

@@ -19,7 +19,7 @@
  *   npx tsx spike-koans/13-named.ts
  */
 
-export * from "./12-splice";
+export * from "./13-splice";
 
 import type {
   NodeEntry,
@@ -32,7 +32,7 @@ import type {
   DirtyExpr,
   DirtyAdjOf,
   LiveAdj,
-} from "./12-splice";
+} from "./13-splice";
 import {
   makeNExpr,
   numLit,
@@ -46,7 +46,7 @@ import {
   gc,
   commit,
   liveAdj,
-} from "./12-splice";
+} from "./13-splice";
 
 // ─── NameAlias: metadata entry keyed as "@Name" in adj ──────────────
 export type NameAlias<
