@@ -234,17 +234,17 @@ export type AppResult<Reg, Expr> =
 // ═══════════════════════════════════════════════════════════════════════
 
 // Runtime registry for lifting and validation
-const LIFT_MAP: Record<string, string> = {
+export const LIFT_MAP: Record<string, string> = {
   number: "num/literal",
   string: "str/literal",
   boolean: "bool/literal",
 };
 
-const TRAIT_MAP: Record<string, Record<string, string>> = {
+export const TRAIT_MAP: Record<string, Record<string, string>> = {
   eq: { number: "num/eq", string: "str/eq", boolean: "bool/eq" },
 };
 
-const KIND_INPUTS: Record<string, string[]> = {
+export const KIND_INPUTS: Record<string, string[]> = {
   "num/add": ["number", "number"],
   "num/mul": ["number", "number"],
   "num/sub": ["number", "number"],

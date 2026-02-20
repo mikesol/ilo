@@ -1,13 +1,22 @@
 /**
  * Koan 04a: Structural — CExprs inside records and tuples
  *
- * Proves that app() can walk into complex structures (records, tuples),
- * find CExprs inside, elaborate them, and validate types against the
- * registry. Invalid structures produce `never` at compile time.
+ * Builds on 04-normalize by adding structural elaboration: records and
+ * tuples that may contain CExprs. Proves that app() can walk into
+ * complex structures, find CExprs inside, elaborate them, and validate
+ * types against the registry. Invalid structures produce `never`.
  *
  * Record children use named maps ({x: nodeId, y: nodeId}) so the
  * representation is self-describing and order-independent. Tuples
  * use positional arrays (ordering is well-defined for tuples).
+ *
+ * NOTE: The type-level elaborator (ElaborateArg, ElaborateExpr,
+ * ElaborateChildren) must be redefined here rather than imported from
+ * 04-normalize. These types form a mutually recursive chain —
+ * ElaborateArg calls ElaborateExpr, which calls ElaborateChildren,
+ * which calls ElaborateArg. Changing ElaborateArg to support structural
+ * cases requires the entire chain. TypeScript type aliases don't support
+ * "virtual dispatch", so extension requires redefinition.
  *
  * Gate:
  *   npx tsc --noEmit --strict spike-koans/04a-structural.ts
@@ -17,7 +26,10 @@
 import type {
   CExpr, NExpr, KindSpec, Increment, NeverGuard, LiftKind,
 } from "./04-normalize";
-import { makeCExpr, makeNExpr, isCExpr, incrementId, add, mul } from "./04-normalize";
+import {
+  makeCExpr, makeNExpr, isCExpr, incrementId, add, mul,
+  LIFT_MAP, KIND_INPUTS as BASE_KIND_INPUTS,
+} from "./04-normalize";
 
 // ═══════════════════════════════════════════════════════════════════════
 // LOCAL TYPES (flexible children — not constrained to string[])
@@ -29,13 +41,12 @@ type SNodeEntry<Kind extends string = string, Ch = unknown, O = unknown> = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════
-// STRUCTURAL REGISTRY
+// STRUCTURAL REGISTRY — extends StdRegistry with structural kinds
 // ═══════════════════════════════════════════════════════════════════════
 
-type StructuralRegistry = {
-  "num/literal": KindSpec<[], number>;
-  "num/add": KindSpec<[number, number], number>;
-  "num/mul": KindSpec<[number, number], number>;
+import type { StdRegistry } from "./04-normalize";
+
+type StructuralRegistry = StdRegistry & {
   "geom/point": KindSpec<
     [{ x: number; y: number }], { x: number; y: number }>;
   "geom/line": KindSpec<
@@ -230,11 +241,11 @@ type ElaborateChildren<
           > : never
       : never;
 
-type AppResult<Expr> =
+type AppResult<Reg, Expr> =
   Expr extends CExpr<any, infer K extends string, infer A extends readonly unknown[]>
     ? NeverGuard<
-        ElaborateExpr<StructuralRegistry, K, A, {}, "a">,
-        ElaborateExpr<StructuralRegistry, K, A, {}, "a"> extends [
+        ElaborateExpr<Reg, K, A, {}, "a">,
+        ElaborateExpr<Reg, K, A, {}, "a"> extends [
           infer Adj, infer C extends string, infer R extends string, infer O,
         ] ? NExpr<O, R, Adj, C> : never
       >
@@ -267,11 +278,9 @@ function pair<A, B>(a: A, b: B): CExpr<[number, number], "data/pair", [[A, B]]> 
 // RUNTIME: structural-aware app() with named children
 // ═══════════════════════════════════════════════════════════════════════
 
-const LIFT_MAP: Record<string, string> = {
-  number: "num/literal", string: "str/literal", boolean: "bool/literal",
-};
+// Extend base KIND_INPUTS with structural kinds
 const KIND_INPUTS: Record<string, string[] | "structural"> = {
-  "num/add": ["number", "number"], "num/mul": ["number", "number"],
+  ...BASE_KIND_INPUTS,
   "geom/point": "structural", "geom/line": "structural",
   "data/pair": "structural",
 };
@@ -284,9 +293,12 @@ const STRUCTURAL_SHAPES: Record<string, unknown> = {
 
 type SRuntimeEntry = { kind: string; children: unknown; out: unknown };
 
-function appS<Expr extends CExpr<any, string, readonly unknown[]>>(
+function appS<
+  Expr extends CExpr<any, string, readonly unknown[]>,
+  Reg = StructuralRegistry,
+>(
   expr: Expr,
-): AppResult<Expr> {
+): AppResult<Reg, Expr> {
   const entries: Record<string, SRuntimeEntry> = {};
   let counter = "a";
   function alloc() { const id = counter; counter = incrementId(counter); return id; }
@@ -393,10 +405,10 @@ const _p4sxk: AdjOf<typeof p4>[P4StartXId]["kind"] = "num/literal";
 
 // NEGATIVE tests
 type _BadPoint = AssertNever<
-  AppResult<ReturnType<typeof point<{ x: "wrong"; y: 3 }>>>
+  AppResult<StructuralRegistry, ReturnType<typeof point<{ x: "wrong"; y: 3 }>>>
 >;
 type _BadNested = AssertNever<
-  AppResult<ReturnType<typeof point<{
+  AppResult<StructuralRegistry, ReturnType<typeof point<{
     x: ReturnType<typeof mul<ReturnType<typeof add<1, 2>>, 3>>;
     y: ReturnType<typeof add<false, "bad">>;
   }>>>
