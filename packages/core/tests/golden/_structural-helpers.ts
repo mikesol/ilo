@@ -1,7 +1,21 @@
 /**
- * Shared helpers for structural-accessors tests.
- * Replicates 04a structural appS and 04b accessor proxy logic
- * from the koan chain (which does not export these functions).
+ * TEST FIXTURE BUILDERS for structural elaboration patterns.
+ *
+ * These are NOT testing core's elaborate.ts — they build adjacency
+ * maps for test fixtures. Core's app() handles the standard
+ * CExpr→NExpr pipeline (positional children only). Structural
+ * elaboration (records/tuples → named-map children) is plugin-level
+ * logic from koan 04a/04b, not part of core's elaboration.
+ *
+ * What IS validated through core:
+ * - fold() correctly handles string-yielding handlers (structural
+ *   nodes yield string IDs to resolve named children)
+ * - This is tested in structural-accessors.test.ts section 3
+ *
+ * What is NOT validated against core:
+ * - structuralApp() — local reimplementation of koan 04a's appS
+ * - accessorApp() — local reimplementation of koan 04b's accessor
+ * These exist to BUILD test fixtures, not to validate core behavior.
  */
 import {
   makeCExpr,
