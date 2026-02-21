@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { defaults, fold } from "../../../src/index";
 import { runWithDefaults } from "../shared/case-runner";
 import { buildMathApp } from "../shared/case-builders";
 
@@ -21,5 +22,13 @@ describe("golden runtime: full flow", () => {
 
     const result = await runWithDefaults(app, prog);
     expect(result).toBe(9);
+  });
+
+  it("supports fold(program, interpreter) overload", async () => {
+    const app = buildMathApp();
+    const prog = app(($) => $.mul($.add(10, 2), 2));
+
+    const result = await fold(prog, defaults(app));
+    expect(result).toBe(24);
   });
 });

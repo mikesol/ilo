@@ -337,13 +337,32 @@ export async function fold<K extends string>(
   root: TypedNode,
   state?: FoldState,
 ): Promise<unknown>;
+export async function fold<K extends string>(
+  program: Program<K>,
+  interpreter: Interpreter<K>,
+  state?: FoldState,
+): Promise<unknown>;
+export async function fold<K extends string>(
+  root: TypedNode,
+  interpreter: Interpreter<K>,
+  state?: FoldState,
+): Promise<unknown>;
 export async function fold(
-  interpreter: Interpreter<string>,
-  rootOrProgram: TypedNode | Program<string>,
+  a: Interpreter<string> | TypedNode | Program<string>,
+  b: Interpreter<string> | TypedNode | Program<string>,
   state?: FoldState,
 ): Promise<unknown> {
-  if ("ast" in rootOrProgram && "hash" in rootOrProgram) {
-    return await foldAST(interpreter, rootOrProgram, state);
+  const aIsProgram = typeof a === "object" && a !== null && "ast" in a && "hash" in a;
+  const aIsNode = typeof a === "object" && a !== null && "kind" in a;
+  if (aIsProgram || aIsNode) {
+    if (aIsProgram) {
+      return await foldAST(b as Interpreter<string>, a as Program<string>, state);
+    }
+    return await foldAST(b as Interpreter<string>, a as TypedNode, state);
   }
-  return await foldAST(interpreter, rootOrProgram, state);
+  const bIsProgram = typeof b === "object" && b !== null && "ast" in b && "hash" in b;
+  if (bIsProgram) {
+    return await foldAST(a as Interpreter<string>, b as Program<string>, state);
+  }
+  return await foldAST(a as Interpreter<string>, b as TypedNode, state);
 }
