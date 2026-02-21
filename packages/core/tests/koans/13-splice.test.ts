@@ -1,5 +1,5 @@
 import { test } from "vitest";
 
-test("koan 13-splice fixture executes", async () => {
+test("placeholder koan gate: 13-splice fixture self-consistency only", async () => {
   await import("../../src/__koans__/13-splice");
 });

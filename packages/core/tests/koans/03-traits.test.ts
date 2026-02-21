@@ -1,5 +1,5 @@
 import { test } from "vitest";
 
-test("koan 03-traits fixture executes", async () => {
+test("placeholder koan gate: 03-traits fixture self-consistency only", async () => {
   await import("../../src/__koans__/03-traits");
 });

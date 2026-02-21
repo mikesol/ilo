@@ -1,0 +1,44 @@
+# Koan Gate Status
+
+## Current status
+
+`tests/koans/*.test.ts` are **placeholder gates**.
+
+They execute frozen koan fixtures from `src/__koans__/` using the koans' own internal chain imports (`./NN-...`).
+This only proves fixture self-consistency.
+
+These tests do **not** yet gate `@mvfm/core` API conformance.
+
+## Real gate milestone
+
+A koan test becomes a **real gate** when its adapted wrapper logic imports from `@mvfm/core` (or package-local public API barrel) instead of koan-relative imports.
+
+Target state per issue #293:
+
+1. Adapt each koan test/wrapper import graph to `@mvfm/core` exports.
+2. Keep koan logic invariant (no semantic edits).
+3. Type-check and runtime-check against core exports.
+4. Failures require core fixes, never koan edits (unless `spec-change`).
+
+## Progress checklist
+
+- [ ] 00-expr wrapper imports from core API
+- [ ] 01-increment wrapper imports from core API
+- [ ] 02-build wrapper imports from core API
+- [ ] 03-traits wrapper imports from core API
+- [ ] 03a-composition wrapper imports from core API
+- [ ] 04-normalize wrapper imports from core API
+- [ ] 04a-structural wrapper imports from core API
+- [ ] 04b-accessor wrapper imports from core API
+- [ ] 05-predicates wrapper imports from core API
+- [ ] 06-select wrapper imports from core API
+- [ ] 07-map wrapper imports from core API
+- [ ] 08-replace wrapper imports from core API
+- [ ] 09-gc wrapper imports from core API
+- [ ] 10-dirty wrapper imports from core API
+- [ ] 11-commit wrapper imports from core API
+- [ ] 12-wrap wrapper imports from core API
+- [ ] 13-splice wrapper imports from core API
+- [ ] 14-named wrapper imports from core API
+- [ ] 15-dagql wrapper imports from core API
+- [ ] 16-bridge wrapper imports from core API
