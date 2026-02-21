@@ -1,5 +1,5 @@
 import { deepThing } from "./accessor";
-import { defaults, fold } from "./bridge";
+import { defaults, fold, VOLATILE_KINDS } from "./bridge";
 import { commit, gc } from "./commit";
 import {
   boolPluginU,
@@ -43,6 +43,7 @@ export const koan = {
   point,
   deepThing,
   fold,
+  VOLATILE_KINDS,
   defaults,
   commit,
   gc,
@@ -88,7 +89,7 @@ export const koan = {
   strPluginU,
 };
 
-export type { Handler, Interpreter, PluginDef } from "./bridge";
+export type { Handler, Interpreter, PluginDef, ScopedBinding, ScopedEffect } from "./bridge";
 export type { Plugin, PluginShape, RegistryOf, TraitDef } from "./composition";
 export type { DirtyAdjOf, DirtyCtrOf, DirtyExpr, DirtyIdOf, DirtyOutOf, RewireAdj } from "./dirty";
 export type {
