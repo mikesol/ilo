@@ -11,6 +11,7 @@ import type { NExpr, NodeEntry, RuntimeEntry } from "./expr";
 import { makeNExpr } from "./expr";
 import type { Increment } from "./increment";
 import { incrementId } from "./increment";
+import { remapChildren } from "./structural-children";
 
 /** Extract output type of a target node from the adjacency map. */
 type TargetOut<Adj, ID extends string> = ID extends keyof Adj
@@ -63,7 +64,7 @@ export function wrapByName<
   for (const [id, entry] of Object.entries(expr.__adj)) {
     newAdj[id] = {
       ...entry,
-      children: entry.children.map((c) => (c === targetId ? wrapperId : c)),
+      children: remapChildren(entry.children, targetId, wrapperId) as string[],
     };
   }
 

@@ -9,6 +9,7 @@
 import type { NExpr, NodeEntry, RuntimeEntry } from "./expr";
 import { makeNExpr } from "./expr";
 import type { PredBase, SelectKeys } from "./predicates";
+import { extractChildIds } from "./structural-children";
 
 /** Recursively replace matched children with their own children. */
 type SpliceList<C extends string[], Adj, Matched extends string> = C extends [
@@ -68,8 +69,9 @@ export function spliceWhere<O, R extends string, Adj, C extends string, P extend
   let newRoot = expr.__id;
   if (matched.has(newRoot)) {
     const rootEntry = expr.__adj[newRoot];
-    if (rootEntry && rootEntry.children.length > 0) {
-      newRoot = rootEntry.children[0];
+    const rootChildIds = extractChildIds(rootEntry?.children ?? []);
+    if (rootChildIds.length > 0) {
+      newRoot = rootChildIds[0];
     }
   }
 

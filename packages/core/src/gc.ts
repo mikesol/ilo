@@ -7,6 +7,7 @@
  */
 
 import type { NodeEntry, RuntimeEntry } from "./expr";
+import { extractChildIds } from "./structural-children";
 
 /** Type-level forward DFS collecting reachable node IDs as a union. */
 export type CollectReachable<
@@ -38,8 +39,9 @@ export function collectReachable(adj: Record<string, RuntimeEntry>, rootId: stri
     visited.add(head);
     const entry = adj[head];
     if (entry) {
-      for (let i = entry.children.length - 1; i >= 0; i--) {
-        queue.unshift(entry.children[i]);
+      const ids = extractChildIds(entry.children);
+      for (let i = ids.length - 1; i >= 0; i--) {
+        queue.unshift(ids[i]);
       }
     }
   }

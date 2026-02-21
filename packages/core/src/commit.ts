@@ -7,10 +7,11 @@
  */
 
 import type { DirtyExpr } from "./dirty";
-import type { NExpr, RuntimeEntry } from "./expr";
+import type { NExpr } from "./expr";
 import { makeNExpr } from "./expr";
 import type { LiveAdj } from "./gc";
 import { liveAdj } from "./gc";
+import { extractChildIds } from "./structural-children";
 
 /** Remove unreachable nodes from a DirtyExpr. */
 export function gc<O, R extends string, Adj, C extends string>(
@@ -30,7 +31,7 @@ export function commit<O, R extends string, Adj, C extends string>(
     throw new Error(`commit: root "${rootId}" not in adj`);
   }
   for (const [id, entry] of Object.entries(adj)) {
-    for (const child of entry.children) {
+    for (const child of extractChildIds(entry.children)) {
       if (!adj[child]) {
         throw new Error(`commit: node "${id}" references missing child "${child}"`);
       }

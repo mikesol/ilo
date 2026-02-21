@@ -7,6 +7,7 @@
  */
 
 import type { NExpr, NodeEntry, RuntimeEntry } from "./expr";
+import { remapChildren } from "./structural-children";
 
 /** Unique brand preventing DirtyExpr from being used as NExpr. */
 declare const dirtyBrand: unique symbol;
@@ -123,7 +124,7 @@ export function rewireChildren<
   for (const [id, entry] of Object.entries(d.__adj)) {
     newAdj[id] = {
       ...entry,
-      children: entry.children.map((c) => (c === oldRef ? newRef : c)),
+      children: remapChildren(entry.children, oldRef, newRef) as string[],
     };
   }
   return { __id: d.__id, __adj: newAdj, __counter: d.__counter } as any;
