@@ -12,7 +12,6 @@ export * from "./increment";
 export * from "./map";
 export * from "./named";
 export * from "./plugin";
-export * from "./plugin-simple";
 export * from "./predicates";
 export * from "./registry";
 export * from "./replace";

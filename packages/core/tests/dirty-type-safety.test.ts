@@ -8,17 +8,17 @@ import { describe, expect, it } from "vitest";
 import type { CExpr, DirtyExpr, KindSpec, NodeEntry, Plugin } from "../src/index";
 import {
   add,
-  boolPluginU,
+  boolPlugin,
   commit,
   createApp,
   dirty,
   eq,
   fold,
   makeCExpr,
-  numPluginU,
+  numPlugin,
   ordPlugin,
   rewireChildren,
-  strPluginU,
+  strPlugin,
   swapEntry,
 } from "../src/index";
 import { createTestInterp } from "./kitchen-sink-helpers";
@@ -43,7 +43,7 @@ const itePlugin = {
   shapes: {},
 } satisfies Plugin;
 
-const appC = createApp(numPluginU, strPluginU, boolPluginU, ordPlugin, itePlugin);
+const appC = createApp(numPlugin, strPlugin, boolPlugin, ordPlugin, itePlugin);
 
 // ═════════════════════════════════════════════════════════════════════
 // Runtime: rewireChildren and swapEntry can corrupt output types

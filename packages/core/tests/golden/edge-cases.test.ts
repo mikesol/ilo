@@ -14,12 +14,12 @@ import {
   mapWhere,
   mul,
   numLit,
-  numPluginU,
+  numPlugin,
   pipe,
   type RuntimeEntry,
   replaceWhere,
   stdPlugins,
-  strPluginU,
+  strPlugin,
 } from "../../src/index";
 
 const interp = defaults(stdPlugins);
@@ -293,10 +293,10 @@ describe("edge cases: interleaved operations", () => {
 });
 
 describe("edge cases: createApp variations", () => {
-  test("createApp with just numPluginU works for numeric programs", async () => {
-    const numApp = createApp(numPluginU);
+  test("createApp with just numPlugin works for numeric programs", async () => {
+    const numApp = createApp(numPlugin);
     const prog = numApp(add(3, 4));
-    const numInterp = defaults([numPluginU]);
+    const numInterp = defaults([numPlugin]);
     expect(await fold(prog, numInterp)).toBe(7);
   });
 
@@ -312,9 +312,9 @@ describe("edge cases: createApp variations", () => {
   });
 
   test("createApp produces working app for string programs", async () => {
-    const strApp = createApp(strPluginU);
+    const strApp = createApp(strPlugin);
     const prog = strApp("hello");
-    const strInterp = defaults([strPluginU]);
+    const strInterp = defaults([strPlugin]);
     expect(await fold(prog, strInterp)).toBe("hello");
   });
 });

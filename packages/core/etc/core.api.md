@@ -49,22 +49,6 @@ export function boolLit<V extends boolean>(v: V): V;
 
 // @public
 export const boolPlugin: {
-    readonly ctors: {
-        readonly boolLit: typeof boolLit;
-    };
-    readonly kinds: {
-        readonly "bool/literal": KindSpec<[], boolean>;
-        readonly "bool/eq": KindSpec<[boolean, boolean], boolean>;
-    };
-    readonly traits: {
-        readonly eq: {
-            readonly boolean: "bool/eq";
-        };
-    };
-};
-
-// @public
-export const boolPluginU: {
     readonly name: "bool";
     readonly ctors: {
         readonly boolLit: typeof boolLit;
@@ -458,11 +442,6 @@ export type MatchingEntries<Adj, P> = {
 // @public
 export function mul<A, B>(a: A, b: B): CExpr<number, "num/mul", [A, B]>;
 
-// Warning: (ae-forgotten-export) The symbol "SimpleDollarSign" needs to be exported by the entry point index.d.ts
-//
-// @public
-export function mvfm<const P extends readonly PluginShape<any, any, any>[]>(...plugins: P): SimpleDollarSign<P>;
-
 // @public
 export function mvfmU<const P extends readonly Plugin_2[]>(...plugins: P): DollarSign<P>;
 
@@ -473,7 +452,7 @@ function name_2<O, R extends string, Adj, C extends string, N extends string, T 
 export { name_2 as name }
 
 // @public
-export type NameAlias<Name extends string, TargetID extends string, Out> = NodeEntry<"@alias", [
+export type NameAlias<_Name extends string, TargetID extends string, Out> = NodeEntry<"@alias", [
 TargetID
 ], Out>;
 
@@ -532,26 +511,6 @@ export function numLit<V extends number>(v: V): V;
 
 // @public
 export const numPlugin: {
-    readonly ctors: {
-        readonly add: typeof add;
-        readonly mul: typeof mul;
-        readonly numLit: typeof numLit;
-    };
-    readonly kinds: {
-        readonly "num/literal": KindSpec<[], number>;
-        readonly "num/add": KindSpec<[number, number], number>;
-        readonly "num/mul": KindSpec<[number, number], number>;
-        readonly "num/eq": KindSpec<[number, number], boolean>;
-    };
-    readonly traits: {
-        readonly eq: {
-            readonly number: "num/eq";
-        };
-    };
-};
-
-// @public
-export const numPluginU: {
     readonly name: "num";
     readonly ctors: {
         readonly add: typeof add;
@@ -676,16 +635,6 @@ export interface PluginDef {
     name: string;
     // (undocumented)
     nodeKinds: readonly string[];
-}
-
-// @public
-export interface PluginShape<Ctors extends Record<string, (...args: any[]) => any>, Kinds extends Record<string, KindSpec<any, any>>, Traits extends Record<string, Record<string, string>>> {
-    // (undocumented)
-    readonly ctors: Ctors;
-    // (undocumented)
-    readonly kinds: Kinds;
-    // (undocumented)
-    readonly traits: Traits;
 }
 
 // @public
@@ -920,22 +869,6 @@ export function strLit<V extends string>(v: V): V;
 
 // @public
 export const strPlugin: {
-    readonly ctors: {
-        readonly strLit: typeof strLit;
-    };
-    readonly kinds: {
-        readonly "str/literal": KindSpec<[], string>;
-        readonly "str/eq": KindSpec<[string, string], boolean>;
-    };
-    readonly traits: {
-        readonly eq: {
-            readonly string: "str/eq";
-        };
-    };
-};
-
-// @public
-export const strPluginU: {
     readonly name: "str";
     readonly ctors: {
         readonly strLit: typeof strLit;

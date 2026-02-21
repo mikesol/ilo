@@ -4,15 +4,7 @@
  */
 import { describe, expect, test } from "vitest";
 import type { CExpr, KindSpec, Plugin } from "../src/index";
-import {
-  add,
-  boolPluginU,
-  createApp,
-  isCExpr,
-  makeCExpr,
-  numPluginU,
-  strPluginU,
-} from "../src/index";
+import { add, boolPlugin, createApp, isCExpr, makeCExpr, numPlugin, strPlugin } from "../src/index";
 
 // ─── Test plugins with structural kinds ──────────────────────────────
 
@@ -53,7 +45,7 @@ const pairPlugin = {
   shapes: { "data/pair": ["number", "number"] },
 } satisfies Plugin;
 
-const plugins = [numPluginU, strPluginU, boolPluginU, geomPlugin, pairPlugin] as const;
+const plugins = [numPlugin, strPlugin, boolPlugin, geomPlugin, pairPlugin] as const;
 const testApp = createApp(...plugins);
 
 // =====================================================================

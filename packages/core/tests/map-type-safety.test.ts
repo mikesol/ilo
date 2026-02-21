@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import type { CExpr, KindSpec, NExpr, Plugin } from "../src/index";
 import {
   add,
-  boolPluginU,
+  boolPlugin,
   byKind,
   commit,
   createApp,
@@ -17,9 +17,9 @@ import {
   fold,
   makeCExpr,
   mapWhere,
-  numPluginU,
+  numPlugin,
   ordPlugin,
-  strPluginU,
+  strPlugin,
 } from "../src/index";
 import { createTestInterp } from "./kitchen-sink-helpers";
 
@@ -43,7 +43,7 @@ const itePlugin = {
   shapes: {},
 } satisfies Plugin;
 
-const appC = createApp(numPluginU, strPluginU, boolPluginU, ordPlugin, itePlugin);
+const appC = createApp(numPlugin, strPlugin, boolPlugin, ordPlugin, itePlugin);
 
 // ═════════════════════════════════════════════════════════════════════
 // Runtime: mapWhere that changes out type corrupts the graph

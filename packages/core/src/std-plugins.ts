@@ -14,7 +14,7 @@ import type { KindSpec } from "./registry";
 // ─── Unified plugin definitions ─────────────────────────────────────
 
 /** Unified numeric operations plugin with interpreter. */
-export const numPluginU = {
+export const numPlugin = {
   name: "num",
   ctors: { add, mul, sub, numLit },
   kinds: {
@@ -64,7 +64,7 @@ export const numPluginU = {
 } as const;
 
 /** Unified string operations plugin with interpreter. */
-export const strPluginU = {
+export const strPlugin = {
   name: "str",
   ctors: { strLit },
   kinds: {
@@ -93,7 +93,7 @@ export const strPluginU = {
 } as const;
 
 /** Unified boolean operations plugin with interpreter. */
-export const boolPluginU = {
+export const boolPlugin = {
   name: "bool",
   ctors: { boolLit },
   kinds: {
@@ -122,7 +122,7 @@ export const boolPluginU = {
 } as const;
 
 /** Standard plugin tuple: num + str + bool. */
-export const stdPlugins = [numPluginU, strPluginU, boolPluginU] as const;
+export const stdPlugins = [numPlugin, strPlugin, boolPlugin] as const;
 
 // ─── Ord plugin: proves extensibility ──────────────────────────────
 
