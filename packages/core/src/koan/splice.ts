@@ -1,6 +1,16 @@
 import { makeNExpr, type NExpr, type NodeEntry, type RuntimeEntry } from "./expr";
 import type { PredBase, SelectKeys } from "./predicates";
 
+/** Index into tuple-like child id list. */
+type TupleAt<T extends string[], I extends number, Acc extends unknown[] = []> = T extends [
+  infer H extends string,
+  ...infer Rest extends string[],
+]
+  ? Acc["length"] extends I
+    ? H
+    : TupleAt<Rest, I, [...Acc, unknown]>
+  : never;
+
 type SpliceList<C extends string[], Adj, Matched extends string> = C extends [
   infer H extends string,
   ...infer T extends string[],
@@ -32,6 +42,35 @@ type SpliceRoot<R extends string, Adj, Matched extends string> = R extends Match
       : R
     : R
   : R;
+
+/**
+ * For each matched node, verify child[I] output extends matched node output.
+ * True when all compatible.
+ */
+type SpliceTypeSafe<Adj, Matched extends string, I extends number> = keyof {
+  [K in Matched & keyof Adj as Adj[K] extends {
+    children: infer HC extends string[];
+    out: infer MO;
+  }
+    ? TupleAt<HC, I> extends infer R extends string
+      ? R extends keyof Adj
+        ? Adj[R] extends { out: infer CO }
+          ? CO extends MO
+            ? never
+            : K
+          : K
+        : K
+      : K
+    : K]: true;
+} extends never
+  ? true
+  : false;
+
+/** Branded error type for type-unsafe splices. */
+export interface SpliceTypeError<_Msg extends string = string> {
+  readonly __brand: unique symbol;
+  readonly __spliceTypeError: _Msg;
+}
 
 function rSplice(
   children: string[],
@@ -77,10 +116,20 @@ function rewriteOutRefs(
 }
 
 /** Remove matching nodes and splice through their children recursively. */
-export function spliceWhere<O, R extends string, Adj, C extends string, P extends PredBase>(
+export function spliceWhere<
+  O,
+  R extends string,
+  Adj,
+  C extends string,
+  P extends PredBase,
+  I extends number = 0,
+>(
   expr: NExpr<O, R, Adj, C>,
   pred: P,
-): NExpr<O, SpliceRoot<R, Adj, SelectKeys<Adj, P>>, SpliceAdj<Adj, SelectKeys<Adj, P>>, C> {
+  _childIndex?: I,
+): SpliceTypeSafe<Adj, SelectKeys<Adj, P>, I> extends true
+  ? NExpr<O, SpliceRoot<R, Adj, SelectKeys<Adj, P>>, SpliceAdj<Adj, SelectKeys<Adj, P>>, C>
+  : SpliceTypeError<"replacement child output type does not match spliced node output type"> {
   const matched = new Set<string>();
   for (const [id, entry] of Object.entries(expr.__adj)) {
     if (pred.test(entry, id, expr.__adj)) matched.add(id);
@@ -106,5 +155,7 @@ export function spliceWhere<O, R extends string, Adj, C extends string, P extend
     nextRoot as SpliceRoot<R, Adj, SelectKeys<Adj, P>>,
     nextAdj,
     expr.__counter as C,
-  ) as NExpr<O, SpliceRoot<R, Adj, SelectKeys<Adj, P>>, SpliceAdj<Adj, SelectKeys<Adj, P>>, C>;
+  ) as SpliceTypeSafe<Adj, SelectKeys<Adj, P>, I> extends true
+    ? NExpr<O, SpliceRoot<R, Adj, SelectKeys<Adj, P>>, SpliceAdj<Adj, SelectKeys<Adj, P>>, C>
+    : SpliceTypeError<"replacement child output type does not match spliced node output type">;
 }

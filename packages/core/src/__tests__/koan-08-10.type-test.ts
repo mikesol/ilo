@@ -8,7 +8,7 @@ import type { NodeEntry } from "../koan/expr";
 
 const prog = koan.app(koan.mul(koan.add(3, 4), 5));
 
-const replaced = koan.replaceWhere(prog, koan.byKind("num/add"), "num/sub");
+const replaced = koan.commit(koan.replaceWhere(prog, koan.byKind("num/add"), "num/sub"));
 type ReplacedAdj = AdjOf<typeof replaced>;
 const _replacedKind: ReplacedAdj["c"]["kind"] = "num/sub";
 // @ts-expect-error replaced entry is no longer num/add

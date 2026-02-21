@@ -7,7 +7,7 @@ test("koan gate 15-dagql: pipe composes transforms with precise result", () => {
   const chained = koan.pipe(
     prog,
     (e) => koan.replaceWhere(e, koan.byKind("num/add"), "num/sub"),
-    (e) => koan.spliceWhere(e, koan.isLeaf()),
+    (e) => koan.spliceWhere(koan.commit(e), koan.isLeaf()),
   );
 
   expect(chained.__adj.c?.kind).toBe("num/sub");

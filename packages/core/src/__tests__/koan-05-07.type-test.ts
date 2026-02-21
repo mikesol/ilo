@@ -13,22 +13,24 @@ const _addKey: AddKey = "c";
 // @ts-expect-error add selection should not include literal "a"
 const _addKeyBad: AddKey = "a";
 
-const mapped = koan.mapWhere(prog, koan.byKind("num/add"), (entry) => ({
-  kind: "num/sub" as const,
-  children: entry.children,
-  out: entry.out,
-}));
+const mapped = koan.commit(
+  koan.mapWhere(prog, koan.byKind("num/add"), (entry) => ({
+    kind: "num/sub" as const,
+    children: entry.children,
+    out: entry.out,
+  })),
+);
 type MappedAdj = AdjOf<typeof mapped>;
 const _mappedKind: MappedAdj["c"]["kind"] = "num/sub";
 // @ts-expect-error mapped add node should no longer be num/add
 const _mappedKindBad: MappedAdj["c"]["kind"] = "num/add";
 const _mappedOut: OutOf<typeof mapped> = 1;
 
-const rootMapped = koan.mapWhere(prog, koan.byKind("num/mul"), () => ({
-  kind: "str/repr" as const,
-  children: ["c", "d"] as string[],
-  out: "" as string,
-}));
-const _rootMappedOut: OutOf<typeof rootMapped> = "ok";
-// @ts-expect-error root remap should change output type to string
-const _rootMappedOutBad: OutOf<typeof rootMapped> = 2;
+const rootMapped = koan.commit(
+  koan.mapWhere(prog, koan.byKind("num/mul"), () => ({
+    kind: "num/add" as const,
+    children: ["c", "d"] as string[],
+    out: 0 as number,
+  })),
+);
+const _rootMappedOut: OutOf<typeof rootMapped> = 2;

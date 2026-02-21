@@ -9,7 +9,9 @@ test("koan gate 16-bridge: defaults+fold execute full pipeline and support strin
 
   await expect(koan.fold(prog, interp)).resolves.toBe(35);
 
-  const rewritten = koan.pipe(prog, (e) => koan.replaceWhere(e, koan.byKind("num/add"), "num/sub"));
+  const rewritten = koan.commit(
+    koan.pipe(prog, (e) => koan.replaceWhere(e, koan.byKind("num/add"), "num/sub")),
+  );
   await expect(koan.fold(rewritten, interp)).resolves.toBe(-5);
 
   const structAdj = {

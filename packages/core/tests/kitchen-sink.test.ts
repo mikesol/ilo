@@ -70,18 +70,18 @@ describe("kitchen sink: elaboration + fold + DAG", () => {
     const d1 = koan.dirty(prog1);
     const d2 = koan.pipe(
       d1,
-      (d) => koan.replaceWhere(d as any, koan.byKind("num/mul"), "num/add") as any,
+      (d) => koan.replaceWhere(d, koan.byKind("num/mul"), "num/add"),
       (d) => koan.gc(d),
       (d) => koan.commit(d),
     );
-    const r2 = await koan.fold(d2 as any, interp);
+    const r2 = await koan.fold(d2, interp);
     expect(r2).toBe(15); // (2+3) + 10
 
     // select + name
-    const leaves = koan.selectWhere(d2 as any, koan.isLeaf());
+    const leaves = koan.selectWhere(d2, koan.isLeaf());
     expect(leaves.size).toBeGreaterThan(0);
 
-    const named = koan.name(d2 as any, "sum", (d2 as any).__id);
+    const named = koan.name(d2, "sum", d2.__id);
     expect(named.__adj["@sum"]).toBeDefined();
     expect(named.__adj["@sum"].kind).toBe("@alias");
   });

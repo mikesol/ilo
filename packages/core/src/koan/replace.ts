@@ -1,3 +1,4 @@
+import type { DirtyExpr } from "./dirty";
 import type { NExpr, NodeEntry } from "./expr";
 import type { MapAdj, MapOut, MatchingEntries } from "./map";
 import { mapWhere } from "./map";
@@ -17,10 +18,10 @@ export function replaceWhere<
   P extends PredBase,
   NewKind extends string,
 >(
-  expr: NExpr<O, R, Adj, C>,
+  expr: NExpr<O, R, Adj, C> | DirtyExpr<O, R, Adj, C>,
   pred: P,
   newKind: NewKind,
-): NExpr<
+): DirtyExpr<
   MapOut<O, Adj, R, P, ReplaceKind<MatchingEntries<Adj, P>, NewKind>>,
   R,
   MapAdj<Adj, P, ReplaceKind<MatchingEntries<Adj, P>, NewKind>>,
@@ -33,7 +34,7 @@ export function replaceWhere<
       children: node.children,
       out: node.out,
     };
-  }) as NExpr<
+  }) as DirtyExpr<
     MapOut<O, Adj, R, P, ReplaceKind<MatchingEntries<Adj, P>, NewKind>>,
     R,
     MapAdj<Adj, P, ReplaceKind<MatchingEntries<Adj, P>, NewKind>>,

@@ -11,7 +11,7 @@ test("koan gate 14-named: aliases select/replace target and alias-aware gc prese
   const selected = koan.selectWhere(named, koan.byName("the-sum"));
   expect(Array.from(selected)).toEqual(["c"]);
 
-  const replaced = koan.replaceWhere(named, koan.byName("the-sum"), "num/sub");
+  const replaced = koan.commit(koan.replaceWhere(named, koan.byName("the-sum"), "num/sub"));
   expect(replaced.__adj.c?.kind).toBe("num/sub");
 
   const dropped = koan.commit(koan.gc(koan.dirty(named)));

@@ -91,7 +91,16 @@ export const koan = {
 
 export type { Handler, Interpreter, PluginDef, ScopedBinding, ScopedEffect } from "./bridge";
 export type { Plugin, PluginShape, RegistryOf, TraitDef } from "./composition";
-export type { DirtyAdjOf, DirtyCtrOf, DirtyExpr, DirtyIdOf, DirtyOutOf, RewireAdj } from "./dirty";
+export type {
+  DirtyAdjOf,
+  DirtyCtrOf,
+  DirtyExpr,
+  DirtyIdOf,
+  DirtyOutOf,
+  RewireAdj,
+  RewireTypeError,
+  SwapTypeError,
+} from "./dirty";
 export type {
   AdjOf,
   CExpr,
@@ -100,6 +109,7 @@ export type {
   KindSpec,
   LiftKind,
   NExpr,
+  NodeEntry,
   OutOf,
   RuntimeEntry,
   StdRegistry,
@@ -108,7 +118,7 @@ export type {
 } from "./expr";
 export type { CollectReachable, LiveAdj } from "./gc";
 export type { Increment, IncrementLast } from "./increment";
-export type { MapAdj, MapOut, MatchingEntries } from "./map";
+export type { MapAdj, MapOut, MapTypeError, MatchingEntries } from "./map";
 export type { NameAlias, PreserveAliases } from "./named";
 export type { NeverGuard } from "./normalize-types";
 export type {
@@ -124,5 +134,5 @@ export type {
   PredBase,
   SelectKeys,
 } from "./predicates";
-export type { SpliceAdj } from "./splice";
+export type { SpliceAdj, SpliceTypeError } from "./splice";
 export type { WrapOneResult } from "./wrap";

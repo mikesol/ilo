@@ -4,7 +4,7 @@ import { koan } from "../../src/index";
 
 test("koan gate 13-splice: spliceWhere removes wrappers and reconnects children", () => {
   const prog = koan.app(koan.mul(koan.add(3, 4), 5));
-  const wrapped = koan.wrapByName(prog, "c", "debug/wrap");
+  const wrapped = koan.commit(koan.wrapByName(prog, "c", "debug/wrap"));
   const spliced = koan.spliceWhere(wrapped, koan.byKind("debug/wrap"));
 
   expect(spliced.__adj.e?.children).toEqual(["c", "d"]);

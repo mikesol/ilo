@@ -9,9 +9,10 @@ test("koan gate 07-map: mapWhere rewrites matched nodes and preserves the rest",
     children: entry.children,
     out: entry.out,
   }));
+  const committed = koan.commit(mapped);
 
-  expect(mapped.__adj.c?.kind).toBe("num/sub");
-  expect(mapped.__adj.a?.kind).toBe("num/literal");
-  expect(mapped.__adj.e?.kind).toBe("num/mul");
-  expect(mapped.__id).toBe("e");
+  expect(committed.__adj.c?.kind).toBe("num/sub");
+  expect(committed.__adj.a?.kind).toBe("num/literal");
+  expect(committed.__adj.e?.kind).toBe("num/mul");
+  expect(committed.__id).toBe("e");
 });

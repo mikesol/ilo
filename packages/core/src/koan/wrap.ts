@@ -1,4 +1,4 @@
-import type { RewireAdj } from "./dirty";
+import type { DirtyExpr, RewireAdj } from "./dirty";
 import { makeNExpr, type NExpr, type NodeEntry, type RuntimeEntry } from "./expr";
 import type { Increment } from "./increment";
 import { incrementId } from "./increment";
@@ -44,10 +44,15 @@ export function wrapByName<
   TargetID extends string,
   WrapperKind extends string,
 >(
-  expr: NExpr<O, R, Adj, C>,
+  expr: NExpr<O, R, Adj, C> | DirtyExpr<O, R, Adj, C>,
   targetId: TargetID,
   wrapperKind: WrapperKind,
-): NExpr<O, WrapRoot<R, TargetID, C>, WrapOneResult<Adj, TargetID, WrapperKind, C>, Increment<C>> {
+): DirtyExpr<
+  O,
+  WrapRoot<R, TargetID, C>,
+  WrapOneResult<Adj, TargetID, WrapperKind, C>,
+  Increment<C>
+> {
   const wrapperId = expr.__counter;
   const nextCounter = incrementId(wrapperId);
   const targetEntry = expr.__adj[targetId];
@@ -68,7 +73,7 @@ export function wrapByName<
     nextRoot as WrapRoot<R, TargetID, C>,
     nextAdj,
     nextCounter as Increment<C>,
-  ) as NExpr<
+  ) as unknown as DirtyExpr<
     O,
     WrapRoot<R, TargetID, C>,
     WrapOneResult<Adj, TargetID, WrapperKind, C>,

@@ -84,6 +84,25 @@ export function removeEntry<O, R extends string, Adj, C extends string, Id exten
 }
 
 /** Swap an entry at id with a replacement entry. */
+type SwapTypeSafe<
+  Adj,
+  Id extends string,
+  E extends NodeEntry<string, string[], unknown>,
+> = Id extends keyof Adj
+  ? E extends NodeEntry<string, string[], infer NO>
+    ? Adj[Id] extends { out: infer OO }
+      ? NO extends OO
+        ? true
+        : false
+      : true
+    : false
+  : true;
+
+export interface SwapTypeError<_Msg extends string = string> {
+  readonly __brand: unique symbol;
+  readonly __swapTypeError: _Msg;
+}
+
 export function swapEntry<
   O,
   R extends string,
@@ -91,12 +110,20 @@ export function swapEntry<
   C extends string,
   Id extends string,
   E extends NodeEntry<string, string[], unknown>,
->(d: DirtyExpr<O, R, Adj, C>, id: Id, entry: E): DirtyExpr<O, R, SwapAdj<Adj, Id, E>, C> {
+>(
+  d: DirtyExpr<O, R, Adj, C>,
+  id: Id,
+  entry: E,
+): SwapTypeSafe<Adj, Id, E> extends true
+  ? DirtyExpr<O, R, SwapAdj<Adj, Id, E>, C>
+  : SwapTypeError<"new entry output type does not match existing entry output type"> {
   return {
     __id: d.__id,
     __adj: { ...d.__adj, [id]: entry },
     __counter: d.__counter,
-  } as unknown as DirtyExpr<O, R, SwapAdj<Adj, Id, E>, C>;
+  } as unknown as SwapTypeSafe<Adj, Id, E> extends true
+    ? DirtyExpr<O, R, SwapAdj<Adj, Id, E>, C>
+    : SwapTypeError<"new entry output type does not match existing entry output type">;
 }
 
 type RewireList<C extends string[], Old extends string, New extends string> = C extends [
@@ -117,6 +144,23 @@ export type RewireAdj<Adj, Old extends string, New extends string> = {
     : Adj[K];
 };
 
+type RewireTypeSafe<Adj, Old extends string, New extends string> = Old extends keyof Adj
+  ? New extends keyof Adj
+    ? Adj[New] extends { out: infer NO }
+      ? Adj[Old] extends { out: infer OO }
+        ? NO extends OO
+          ? true
+          : false
+        : true
+      : false
+    : false
+  : true;
+
+export interface RewireTypeError<_Msg extends string = string> {
+  readonly __brand: unique symbol;
+  readonly __rewireTypeError: _Msg;
+}
+
 /** Rewire every child reference from oldRef to newRef across the graph. */
 export function rewireChildren<
   O,
@@ -129,7 +173,9 @@ export function rewireChildren<
   d: DirtyExpr<O, R, Adj, C>,
   oldRef: Old,
   newRef: New,
-): DirtyExpr<O, R, RewireAdj<Adj, Old, New>, C> {
+): RewireTypeSafe<Adj, Old, New> extends true
+  ? DirtyExpr<O, R, RewireAdj<Adj, Old, New>, C>
+  : RewireTypeError<"new ref output type does not match old ref output type"> {
   const next: Record<string, RuntimeEntry> = {};
   for (const [id, entry] of Object.entries(d.__adj)) {
     next[id] = {
@@ -141,12 +187,13 @@ export function rewireChildren<
           : entry.out,
     };
   }
-  return { __id: d.__id, __adj: next, __counter: d.__counter } as unknown as DirtyExpr<
-    O,
-    R,
-    RewireAdj<Adj, Old, New>,
-    C
-  >;
+  return { __id: d.__id, __adj: next, __counter: d.__counter } as unknown as RewireTypeSafe<
+    Adj,
+    Old,
+    New
+  > extends true
+    ? DirtyExpr<O, R, RewireAdj<Adj, Old, New>, C>
+    : RewireTypeError<"new ref output type does not match old ref output type">;
 }
 
 /** Change graph root id. */

@@ -16,7 +16,7 @@ type CleanAdj = AdjOf<typeof cleaned>;
 // @ts-expect-error orphan is removed by gc before commit
 type _cleanOrphan = CleanAdj["orphan"];
 
-const wrapped = koan.wrapByName(prog, "c", "debug/wrap");
+const wrapped = koan.commit(koan.wrapByName(prog, "c", "debug/wrap"));
 type WrappedAdj = AdjOf<typeof wrapped>;
 const _wrappedKind: WrappedAdj["f"]["kind"] = "debug/wrap";
 const _wrappedChildren: WrappedAdj["e"]["children"] = ["f", "d"];
