@@ -1,6 +1,7 @@
 // Public API
 
 export { injectInput, injectLambdaParam, mvfm } from "./core";
+export { koan } from "./koan";
 export { defaults } from "./defaults";
 
 export type {
