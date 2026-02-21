@@ -62,7 +62,7 @@ export function spliceWhere<O, R extends string, Adj, C extends string, P extend
     if (matched.has(id)) continue;
     newAdj[id] = {
       ...entry,
-      children: rSplice(entry.children, expr.__adj, matched),
+      children: rSplice(entry.children, expr.__adj, matched) as string[],
     };
   }
 
@@ -78,20 +78,56 @@ export function spliceWhere<O, R extends string, Adj, C extends string, P extend
   return makeNExpr(newRoot, newAdj, expr.__counter) as any;
 }
 
-/** Recursively resolve children through spliced nodes at runtime. */
-function rSplice(
-  children: string[],
+/**
+ * Resolve a matched string ID through splice: return flat array of replacement IDs.
+ * Recursively resolves if replacement children are also matched.
+ */
+function resolveSpliceId(
+  id: string,
   adj: Record<string, RuntimeEntry>,
   matched: Set<string>,
 ): string[] {
+  if (!matched.has(id)) return [id];
+  const entry = adj[id];
+  if (!entry) return [id];
+  const childIds = extractChildIds(entry.children);
   const result: string[] = [];
-  for (const c of children) {
-    if (matched.has(c)) {
-      const entry = adj[c];
-      if (entry) result.push(...rSplice(entry.children, adj, matched));
-    } else {
-      result.push(c);
-    }
+  for (const c of childIds) {
+    result.push(...resolveSpliceId(c, adj, matched));
   }
   return result;
+}
+
+/** Recursively resolve children through spliced nodes at runtime, handling structural children. */
+function rSplice(
+  children: unknown,
+  adj: Record<string, RuntimeEntry>,
+  matched: Set<string>,
+): unknown {
+  if (typeof children === "string") {
+    const resolved = resolveSpliceId(children, adj, matched);
+    // In a scalar position (record value), take the first replacement
+    return resolved[0] ?? children;
+  }
+  if (Array.isArray(children)) {
+    const result: unknown[] = [];
+    for (const c of children) {
+      if (typeof c === "string") {
+        // In an array position, splice can expand to multiple IDs
+        const resolved = resolveSpliceId(c, adj, matched);
+        result.push(...resolved);
+      } else {
+        result.push(rSplice(c, adj, matched));
+      }
+    }
+    return result;
+  }
+  if (typeof children === "object" && children !== null) {
+    const result: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(children)) {
+      result[key] = rSplice(val, adj, matched);
+    }
+    return result;
+  }
+  return children;
 }
