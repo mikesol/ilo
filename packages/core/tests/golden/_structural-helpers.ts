@@ -10,7 +10,7 @@ import {
   LIFT_MAP,
   type CExpr,
   type RuntimeEntry,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 // ─── Types ───────────────────────────────────────────────────────────
 export type SEntry = { kind: string; children: unknown; out: unknown };

@@ -3,7 +3,7 @@ import {
   fold,
   type RuntimeEntry,
   type Interpreter,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 // State cell pattern: mutable state via closures in handlers.
 // st/let creates a cell, st/get reads it, st/set writes it.

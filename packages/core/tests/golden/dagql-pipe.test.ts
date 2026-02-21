@@ -5,7 +5,7 @@ import {
   byKind, isLeaf, mapWhere,
   type NExpr, type Interpreter, type RuntimeEntry,
   type AdjOf, type IdOf, type OutOf,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 // (3+4)*5 → a=lit3, b=lit4, c=add, d=lit5, e=mul, counter=f
 const p = () => app(mul(add(numLit(3), numLit(4)), numLit(5)));

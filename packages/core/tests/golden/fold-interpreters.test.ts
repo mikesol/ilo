@@ -3,7 +3,7 @@ import {
   numLit, add, mul, sub, app, fold, defaults, stdPlugins,
   numPluginU,
   type RuntimeEntry, type Interpreter, type PluginDef,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 // ── shared interpreter ───────────────────────────────────────────────
 const numInterp = defaults([{

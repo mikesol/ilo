@@ -6,7 +6,7 @@ import {
   createApp, numPluginU, strPluginU, boolPluginU,
   addEntry,
   type RuntimeEntry, type NExpr, type Interpreter, type PluginDef,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 const interp = defaults(stdPlugins);
 

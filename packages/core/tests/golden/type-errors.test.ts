@@ -24,7 +24,7 @@ import {
   type AppResult,
   type StdRegistry,
   type DirtyAdjOf,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 // Helper: asserts a type is never (compile-time only)
 type AssertNever<T extends never> = T;

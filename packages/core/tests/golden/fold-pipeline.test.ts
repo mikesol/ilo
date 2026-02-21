@@ -4,7 +4,7 @@ import {
   replaceWhere, byKind, pipe,
   mvfm, numPlugin, strPlugin, boolPlugin,
   type RuntimeEntry, type Interpreter, type PluginDef,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 // ── eq interpreter ───────────────────────────────────────────────────
 const eqInterp: Interpreter = {

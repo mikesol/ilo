@@ -9,7 +9,7 @@ import {
   dirty, gc, commit, name, byName,
   createApp, ordPlugin, lt,
   type RuntimeEntry, type NExpr, type Interpreter, type PluginDef,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 // ── Shared interpreters ─────────────────────────────────────────────
 const eqInterp: Interpreter = {

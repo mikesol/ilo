@@ -5,7 +5,7 @@ import {
   fold,
   type RuntimeEntry,
   type Interpreter,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 export { fold, type RuntimeEntry, type Interpreter };
 

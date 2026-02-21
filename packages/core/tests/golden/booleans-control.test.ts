@@ -2,7 +2,7 @@ import { describe, test, expect } from "vitest";
 import {
   boolLit, app, fold, defaults, stdPlugins,
   type RuntimeEntry, type Interpreter,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 type Adj = Record<string, RuntimeEntry>;
 const bool = (id: string, v: boolean): [string, RuntimeEntry] =>

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { fold, type RuntimeEntry, type Interpreter } from "../../src/__koans__/16-bridge";
+import { fold, type RuntimeEntry, type Interpreter } from "../../src/index";
 
 type Result<T> = { ok: T; err: null } | { ok: null; err: unknown };
 const ok = <T>(v: T): Result<T> => ({ ok: v, err: null });

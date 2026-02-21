@@ -7,7 +7,7 @@ import {
   ordPlugin, createApp,
   selectWhere, byKind, replaceWhere, pipe,
   type RuntimeEntry, type Interpreter, type PluginDef,
-} from "../../src/__koans__/16-bridge";
+} from "../../src/index";
 
 // ── Eq interpreter (stdPlugins doesn't include eq handlers) ──────
 const eqInterp: Interpreter = {
