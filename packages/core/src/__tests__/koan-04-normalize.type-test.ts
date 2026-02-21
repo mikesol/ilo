@@ -26,3 +26,10 @@ const badExpr = koan.eq(1, "x");
 type Bad = AppResult<StdRegistry, typeof badExpr>;
 // @ts-expect-error mismatched eq arguments should normalize to never
 const _bad: Bad = 1;
+
+// @ts-expect-error appS point input must include both x and y
+koan.appS(koan.point({ x: 3 }));
+
+const deep = koan.deepThing();
+// @ts-expect-error accessor path mean is number, not string
+const _wrongAccessorType: string = deep.helloRecord.boy[3].am.i[0].mean;

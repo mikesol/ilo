@@ -24,3 +24,23 @@ test("fold propagates child errors to parent generator via gen.throw", async () 
 
   await expect(koan.fold<string>("root", adj, interp)).resolves.toBe("fallback");
 });
+
+test("fold rejects when a node kind has no handler", async () => {
+  await expect(
+    koan.fold("root", { root: { kind: "missing/handler", children: [], out: undefined } }, {}),
+  ).rejects.toThrow('fold: no handler for "missing/handler"');
+});
+
+test("fold rejects when a yielded child node is missing", async () => {
+  await expect(
+    koan.fold(
+      "root",
+      { root: { kind: "need/child", children: ["missing"], out: undefined } },
+      {
+        "need/child": async function* () {
+          return yield 0;
+        },
+      },
+    ),
+  ).rejects.toThrow('fold: missing node "missing"');
+});
