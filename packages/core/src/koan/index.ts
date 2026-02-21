@@ -11,11 +11,14 @@ import {
   stdPlugins,
   strPluginU,
 } from "./composition";
+import { addEntry, dirty, removeEntry, rewireChildren, setRoot, swapEntry } from "./dirty";
 import { add, boolLit, eq, isCExpr, makeCExpr, makeNExpr, mul, numLit, strLit, sub } from "./expr";
+import { collectReachable, liveAdj } from "./gc";
 import { incrementId } from "./increment";
 import { mapWhere } from "./map";
 import { app, createApp } from "./normalize";
 import { and, byKind, byKindGlob, byName, hasChildCount, isLeaf, not, or } from "./predicates";
+import { replaceWhere } from "./replace";
 import { selectWhere } from "./select";
 import { appS, point } from "./structural";
 
@@ -34,10 +37,19 @@ export const koan = {
   point,
   deepThing,
   eq,
+  collectReachable,
+  liveAdj,
   incrementId,
   isCExpr,
   lt,
   mapWhere,
+  replaceWhere,
+  dirty,
+  addEntry,
+  removeEntry,
+  swapEntry,
+  rewireChildren,
+  setRoot,
   makeCExpr,
   makeNExpr,
   mul,
@@ -62,6 +74,7 @@ export const koan = {
 };
 
 export type { Plugin, PluginShape, RegistryOf, TraitDef } from "./composition";
+export type { DirtyAdjOf, DirtyCtrOf, DirtyExpr, DirtyIdOf, DirtyOutOf, RewireAdj } from "./dirty";
 export type {
   AdjOf,
   CExpr,
@@ -76,6 +89,7 @@ export type {
   TraitKindSpec,
   TypeKey,
 } from "./expr";
+export type { CollectReachable, LiveAdj } from "./gc";
 export type { Increment, IncrementLast } from "./increment";
 export type { MapAdj, MapOut, MatchingEntries } from "./map";
 export type { NeverGuard } from "./normalize-types";
