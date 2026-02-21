@@ -5,3 +5,4 @@ export * from "./registry";
 export * from "./constructors";
 export * from "./plugin-simple";
 export * from "./plugin";
+export * from "./elaborate";
