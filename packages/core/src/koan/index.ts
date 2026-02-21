@@ -1,6 +1,9 @@
 import { buildKindInputs, buildLiftMap, buildTraitMap, boolPluginU, lt, mvfmU, numPluginU, ordPlugin, stdPlugins, strPluginU } from "./composition";
 import { add, boolLit, eq, isCExpr, makeCExpr, makeNExpr, mul, numLit, strLit, sub } from "./expr";
 import { incrementId } from "./increment";
+import { app, createApp } from "./normalize";
+import { appS, point } from "./structural";
+import { deepThing } from "./accessor";
 
 /**
  * Koan-model API namespace (00-03a compatibility surface).
@@ -11,6 +14,11 @@ export const koan = {
   buildKindInputs,
   buildLiftMap,
   buildTraitMap,
+  createApp,
+  app,
+  appS,
+  point,
+  deepThing,
   eq,
   incrementId,
   isCExpr,

@@ -38,9 +38,9 @@ Planned convergence:
 - [x] 02-build wrapper imports from core API
 - [x] 03-traits wrapper imports from core API
 - [x] 03a-composition wrapper imports from core API
-- [ ] 04-normalize wrapper imports from core API
-- [ ] 04a-structural wrapper imports from core API
-- [ ] 04b-accessor wrapper imports from core API
+- [x] 04-normalize wrapper imports from core API
+- [x] 04a-structural wrapper imports from core API
+- [x] 04b-accessor wrapper imports from core API
 - [ ] 05-predicates wrapper imports from core API
 - [ ] 06-select wrapper imports from core API
 - [ ] 07-map wrapper imports from core API

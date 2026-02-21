@@ -12,7 +12,7 @@ export type NodeEntry<Kind extends string, ChildIDs extends string[], Out> = {
 /** Runtime adjacency entry. */
 export interface RuntimeEntry {
   kind: string;
-  children: string[];
+  children: unknown;
   out: unknown;
 }
 
