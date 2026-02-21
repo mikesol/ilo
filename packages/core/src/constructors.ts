@@ -35,10 +35,16 @@ export function eq<A, B>(a: A, b: B): CExpr<boolean, "eq", [A, B]> {
 // ─── Literal constructors ───────────────────────────────────────────
 
 /** Pass through a numeric literal value. */
-export function numLit<V extends number>(v: V): V { return v; }
+export function numLit<V extends number>(v: V): V {
+  return v;
+}
 
 /** Pass through a string literal value. */
-export function strLit<V extends string>(v: V): V { return v; }
+export function strLit<V extends string>(v: V): V {
+  return v;
+}
 
 /** Pass through a boolean literal value. */
-export function boolLit<V extends boolean>(v: V): V { return v; }
+export function boolLit<V extends boolean>(v: V): V {
+  return v;
+}

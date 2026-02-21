@@ -5,18 +5,16 @@
  * kind string while preserving children and output.
  */
 
-import type { NodeEntry, NExpr } from "./expr";
-import type { PredBase } from "./predicates";
+import type { NExpr, NodeEntry } from "./expr";
 import type { MapAdj, MapOut, MatchingEntries } from "./map";
 import { mapWhere } from "./map";
+import type { PredBase } from "./predicates";
 
 /** Swap the kind of a matching entry, preserving children and out. */
-type ReplaceKind<
-  Entry,
-  NewKind extends string,
-> = Entry extends NodeEntry<any, infer C extends string[], infer O>
-  ? NodeEntry<NewKind, C, O>
-  : never;
+type ReplaceKind<Entry, NewKind extends string> =
+  Entry extends NodeEntry<any, infer C extends string[], infer O>
+    ? NodeEntry<NewKind, C, O>
+    : never;
 
 /** Replace the kind of all matching nodes. */
 export function replaceWhere<

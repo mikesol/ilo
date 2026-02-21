@@ -6,8 +6,8 @@
  * adds the eq trait constructor.
  */
 
+import { add, boolLit, eq, mul, numLit, strLit } from "./constructors";
 import type { KindSpec } from "./registry";
-import { add, mul, eq, numLit, strLit, boolLit } from "./constructors";
 
 // ─── PluginShape: what a plugin provides ────────────────────────────
 
@@ -29,9 +29,18 @@ export const numPlugin = {
   ctors: { add, mul, numLit },
   kinds: {
     "num/literal": { inputs: [], output: 0 as number } as KindSpec<[], number>,
-    "num/add": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<[number, number], number>,
-    "num/mul": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<[number, number], number>,
-    "num/eq": { inputs: [0, 0] as [number, number], output: false as boolean } as KindSpec<[number, number], boolean>,
+    "num/add": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<
+      [number, number],
+      number
+    >,
+    "num/mul": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<
+      [number, number],
+      number
+    >,
+    "num/eq": { inputs: [0, 0] as [number, number], output: false as boolean } as KindSpec<
+      [number, number],
+      boolean
+    >,
   },
   traits: {
     eq: { number: "num/eq" },
@@ -43,7 +52,10 @@ export const strPlugin = {
   ctors: { strLit },
   kinds: {
     "str/literal": { inputs: [], output: "" as string } as KindSpec<[], string>,
-    "str/eq": { inputs: ["", ""] as [string, string], output: false as boolean } as KindSpec<[string, string], boolean>,
+    "str/eq": { inputs: ["", ""] as [string, string], output: false as boolean } as KindSpec<
+      [string, string],
+      boolean
+    >,
   },
   traits: {
     eq: { string: "str/eq" },
@@ -55,7 +67,10 @@ export const boolPlugin = {
   ctors: { boolLit },
   kinds: {
     "bool/literal": { inputs: [], output: false as boolean } as KindSpec<[], boolean>,
-    "bool/eq": { inputs: [false, false] as [boolean, boolean], output: false as boolean } as KindSpec<[boolean, boolean], boolean>,
+    "bool/eq": {
+      inputs: [false, false] as [boolean, boolean],
+      output: false as boolean,
+    } as KindSpec<[boolean, boolean], boolean>,
   },
   traits: {
     eq: { boolean: "bool/eq" },
@@ -64,21 +79,21 @@ export const boolPlugin = {
 
 // ─── mvfm: compose plugins ─────────────────────────────────────────
 
-type UnionToIntersection<U> =
-  (U extends any ? (x: U) => void : never) extends (x: infer I) => void
-    ? I
-    : never;
+type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends (x: infer I) => void
+  ? I
+  : never;
 
-type MergeCtors<Plugins extends readonly PluginShape<any, any, any>[]> =
-  UnionToIntersection<Plugins[number]["ctors"]>;
+type MergeCtors<Plugins extends readonly PluginShape<any, any, any>[]> = UnionToIntersection<
+  Plugins[number]["ctors"]
+>;
 
 type SimpleDollarSign<Plugins extends readonly PluginShape<any, any, any>[]> =
   MergeCtors<Plugins> & { eq: typeof eq };
 
 /** Compose simple plugins into a unified constructor bag with eq. */
-export function mvfm<
-  const P extends readonly PluginShape<any, any, any>[],
->(...plugins: P): SimpleDollarSign<P> {
+export function mvfm<const P extends readonly PluginShape<any, any, any>[]>(
+  ...plugins: P
+): SimpleDollarSign<P> {
   const allCtors: Record<string, unknown> = {};
   for (const plugin of plugins) {
     Object.assign(allCtors, plugin.ctors);

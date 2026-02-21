@@ -9,11 +9,7 @@
 // ─── NodeEntry: one node in the normalized adjacency map ────────────
 
 /** A single node in the normalized adjacency map, tracking kind, children, and output type. */
-export type NodeEntry<
-  Kind extends string,
-  ChildIDs extends string[],
-  Out,
-> = {
+export type NodeEntry<Kind extends string, ChildIDs extends string[], Out> = {
   readonly kind: Kind;
   readonly children: ChildIDs;
   readonly out: Out;
@@ -52,11 +48,10 @@ export interface CExpr<
 }
 
 /** Create a new CExpr with the given kind and arguments. */
-export function makeCExpr<
-  O,
-  Kind extends string,
-  Args extends readonly unknown[],
->(kind: Kind, args: [...Args]): CExpr<O, Kind, Args> {
+export function makeCExpr<O, Kind extends string, Args extends readonly unknown[]>(
+  kind: Kind,
+  args: [...Args],
+): CExpr<O, Kind, Args> {
   return {
     [CREF]: true,
     __kind: kind,
@@ -66,12 +61,7 @@ export function makeCExpr<
 
 /** Runtime check for whether a value is a CExpr. */
 export function isCExpr(x: unknown): x is CExpr<unknown> {
-  return (
-    typeof x === "object" &&
-    x !== null &&
-    CREF in x &&
-    (x as any)[CREF] === true
-  );
+  return typeof x === "object" && x !== null && CREF in x && (x as any)[CREF] === true;
 }
 
 // ─── CExpr extractors ──────────────────────────────────────────────
@@ -89,12 +79,7 @@ export type CArgsOf<E> = E extends CExpr<any, any, infer A> ? A : never;
 declare const nexprBrand: unique symbol;
 
 /** Normalized expression with typed adjacency map, root ID, and counter state. */
-export interface NExpr<
-  O,
-  RootId extends string,
-  Adj,
-  Ctr extends string,
-> {
+export interface NExpr<O, RootId extends string, Adj, Ctr extends string> {
   readonly [nexprBrand]: {
     readonly o: O;
     readonly rootId: RootId;
@@ -109,28 +94,19 @@ export interface NExpr<
 // ─── NExpr extractors ───────────────────────────────────────────────
 
 /** Extract the root ID from an NExpr. */
-export type IdOf<E> =
-  E extends NExpr<any, infer R, any, any> ? R : never;
+export type IdOf<E> = E extends NExpr<any, infer R, any, any> ? R : never;
 
 /** Extract the adjacency map type from an NExpr. */
-export type AdjOf<E> =
-  E extends NExpr<any, any, infer A, any> ? A : never;
+export type AdjOf<E> = E extends NExpr<any, any, infer A, any> ? A : never;
 
 /** Extract the counter state from an NExpr. */
-export type CtrOf<E> =
-  E extends NExpr<any, any, any, infer C> ? C : never;
+export type CtrOf<E> = E extends NExpr<any, any, any, infer C> ? C : never;
 
 /** Extract the output type from an NExpr. */
-export type OutOf<E> =
-  E extends NExpr<infer O, any, any, any> ? O : never;
+export type OutOf<E> = E extends NExpr<infer O, any, any, any> ? O : never;
 
 /** Create a new NExpr with the given root ID, adjacency map, and counter. */
-export function makeNExpr<
-  O,
-  RootId extends string,
-  Adj,
-  Ctr extends string,
->(
+export function makeNExpr<O, RootId extends string, Adj, Ctr extends string>(
   rootId: RootId,
   adj: Record<string, RuntimeEntry>,
   counter: Ctr,

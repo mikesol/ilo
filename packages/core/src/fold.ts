@@ -6,7 +6,7 @@
  * defaults() merges interpreters from a plugin list with optional overrides.
  */
 
-import type { RuntimeEntry, NExpr, OutOf } from "./expr";
+import type { NExpr, OutOf, RuntimeEntry } from "./expr";
 import type { Handler, Interpreter } from "./plugin";
 
 /** Frame in the fold trampoline stack. */
@@ -126,9 +126,7 @@ export function defaults(
     } else if (plugin.nodeKinds.length === 0) {
       // no kinds → nothing to interpret
     } else {
-      throw new Error(
-        `Plugin "${plugin.name}" has no defaultInterpreter and no override`,
-      );
+      throw new Error(`Plugin "${plugin.name}" has no defaultInterpreter and no override`);
     }
   }
   return composed;

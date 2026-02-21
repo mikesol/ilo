@@ -13,10 +13,7 @@ export type CollectReachable<
   Adj,
   Queue extends string[],
   Visited extends string = never,
-> = Queue extends [
-  infer Head extends string,
-  ...infer Rest extends string[],
-]
+> = Queue extends [infer Head extends string, ...infer Rest extends string[]]
   ? Head extends Visited
     ? CollectReachable<Adj, Rest, Visited>
     : Head extends keyof Adj
@@ -27,20 +24,12 @@ export type CollectReachable<
   : Visited;
 
 /** Filter adjacency map to only nodes reachable from the root. */
-export type LiveAdj<
-  Adj,
-  RootID extends string,
-> = {
-  [K in keyof Adj as K extends CollectReachable<Adj, [RootID]>
-    ? K
-    : never]: Adj[K];
+export type LiveAdj<Adj, RootID extends string> = {
+  [K in keyof Adj as K extends CollectReachable<Adj, [RootID]> ? K : never]: Adj[K];
 };
 
 /** Runtime forward DFS collecting reachable node IDs. */
-export function collectReachable(
-  adj: Record<string, RuntimeEntry>,
-  rootId: string,
-): Set<string> {
+export function collectReachable(adj: Record<string, RuntimeEntry>, rootId: string): Set<string> {
   const visited = new Set<string>();
   const queue = [rootId];
   while (queue.length > 0) {

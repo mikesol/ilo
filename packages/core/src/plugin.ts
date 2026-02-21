@@ -12,10 +12,10 @@
  * - mvfmU: compose plugins into $ with auto-generated trait ctors
  */
 
-import type { KindSpec, TraitKindSpec } from "./registry";
+import { add, boolLit, eq, mul, numLit, strLit, sub } from "./constructors";
 import type { CExpr, RuntimeEntry } from "./expr";
 import { makeCExpr } from "./expr";
-import { add, mul, sub, eq, numLit, strLit, boolLit } from "./constructors";
+import type { KindSpec, TraitKindSpec } from "./registry";
 
 // ─── TraitDef: trait declaration with output type + mapping ────────
 
@@ -28,9 +28,7 @@ export interface TraitDef<O, Mapping extends Record<string, string>> {
 // ─── Handler / Interpreter (canonical definition) ──────────────────
 
 /** A handler yields child indices (number) or node IDs (string) to resolve dependencies. */
-export type Handler = (
-  entry: RuntimeEntry,
-) => AsyncGenerator<number | string, unknown, unknown>;
+export type Handler = (entry: RuntimeEntry) => AsyncGenerator<number | string, unknown, unknown>;
 
 /** Maps node kind strings to their handlers. */
 export type Interpreter = Record<string, Handler>;
@@ -56,40 +54,39 @@ export interface Plugin<
 
 // ─── Type-level registry derivation ─────────────────────────────────
 
-type MergeKinds<P extends readonly Plugin[]> =
-  P extends readonly [] ? {}
+type MergeKinds<P extends readonly Plugin[]> = P extends readonly []
+  ? {}
   : P extends readonly [infer H extends Plugin, ...infer T extends readonly Plugin[]]
     ? H["kinds"] & MergeKinds<T>
     : {};
 
-type AllTraitNames<P extends readonly Plugin[]> =
-  P extends readonly [] ? never
+type AllTraitNames<P extends readonly Plugin[]> = P extends readonly []
+  ? never
   : P extends readonly [infer H extends Plugin, ...infer T extends readonly Plugin[]]
     ? keyof H["traits"] | AllTraitNames<T>
     : never;
 
-type MergeTraitMappings<P extends readonly Plugin[], K extends string> =
-  P extends readonly [] ? {}
+type MergeTraitMappings<P extends readonly Plugin[], K extends string> = P extends readonly []
+  ? {}
   : P extends readonly [infer H extends Plugin, ...infer T extends readonly Plugin[]]
-    ? (K extends keyof H["traits"] ? H["traits"][K]["mapping"] : {})
-      & MergeTraitMappings<T, K>
+    ? (K extends keyof H["traits"] ? H["traits"][K]["mapping"] : {}) & MergeTraitMappings<T, K>
     : {};
 
-type TraitOutput<P extends readonly Plugin[], K extends string> =
-  P extends readonly [infer H extends Plugin, ...infer T extends readonly Plugin[]]
-    ? K extends keyof H["traits"] ? H["traits"][K]["output"] : TraitOutput<T, K>
-    : never;
+type TraitOutput<P extends readonly Plugin[], K extends string> = P extends readonly [
+  infer H extends Plugin,
+  ...infer T extends readonly Plugin[],
+]
+  ? K extends keyof H["traits"]
+    ? H["traits"][K]["output"]
+    : TraitOutput<T, K>
+  : never;
 
 type TraitEntries<P extends readonly Plugin[]> = {
-  [K in AllTraitNames<P> & string]: TraitKindSpec<
-    TraitOutput<P, K>,
-    MergeTraitMappings<P, K>
-  >;
+  [K in AllTraitNames<P> & string]: TraitKindSpec<TraitOutput<P, K>, MergeTraitMappings<P, K>>;
 };
 
 /** Derive a full registry from a plugin tuple. */
-export type RegistryOf<P extends readonly Plugin[]> =
-  MergeKinds<P> & TraitEntries<P>;
+export type RegistryOf<P extends readonly Plugin[]> = MergeKinds<P> & TraitEntries<P>;
 
 // ─── Runtime map builders ───────────────────────────────────────────
 
@@ -101,9 +98,7 @@ export function buildLiftMap(plugins: readonly Plugin[]): Record<string, string>
 }
 
 /** Build a trait map (trait name to type-to-kind mapping) from plugins. */
-export function buildTraitMap(
-  plugins: readonly Plugin[],
-): Record<string, Record<string, string>> {
+export function buildTraitMap(plugins: readonly Plugin[]): Record<string, Record<string, string>> {
   const m: Record<string, Record<string, string>> = {};
   for (const p of plugins) {
     for (const [t, def] of Object.entries(p.traits)) {
@@ -115,13 +110,11 @@ export function buildTraitMap(
 }
 
 /** Build a kind-inputs map (kind to array of input type names) from plugins. */
-export function buildKindInputs(
-  plugins: readonly Plugin[],
-): Record<string, string[]> {
+export function buildKindInputs(plugins: readonly Plugin[]): Record<string, string[]> {
   const m: Record<string, string[]> = {};
   for (const p of plugins) {
     for (const [kind, spec] of Object.entries(p.kinds)) {
-      m[kind] = ((spec as KindSpec<any, any>).inputs as unknown[]).map(v => typeof v);
+      m[kind] = ((spec as KindSpec<any, any>).inputs as unknown[]).map((v) => typeof v);
     }
   }
   return m;
@@ -129,24 +122,21 @@ export function buildKindInputs(
 
 // ─── mvfmU: compose plugins into $ ─────────────────────────────────
 
-type MergeCtors<P extends readonly Plugin[]> =
-  P extends readonly [] ? {}
+type MergeCtors<P extends readonly Plugin[]> = P extends readonly []
+  ? {}
   : P extends readonly [infer H extends Plugin, ...infer T extends readonly Plugin[]]
     ? H["ctors"] & MergeCtors<T>
     : {};
 
 type TraitCtors<P extends readonly Plugin[]> = {
-  [K in AllTraitNames<P> & string]:
-    <A, B>(a: A, b: B) => CExpr<TraitOutput<P, K>, K, [A, B]>;
+  [K in AllTraitNames<P> & string]: <A, B>(a: A, b: B) => CExpr<TraitOutput<P, K>, K, [A, B]>;
 };
 
 /** The composed constructor bag type: merged plugin ctors + auto-generated trait ctors. */
 export type DollarSign<P extends readonly Plugin[]> = MergeCtors<P> & TraitCtors<P>;
 
 /** Compose unified plugins into a constructor bag with auto-generated trait ctors. */
-export function mvfmU<const P extends readonly Plugin[]>(
-  ...plugins: P
-): DollarSign<P> {
+export function mvfmU<const P extends readonly Plugin[]>(...plugins: P): DollarSign<P> {
   const allCtors: Record<string, unknown> = {};
   const traitNames: Record<string, true> = {};
   for (const p of plugins) {
@@ -169,22 +159,47 @@ export const numPluginU = {
   ctors: { add, mul, sub, numLit },
   kinds: {
     "num/literal": { inputs: [], output: 0 as number } as KindSpec<[], number>,
-    "num/add": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<[number, number], number>,
-    "num/mul": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<[number, number], number>,
-    "num/sub": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<[number, number], number>,
-    "num/eq": { inputs: [0, 0] as [number, number], output: false as boolean } as KindSpec<[number, number], boolean>,
+    "num/add": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<
+      [number, number],
+      number
+    >,
+    "num/mul": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<
+      [number, number],
+      number
+    >,
+    "num/sub": { inputs: [0, 0] as [number, number], output: 0 as number } as KindSpec<
+      [number, number],
+      number
+    >,
+    "num/eq": { inputs: [0, 0] as [number, number], output: false as boolean } as KindSpec<
+      [number, number],
+      boolean
+    >,
   },
   traits: {
-    eq: { output: false as boolean, mapping: { number: "num/eq" } } as TraitDef<boolean, { number: "num/eq" }>,
+    eq: { output: false as boolean, mapping: { number: "num/eq" } } as TraitDef<
+      boolean,
+      { number: "num/eq" }
+    >,
   },
   lifts: { number: "num/literal" },
   nodeKinds: ["num/literal", "num/add", "num/mul", "num/sub", "num/eq"],
   defaultInterpreter: (): Interpreter => ({
-    "num/literal": async function* (e) { return e.out as number; },
-    "num/add": async function* () { return ((yield 0) as number) + ((yield 1) as number); },
-    "num/mul": async function* () { return ((yield 0) as number) * ((yield 1) as number); },
-    "num/sub": async function* () { return ((yield 0) as number) - ((yield 1) as number); },
-    "num/eq": async function* () { return ((yield 0) as number) === ((yield 1) as number); },
+    "num/literal": async function* (e) {
+      return e.out as number;
+    },
+    "num/add": async function* () {
+      return ((yield 0) as number) + ((yield 1) as number);
+    },
+    "num/mul": async function* () {
+      return ((yield 0) as number) * ((yield 1) as number);
+    },
+    "num/sub": async function* () {
+      return ((yield 0) as number) - ((yield 1) as number);
+    },
+    "num/eq": async function* () {
+      return ((yield 0) as number) === ((yield 1) as number);
+    },
   }),
 } as const;
 
@@ -194,16 +209,26 @@ export const strPluginU = {
   ctors: { strLit },
   kinds: {
     "str/literal": { inputs: [], output: "" as string } as KindSpec<[], string>,
-    "str/eq": { inputs: ["", ""] as [string, string], output: false as boolean } as KindSpec<[string, string], boolean>,
+    "str/eq": { inputs: ["", ""] as [string, string], output: false as boolean } as KindSpec<
+      [string, string],
+      boolean
+    >,
   },
   traits: {
-    eq: { output: false as boolean, mapping: { string: "str/eq" } } as TraitDef<boolean, { string: "str/eq" }>,
+    eq: { output: false as boolean, mapping: { string: "str/eq" } } as TraitDef<
+      boolean,
+      { string: "str/eq" }
+    >,
   },
   lifts: { string: "str/literal" },
   nodeKinds: ["str/literal", "str/eq"],
   defaultInterpreter: (): Interpreter => ({
-    "str/literal": async function* (e) { return e.out as string; },
-    "str/eq": async function* () { return ((yield 0) as string) === ((yield 1) as string); },
+    "str/literal": async function* (e) {
+      return e.out as string;
+    },
+    "str/eq": async function* () {
+      return ((yield 0) as string) === ((yield 1) as string);
+    },
   }),
 } as const;
 
@@ -213,16 +238,26 @@ export const boolPluginU = {
   ctors: { boolLit },
   kinds: {
     "bool/literal": { inputs: [], output: false as boolean } as KindSpec<[], boolean>,
-    "bool/eq": { inputs: [false, false] as [boolean, boolean], output: false as boolean } as KindSpec<[boolean, boolean], boolean>,
+    "bool/eq": {
+      inputs: [false, false] as [boolean, boolean],
+      output: false as boolean,
+    } as KindSpec<[boolean, boolean], boolean>,
   },
   traits: {
-    eq: { output: false as boolean, mapping: { boolean: "bool/eq" } } as TraitDef<boolean, { boolean: "bool/eq" }>,
+    eq: { output: false as boolean, mapping: { boolean: "bool/eq" } } as TraitDef<
+      boolean,
+      { boolean: "bool/eq" }
+    >,
   },
   lifts: { boolean: "bool/literal" },
   nodeKinds: ["bool/literal", "bool/eq"],
   defaultInterpreter: (): Interpreter => ({
-    "bool/literal": async function* (e) { return e.out as boolean; },
-    "bool/eq": async function* () { return ((yield 0) as boolean) === ((yield 1) as boolean); },
+    "bool/literal": async function* (e) {
+      return e.out as boolean;
+    },
+    "bool/eq": async function* () {
+      return ((yield 0) as boolean) === ((yield 1) as boolean);
+    },
   }),
 } as const;
 
@@ -241,16 +276,29 @@ export const ordPlugin = {
   name: "ord",
   ctors: { lt },
   kinds: {
-    "num/lt": { inputs: [0, 0] as [number, number], output: false as boolean } as KindSpec<[number, number], boolean>,
-    "str/lt": { inputs: ["", ""] as [string, string], output: false as boolean } as KindSpec<[string, string], boolean>,
+    "num/lt": { inputs: [0, 0] as [number, number], output: false as boolean } as KindSpec<
+      [number, number],
+      boolean
+    >,
+    "str/lt": { inputs: ["", ""] as [string, string], output: false as boolean } as KindSpec<
+      [string, string],
+      boolean
+    >,
   },
   traits: {
-    lt: { output: false as boolean, mapping: { number: "num/lt", string: "str/lt" } } as TraitDef<boolean, { number: "num/lt"; string: "str/lt" }>,
+    lt: { output: false as boolean, mapping: { number: "num/lt", string: "str/lt" } } as TraitDef<
+      boolean,
+      { number: "num/lt"; string: "str/lt" }
+    >,
   },
   lifts: {},
   nodeKinds: ["num/lt", "str/lt"],
   defaultInterpreter: (): Interpreter => ({
-    "num/lt": async function* () { return ((yield 0) as number) < ((yield 1) as number); },
-    "str/lt": async function* () { return ((yield 0) as string) < ((yield 1) as string); },
+    "num/lt": async function* () {
+      return ((yield 0) as number) < ((yield 1) as number);
+    },
+    "str/lt": async function* () {
+      return ((yield 0) as string) < ((yield 1) as string);
+    },
   }),
 } as const;

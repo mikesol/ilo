@@ -6,22 +6,24 @@
  * keeps alias entries alive through garbage collection.
  */
 
-import type { NodeEntry, NExpr, RuntimeEntry } from "./expr";
+import type { DirtyExpr } from "./dirty";
+import type { NExpr, NodeEntry, RuntimeEntry } from "./expr";
 import { makeNExpr } from "./expr";
 import type { LiveAdj } from "./gc";
 import { liveAdj } from "./gc";
-import type { DirtyExpr } from "./dirty";
 
 /** A name alias entry keyed as "@Name" pointing to a target node. */
-export type NameAlias<
-  Name extends string,
-  TargetID extends string,
-  Out,
-> = NodeEntry<"@alias", [TargetID], Out>;
+export type NameAlias<Name extends string, TargetID extends string, Out> = NodeEntry<
+  "@alias",
+  [TargetID],
+  Out
+>;
 
 /** Extract output type of target node. */
 type TargetOut<Adj, ID extends string> = ID extends keyof Adj
-  ? Adj[ID] extends NodeEntry<any, any, infer O> ? O : unknown
+  ? Adj[ID] extends NodeEntry<any, any, infer O>
+    ? O
+    : unknown
   : unknown;
 
 /** Add a named alias to the adjacency map without consuming a counter. */
@@ -36,11 +38,7 @@ export function name<
   expr: NExpr<O, R, Adj, C>,
   n: N,
   targetId: T,
-): NExpr<
-  O, R,
-  Adj & Record<`@${N}`, NameAlias<N, T, TargetOut<Adj, T>>>,
-  C
-> {
+): NExpr<O, R, Adj & Record<`@${N}`, NameAlias<N, T, TargetOut<Adj, T>>>, C> {
   const targetEntry = expr.__adj[targetId];
   const newAdj = {
     ...expr.__adj,
@@ -59,12 +57,7 @@ export type PreserveAliases<Adj> = {
 };
 
 /** Garbage collect while preserving alias entries. */
-export function gcPreservingAliases<
-  O,
-  R extends string,
-  Adj,
-  C extends string,
->(
+export function gcPreservingAliases<O, R extends string, Adj, C extends string>(
   d: DirtyExpr<O, R, Adj, C>,
 ): DirtyExpr<O, R, LiveAdj<Adj, R> & PreserveAliases<Adj>, C> {
   const live = liveAdj(d.__adj, d.__id);

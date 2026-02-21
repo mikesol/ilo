@@ -6,16 +6,12 @@
  * mapWhere applies a transformation function to matching nodes.
  */
 
-import type { NodeEntry, NExpr, RuntimeEntry } from "./expr";
+import type { NExpr, NodeEntry, RuntimeEntry } from "./expr";
 import { makeNExpr } from "./expr";
-import type { PredBase, EvalPred } from "./predicates";
+import type { EvalPred, PredBase } from "./predicates";
 
 /** Replace matched entries in adj, preserve the rest. */
-export type MapAdj<
-  Adj,
-  P,
-  NewEntry extends NodeEntry<string, string[], any>,
-> = {
+export type MapAdj<Adj, P, NewEntry extends NodeEntry<string, string[], any>> = {
   [K in keyof Adj]: K extends string
     ? EvalPred<P, Adj[K], K, Adj> extends true
       ? NewEntry
@@ -32,14 +28,18 @@ export type MapOut<
   NewEntry extends NodeEntry<string, string[], any>,
 > = RootID extends keyof Adj
   ? EvalPred<P, Adj[RootID & keyof Adj], RootID, Adj> extends true
-    ? NewEntry extends NodeEntry<any, any, infer NewO> ? NewO : O
+    ? NewEntry extends NodeEntry<any, any, infer NewO>
+      ? NewO
+      : O
     : O
   : O;
 
 /** Union of entry types that match the predicate. */
 export type MatchingEntries<Adj, P> = {
   [K in keyof Adj]: K extends string
-    ? EvalPred<P, Adj[K], K, Adj> extends true ? Adj[K] : never
+    ? EvalPred<P, Adj[K], K, Adj> extends true
+      ? Adj[K]
+      : never
     : never;
 }[keyof Adj];
 
@@ -55,12 +55,7 @@ export function mapWhere<
   expr: NExpr<O, R, Adj, C>,
   pred: P,
   fn: (entry: MatchingEntries<Adj, P>) => NewEntry,
-): NExpr<
-  MapOut<O, Adj, R, P, NewEntry>,
-  R,
-  MapAdj<Adj, P, NewEntry>,
-  C
-> {
+): NExpr<MapOut<O, Adj, R, P, NewEntry>, R, MapAdj<Adj, P, NewEntry>, C> {
   const newAdj: Record<string, RuntimeEntry> = {};
   for (const [id, entry] of Object.entries(expr.__adj)) {
     if (pred.test(entry, id, expr.__adj)) {

@@ -6,11 +6,11 @@
  * Critical: the wrapper itself must NOT have its child rewired to itself.
  */
 
-import type { NodeEntry, NExpr, RuntimeEntry } from "./expr";
+import type { RewireAdj } from "./dirty";
+import type { NExpr, NodeEntry, RuntimeEntry } from "./expr";
 import { makeNExpr } from "./expr";
 import type { Increment } from "./increment";
 import { incrementId } from "./increment";
-import type { RewireAdj } from "./dirty";
 
 /** Extract output type of a target node from the adjacency map. */
 type TargetOut<Adj, ID extends string> = ID extends keyof Adj
@@ -20,11 +20,11 @@ type TargetOut<Adj, ID extends string> = ID extends keyof Adj
   : unknown;
 
 /** Rewire parents: substitute targetId with wrapperId in all children. */
-export type RewireParents<
+export type RewireParents<Adj, TargetID extends string, WrapperID extends string> = RewireAdj<
   Adj,
-  TargetID extends string,
-  WrapperID extends string,
-> = RewireAdj<Adj, TargetID, WrapperID>;
+  TargetID,
+  WrapperID
+>;
 
 /** Full adjacency map after wrapping: rewired adj + new wrapper entry. */
 export type WrapOneResult<
@@ -33,10 +33,7 @@ export type WrapOneResult<
   WrapperKind extends string,
   WrapperID extends string,
 > = RewireParents<Adj, TargetID, WrapperID> &
-  Record<
-    WrapperID,
-    NodeEntry<WrapperKind, [TargetID], TargetOut<Adj, TargetID>>
-  >;
+  Record<WrapperID, NodeEntry<WrapperKind, [TargetID], TargetOut<Adj, TargetID>>>;
 
 /** Compute new root: if target is root, wrapper becomes root. */
 type WrapRoot<
@@ -57,12 +54,7 @@ export function wrapByName<
   expr: NExpr<O, R, Adj, C>,
   targetId: TargetID,
   wrapperKind: WrapperKind,
-): NExpr<
-  O,
-  WrapRoot<R, TargetID, C>,
-  WrapOneResult<Adj, TargetID, WrapperKind, C>,
-  Increment<C>
-> {
+): NExpr<O, WrapRoot<R, TargetID, C>, WrapOneResult<Adj, TargetID, WrapperKind, C>, Increment<C>> {
   const wrapperId = expr.__counter;
   const nextCounter = incrementId(wrapperId);
   const targetEntry = expr.__adj[targetId];
@@ -71,9 +63,7 @@ export function wrapByName<
   for (const [id, entry] of Object.entries(expr.__adj)) {
     newAdj[id] = {
       ...entry,
-      children: entry.children.map((c) =>
-        c === targetId ? wrapperId : c,
-      ),
+      children: entry.children.map((c) => (c === targetId ? wrapperId : c)),
     };
   }
 

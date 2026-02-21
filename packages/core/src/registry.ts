@@ -31,20 +31,24 @@ export type RegistryEntry = KindSpec<any, any> | TraitKindSpec<any, any>;
 // ─── LiftKind: maps a literal TS type to its literal node kind ──────
 
 /** Maps a TypeScript primitive type to the corresponding literal node kind string. */
-export type LiftKind<T> =
-  T extends number ? "num/literal" :
-  T extends string ? "str/literal" :
-  T extends boolean ? "bool/literal" :
-  never;
+export type LiftKind<T> = T extends number
+  ? "num/literal"
+  : T extends string
+    ? "str/literal"
+    : T extends boolean
+      ? "bool/literal"
+      : never;
 
 // ─── TypeKey: maps a TS type to its string key for trait dispatch ────
 
 /** Maps a TypeScript primitive type to the string key used in trait dispatch mappings. */
-export type TypeKey<T> =
-  T extends number ? "number" :
-  T extends string ? "string" :
-  T extends boolean ? "boolean" :
-  never;
+export type TypeKey<T> = T extends number
+  ? "number"
+  : T extends string
+    ? "string"
+    : T extends boolean
+      ? "boolean"
+      : never;
 
 // ─── StdRegistry: built-in registry for the standard prelude ────────
 
@@ -59,9 +63,12 @@ export type StdRegistry = {
   "num/eq": KindSpec<[number, number], boolean>;
   "str/eq": KindSpec<[string, string], boolean>;
   "bool/eq": KindSpec<[boolean, boolean], boolean>;
-  "eq": TraitKindSpec<boolean, {
-    number: "num/eq";
-    string: "str/eq";
-    boolean: "bool/eq";
-  }>;
+  eq: TraitKindSpec<
+    boolean,
+    {
+      number: "num/eq";
+      string: "str/eq";
+      boolean: "bool/eq";
+    }
+  >;
 };

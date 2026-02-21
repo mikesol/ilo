@@ -9,13 +9,7 @@ import type { NExpr, RuntimeEntry } from "./expr";
 import type { PredBase, SelectKeys } from "./predicates";
 
 /** Select all node IDs in an NExpr that match a predicate. */
-export function selectWhere<
-  O,
-  R extends string,
-  Adj,
-  C extends string,
-  P extends PredBase,
->(
+export function selectWhere<O, R extends string, Adj, C extends string, P extends PredBase>(
   expr: NExpr<O, R, Adj, C>,
   pred: P,
 ): Set<string & SelectKeys<Adj, P>> {
