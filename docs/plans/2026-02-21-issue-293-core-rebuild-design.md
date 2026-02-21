@@ -2,138 +2,114 @@
 
 ## Strategy
 
-Replace-from-scratch with a test fortress built upfront. Two invariant layers validate the rebuild:
+Rebuild `packages/core` around immutable validation gates and maximal end-to-end invariants.
 
-1. **Frozen koans** (20 files, ~273 assertions): copied from `spike-koans-baseline`, imports rewritten to `@mvfm/core`. Never modified — if a koan fails, fix core.
-2. **Golden test suite** (500+ end-to-end tests): generated before any implementation begins. Each test follows the canonical flow `mvfm → app → dagql → fold → expect`. Covers runtime behavior, type-level assertions, and `@ts-expect-error` negative cases.
+Two gate layers define correctness:
 
-Implementation proceeds by deleting `packages/core/src/` and rebuilding from the koan chain. The test fortress provides continuous pass/fail signals.
-
-## Phase A: Build the Test Fortress
-
-All tests written before any implementation code. No exceptions.
-
-### A1: Koan gates
-
-- Copy 20 koan files into `packages/core/src/__koans__/`
-- Create thin wrapper test files that rewrite imports to `@mvfm/core`
-- Each koan is both a `tsc --noEmit --strict` gate and a runtime gate
-
-### A2: Golden tests from docs
-
-The 105 doc examples (core, num, str, boolean, eq, ord, console, st, control, error, fiber) each become a golden test. Pattern: `s/foldAST/fold/g`, wrap in `test()`, assert expected output. This is the completeness checklist — every public API method gets at least one test.
-
-### A3: Golden tests — design space exploration
-
-Subagents systematically generate tests across these dimensions:
-
-| Dimension | Examples |
-|-----------|----------|
-| **Plugin combinations** | num+str+eq, num+ord+boolean, all plugins, minimal plugins |
-| **Trait dispatch** | eq on numbers vs strings vs booleans, ord dispatch, show dispatch |
-| **DAG operations** | select→map→gc, replace→splice→commit, wrap→name→select |
-| **Structural nodes** | records/tuples in fold, nested structural, accessor chains |
-| **Error paths** | fail inside try, nested try/catch, settle with mixed results, guard |
-| **Concurrency** | par with shared nodes, race, timeout, retry with memoization |
-| **State** | let/get/set sequences, volatile taint propagation, push |
-| **Type errors** | `@ts-expect-error` for wrong types, missing plugins, bad dispatch |
-| **Edge cases** | empty programs, 10k-node chains (stack safety), diamond DAGs |
-| **createApp extensibility** | custom plugins, ordPlugin, non-std registries |
-| **Memoization** | shared DAG nodes evaluate once, volatile nodes re-evaluate |
-
-Target: 500+ golden tests. Each is a self-contained `test()` block using the public API only.
-
-### A4: Production extension tests
-
-Tests for features beyond koans but required by the issue:
-
-- **ST volatile/taint**: volatile nodes skip memo, taint propagates to dependents
-- **Error propagation**: `gen.throw()`, error/try catches, error/fail throws
-- **Fiber parallelism**: independent `fold()` calls from within handlers
-- **Scoped lambdas**: yield type widens to `number | string | { child, scope }`
-- **Stack safety**: 10k+ node chains don't overflow
-
-These tests are written NOW, not during implementation.
-
-## Phase B: Delete and Rebuild
-
-### B1: Delete existing implementation
-
-- Delete `packages/core/src/*` (all implementation files)
-- Delete `packages/core/tests/*` (old internal tests, replaced by golden suite)
-- Keep: `package.json`, `tsconfig.json`, build config, `__koans__/` directory
-
-### B2: Rebuild following koan chain
-
-Build order matches koan progression. After each group, corresponding golden tests should start passing.
-
-| Stage | Koans | What to build |
-|-------|-------|---------------|
-| Primitives | 00–01 | CExpr, NExpr, phantom types, content-addressed construction, incrementId |
-| Builders | 02–03 | Registry types, type-safe builders, trait dispatch |
-| Composition | 03a | Unified Plugin type, RegistryOf, mvfmU, map builders |
-| Normalization | 04 | app(), createApp(), type-level elaborator, elaborate() |
-| Structural | 04a–04b | Structural elaboration, named map children, accessor overlay |
-| DAG ops | 05–15 | Predicates, select, map, replace, gc, dirty, commit, wrap, splice, named, dagql |
-| Fold | 16 | Trampoline fold, defaults(), handler yields, NExpr type inference |
-
-### B3: Production extensions
-
-Layer on top of koan-passing core:
-
-- ST volatile/taint in fold memoization
-- Error propagation through generator throw
-- Fiber parallelism (independent fold calls)
-- Scoped lambda yields
-- Stack safety guarantees
-
-### B4: Port fold handlers
-
-Every handler switches from named field access to positional yield:
+1. **Frozen koans** (00-16 + 04a/04b): copied as immutable fixtures. If a koan fails, core changes; koans do not.
+2. **Golden E2E fortress** (hundreds of cases): API-level tests using canonical flow
 
 ```ts
-// Before (named fields):
-"core/cond": async function* (node) {
-  const pred = yield* eval_(node.predicate);
-  return pred ? yield* eval_(node.then) : yield* eval_(node.else);
-}
-
-// After (positional yield):
-"core/cond": async function* (_entry) {
-  const pred = (yield 0) as boolean;
-  return pred ? yield 1 : yield 2;
-}
+const app = mvfm(...plugins)
+const prog = app(() => ...)
+const prog2 = dagql(prog) // optional
+const res = fold(defaults(prog2), prog2)
 ```
 
-## Phase C: Validation
+The design intentionally avoids internals-first testing. Behavior is specified by public-flow invariants, with strong type/runtime coverage.
 
-- All 20 koan gates pass (tsc + runtime)
-- All golden tests pass
-- `npm run build && npm run check && npm test` clean
-- No `any` types or `as` casts in production code
+## Architecture
 
-## What Gets Deleted
+- Koans are copied into `packages/core/src/__koans__/` and treated as read-only fixtures.
+- Gate wrappers only rewrite imports to `@mvfm/core`; no koan logic edits.
+- E2E tests become the primary regression suite. Internal tests are retained only when needed for gaps that cannot be expressed through full flow.
+- Retrofit implementation follows koan progression and E2E failures.
 
-- `packages/core/src/*` — entire implementation
-- `packages/core/tests/*` — old internal tests
-- `packages/core/src/__tests__/*` — old type tests
+## Components and Data Flow
 
-## What Gets Kept
+### 1. Frozen koan harness
 
-- `packages/core/package.json`, `tsconfig.json`, build config
-- Git history (behavioral reference during test authoring)
-- `packages/core/src/__koans__/` (new, frozen fixtures)
+- Immutable koan fixtures
+- Strict type gates (`tsc --noEmit --strict`)
+- Runtime gates (`tsx`/`vitest` execution)
 
-## Risks
+### 2. Golden E2E harness
 
-1. **Type-level completeness**: The hardest part. `Elaborate<Reg, CExpr>` must walk the type graph at compile time. Mitigated by extensive `@ts-expect-error` golden tests.
-2. **Missing behavioral coverage**: Some existing behavior may not be covered by koans or docs. Mitigated by thorough golden test generation and using docs as a checklist.
-3. **External plugin compatibility**: Plugins in `packages/plugin-*/` import from `@mvfm/core`. The public API shape must remain compatible. Mitigated by including external plugin integration in golden tests.
+Case-table and generated coverage across:
 
-## Halt Conditions
+- Plugin tuples (std and extended)
+- Trait dispatch permutations
+- DAG operation compositions (`select/map/replace/gc/dirty/commit/wrap/splice/named/dagql`)
+- Structural elaboration and accessor chains
+- Fold protocol variants (numeric and string yields, structural children)
+- Determinism/memoization/stack-safety invariants
 
-From the issue — stop and report if:
-- A koan requires changing to pass
-- A core feature can't be expressed with the koan model
-- Memoization/taint semantics don't compose with an existing feature
-- An existing test's semantics can't be preserved
+### 3. Type assertion harness
+
+`*.type-test.ts` files assert:
+
+- Positive inference (registry derivation, fold output inference, createApp tuple inference)
+- Negative contracts with `@ts-expect-error` (invalid kinds, invalid trait dispatch, invalid fold/defaults wiring)
+
+### 4. Implementation retrofit track
+
+- Core internals are reshaped as necessary to satisfy gates.
+- Public API compatibility is preserved where required by current packages.
+- New public exports include TSDoc.
+
+## Execution Phases
+
+### Phase 1: Build gates and E2E fortress first (TDD anchor)
+
+- Copy koans and wire gate runners
+- Port and expand existing tests into E2E-first suites
+- Add exhaustive negative type tests (`@ts-expect-error`)
+- Target hundreds of high-value full-flow tests before major rewrites
+
+### Phase 2: Retrofit core to satisfy koans 00-04b
+
+- Primitives, builders, unified plugin composition, `createApp`, structural/accessor behavior
+
+### Phase 3: Retrofit DAG operations to satisfy koans 05-15
+
+- Predicates, select/map/replace/gc/dirty/commit/wrap/splice/named/dagql
+
+### Phase 4: Fold + production extensions (koan 16 and beyond)
+
+- Base koan fold semantics
+- ST volatile/taint, error propagation, fiber parallelism, scoped lambdas, stack safety
+
+## Required Checkpoint
+
+Per user direction, **mandatory pause between Phase 3 and Phase 4** for explicit check-in before fold production-extension work starts.
+
+## Error Handling and Halt Policy
+
+Stop immediately and report if:
+
+- A koan appears to require modification
+- A required semantic cannot be expressed in the koan model
+- Memoization/taint semantics cannot compose without regressions
+- Existing behavior cannot be preserved without spec conflict
+
+If spec is wrong, open `spec-change` issue before proceeding.
+
+## Validation Criteria
+
+- All frozen koan gates pass (type + runtime)
+- Golden E2E/type suites pass
+- `npm run build && npm run check && npm test` passes in full workspace
+- No `any` or `as` casts in production core code
+- `createApp(...plugins)` works beyond std plugins
+- Fold handles structural children via string yields and infers output from `NExpr`
+
+## Risks and Mitigations
+
+1. **Type-level complexity risk**
+- Mitigation: aggressive negative type tests and inference assertions from day one.
+
+2. **Coverage blind spots risk**
+- Mitigation: generated E2E matrix + doc/example parity audit.
+
+3. **Cross-package compatibility risk**
+- Mitigation: retain end-to-end runs including downstream plugin packages during validation.
