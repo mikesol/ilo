@@ -1,0 +1,25 @@
+import { describe, expect, it } from "vitest";
+
+import { runWithDefaults } from "../shared/case-runner";
+import { buildMathApp } from "../shared/case-builders";
+
+describe("golden runtime: full flow", () => {
+  it("evaluates composed arithmetic end-to-end", async () => {
+    const app = buildMathApp();
+    const prog = app(($) => $.mul($.add(3, 4), 5));
+
+    const result = await runWithDefaults(app, prog);
+    expect(result).toBe(35);
+  });
+
+  it("keeps shared subgraphs deterministic", async () => {
+    const app = buildMathApp();
+    const prog = app(($) => {
+      const shared = $.add(1, 2);
+      return $.mul(shared, shared);
+    });
+
+    const result = await runWithDefaults(app, prog);
+    expect(result).toBe(9);
+  });
+});
