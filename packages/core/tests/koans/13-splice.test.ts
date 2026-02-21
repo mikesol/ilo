@@ -1,5 +1,14 @@
-import { test } from "vitest";
+import { expect, test } from "vitest";
 
-test("placeholder koan gate: 13-splice fixture self-consistency only", async () => {
-  await import("../../src/__koans__/13-splice");
+import { koan } from "../../src/index";
+
+test("koan gate 13-splice: spliceWhere removes wrappers and reconnects children", () => {
+  const prog = koan.app(koan.mul(koan.add(3, 4), 5));
+  const wrapped = koan.wrapByName(prog, "c", "debug/wrap");
+  const spliced = koan.spliceWhere(wrapped, koan.byKind("debug/wrap"));
+
+  expect(spliced.__adj.e?.children).toEqual(["c", "d"]);
+  expect(spliced.__adj.c?.kind).toBe("num/add");
+  expect("f" in spliced.__adj).toBe(false);
+  expect(spliced.__id).toBe("e");
 });

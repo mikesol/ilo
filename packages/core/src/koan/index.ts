@@ -1,4 +1,5 @@
 import { deepThing } from "./accessor";
+import { commit, gc } from "./commit";
 import {
   boolPluginU,
   buildKindInputs,
@@ -20,7 +21,9 @@ import { app, createApp } from "./normalize";
 import { and, byKind, byKindGlob, byName, hasChildCount, isLeaf, not, or } from "./predicates";
 import { replaceWhere } from "./replace";
 import { selectWhere } from "./select";
+import { spliceWhere } from "./splice";
 import { appS, point } from "./structural";
+import { wrapByName } from "./wrap";
 
 /**
  * Koan-model API namespace (00-03a compatibility surface).
@@ -36,6 +39,8 @@ export const koan = {
   appS,
   point,
   deepThing,
+  commit,
+  gc,
   eq,
   collectReachable,
   liveAdj,
@@ -44,6 +49,8 @@ export const koan = {
   lt,
   mapWhere,
   replaceWhere,
+  wrapByName,
+  spliceWhere,
   dirty,
   addEntry,
   removeEntry,
@@ -106,3 +113,5 @@ export type {
   PredBase,
   SelectKeys,
 } from "./predicates";
+export type { SpliceAdj } from "./splice";
+export type { WrapOneResult } from "./wrap";

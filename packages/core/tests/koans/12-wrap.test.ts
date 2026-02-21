@@ -1,5 +1,14 @@
-import { test } from "vitest";
+import { expect, test } from "vitest";
 
-test("placeholder koan gate: 12-wrap fixture self-consistency only", async () => {
-  await import("../../src/__koans__/12-wrap");
+import { koan } from "../../src/index";
+
+test("koan gate 12-wrap: wrapByName inserts wrapper and rewires parents", () => {
+  const prog = koan.app(koan.mul(koan.add(3, 4), 5));
+  const wrapped = koan.wrapByName(prog, "c", "debug/wrap");
+
+  expect(wrapped.__adj.f?.kind).toBe("debug/wrap");
+  expect(wrapped.__adj.f?.children).toEqual(["c"]);
+  expect(wrapped.__adj.e?.children).toEqual(["f", "d"]);
+  expect(wrapped.__id).toBe("e");
+  expect(wrapped.__counter).toBe("g");
 });
