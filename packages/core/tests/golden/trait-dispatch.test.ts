@@ -1,12 +1,23 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
-  numLit, strLit, boolLit, add, mul, sub, eq, lt,
-  app, fold, defaults, stdPlugins,
-  mvfm, numPlugin, strPlugin, boolPlugin,
-  numPluginU, strPluginU, boolPluginU,
-  ordPlugin, createApp,
-  selectWhere, byKind, replaceWhere, pipe,
-  type RuntimeEntry, type Interpreter, type PluginDef,
+  app,
+  boolPlugin,
+  byKind,
+  commit,
+  createApp,
+  defaults,
+  eq,
+  fold,
+  type Interpreter,
+  lt,
+  mvfm,
+  numPlugin,
+  ordPlugin,
+  pipe,
+  replaceWhere,
+  selectWhere,
+  stdPlugins,
+  strPlugin,
 } from "../../src/index";
 
 // ── Eq interpreter (stdPlugins doesn't include eq handlers) ──────
@@ -56,9 +67,7 @@ describe("numeric eq", () => {
   });
 
   test("num/eq node has exactly 2 children", () => {
-    const eqEntry = Object.values(eqTrue.__adj).find(
-      (e) => e.kind === "num/eq",
-    )!;
+    const eqEntry = Object.values(eqTrue.__adj).find((e) => e.kind === "num/eq")!;
     expect(eqEntry.children).toHaveLength(2);
   });
 
@@ -119,9 +128,7 @@ describe("nested trait dispatch", () => {
 
   test("nested eq adj has 3 eq nodes with correct kinds", () => {
     const prog = app(eq(eq(3, 3), eq(5, 5)));
-    const eqEntries = Object.entries(prog.__adj).filter(([, e]) =>
-      e.kind.endsWith("/eq"),
-    );
+    const eqEntries = Object.entries(prog.__adj).filter(([, e]) => e.kind.endsWith("/eq"));
     expect(eqEntries).toHaveLength(3);
     const kinds = eqEntries.map(([, e]) => e.kind).sort();
     expect(kinds).toEqual(["bool/eq", "num/eq", "num/eq"]);
@@ -181,10 +188,7 @@ describe("createApp extensibility", () => {
 describe("transform trait nodes", () => {
   test("replaceWhere num/eq → num/add, fold returns 6", async () => {
     const prog = app(eq(3, 3));
-    const transformed = pipe(
-      prog,
-      (e) => replaceWhere(e, byKind("num/eq"), "num/add"),
-    );
+    const transformed = commit(pipe(prog, (e) => replaceWhere(e, byKind("num/eq"), "num/add")));
     expect(await fold(transformed, fullInterp)).toBe(6);
   });
 
@@ -196,10 +200,7 @@ describe("transform trait nodes", () => {
 
   test("replaceWhere num/eq → num/sub, fold returns 0", async () => {
     const prog = app(eq(5, 5));
-    const transformed = pipe(
-      prog,
-      (e) => replaceWhere(e, byKind("num/eq"), "num/sub"),
-    );
+    const transformed = commit(pipe(prog, (e) => replaceWhere(e, byKind("num/eq"), "num/sub")));
     expect(await fold(transformed, fullInterp)).toBe(0);
   });
 });

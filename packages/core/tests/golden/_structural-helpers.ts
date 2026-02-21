@@ -18,11 +18,11 @@
  * These exist to BUILD test fixtures, not to validate core behavior.
  */
 import {
-  makeCExpr,
-  isCExpr,
-  incrementId,
-  LIFT_MAP,
   type CExpr,
+  incrementId,
+  isCExpr,
+  LIFT_MAP,
+  makeCExpr,
   type RuntimeEntry,
 } from "../../src/index";
 
@@ -31,9 +31,11 @@ export type SEntry = { kind: string; children: unknown; out: unknown };
 
 // ─── Structural appS (from 04a) ─────────────────────────────────────
 const SKIND: Record<string, string[] | "structural"> = {
-  "num/literal": [], "num/add": ["number", "number"],
+  "num/literal": [],
+  "num/add": ["number", "number"],
   "num/mul": ["number", "number"],
-  "geom/point": "structural", "geom/line": "structural",
+  "geom/point": "structural",
+  "geom/line": "structural",
   "data/pair": "structural",
 };
 const SHAPES: Record<string, unknown> = {
@@ -46,15 +48,19 @@ const SHAPES: Record<string, unknown> = {
 };
 
 export function structuralApp(expr: CExpr<unknown>): {
-  __id: string; __adj: Record<string, SEntry>;
+  __id: string;
+  __adj: Record<string, SEntry>;
 } {
   const entries: Record<string, SEntry> = {};
   let ctr = "a";
-  const alloc = () => { const id = ctr; ctr = incrementId(ctr); return id; };
+  const alloc = () => {
+    const id = ctr;
+    ctr = incrementId(ctr);
+    return id;
+  };
   function vStruct(val: unknown, shape: unknown): unknown {
     if (isCExpr(val)) return vExpr(val)[0];
-    if (Array.isArray(shape) && Array.isArray(val))
-      return val.map((v, i) => vStruct(v, shape[i]));
+    if (Array.isArray(shape) && Array.isArray(val)) return val.map((v, i) => vStruct(v, shape[i]));
     if (typeof shape === "object" && shape !== null && !Array.isArray(shape)) {
       const r: Record<string, unknown> = {};
       for (const k of Object.keys(shape as object))
@@ -80,8 +86,9 @@ export function structuralApp(expr: CExpr<unknown>): {
     }
     const ch: string[] = [];
     for (let i = 0; i < args.length; i++) {
-      if (isCExpr(args[i])) { ch.push(vExpr(args[i])[0]); }
-      else {
+      if (isCExpr(args[i])) {
+        ch.push(vExpr(args[i])[0]);
+      } else {
         const lk = LIFT_MAP[typeof args[i]];
         if (!lk) throw new Error(`Cannot lift ${typeof args[i]}`);
         const id = alloc();
@@ -114,24 +121,31 @@ export function makeCExprProxy(kind: string, args: unknown[]): any {
   const raw = { [CREF]: true as const, __kind: kind, __args: args };
   const proxy: any = new Proxy(raw, {
     get(t, prop) {
-      if (prop === CREF || prop === "__kind" || prop === "__args" ||
-        typeof prop === "symbol") return (t as any)[prop];
+      if (prop === CREF || prop === "__kind" || prop === "__args" || typeof prop === "symbol")
+        return (t as any)[prop];
       return makeCExprProxy("core/access", [proxy, prop]);
     },
   });
   return proxy;
 }
-export function deepThing() { return makeCExprProxy("test/deep", []); }
+export function deepThing() {
+  return makeCExprProxy("test/deep", []);
+}
 
 function isCRef(x: unknown): boolean {
   return typeof x === "object" && x !== null && CREF in x;
 }
 export function accessorApp(expr: any): {
-  __rootId: string; __adj: Record<string, RuntimeEntry>;
+  __rootId: string;
+  __adj: Record<string, RuntimeEntry>;
 } {
   const entries: Record<string, RuntimeEntry> = {};
   let ctr = "a";
-  const alloc = () => { const id = ctr; ctr = incrementId(ctr); return id; };
+  const alloc = () => {
+    const id = ctr;
+    ctr = incrementId(ctr);
+    return id;
+  };
   function vAccess(arg: any): string {
     if (arg.__kind === "core/access") {
       const pid = vAccess(arg.__args[0]);
@@ -146,8 +160,7 @@ export function accessorApp(expr: any): {
     const ch: string[] = [];
     for (const child of arg.__args) {
       if (isCRef(child)) {
-        ch.push((child as any).__kind === "core/access"
-          ? vAccess(child) : vNode(child));
+        ch.push((child as any).__kind === "core/access" ? vAccess(child) : vNode(child));
       } else {
         const lk = LIFT_MAP[typeof child];
         if (!lk) throw new Error(`Cannot lift ${typeof child}`);
@@ -164,7 +177,9 @@ export function accessorApp(expr: any): {
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────
-export function adjOf(p: any): Record<string, SEntry> { return p.__adj; }
+export function adjOf(p: any): Record<string, SEntry> {
+  return p.__adj;
+}
 export function rootOf(p: any): SEntry {
   return adjOf(p)[(p as any).__id ?? (p as any).__rootId];
 }

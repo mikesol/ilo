@@ -8,12 +8,7 @@
  * - Shared FoldState reuses cache across independent fold calls
  */
 import { describe, expect, it } from "vitest";
-import {
-  type RuntimeEntry,
-  VOLATILE_KINDS,
-  createFoldState,
-  fold,
-} from "../src/index";
+import { createFoldState, fold, type RuntimeEntry, VOLATILE_KINDS } from "../src/index";
 
 // ─── Helpers ──────────────────────────────────────────────────────
 function makeAdj(entries: Record<string, RuntimeEntry>) {
@@ -35,8 +30,13 @@ describe("fold volatile & taint", () => {
         d: { kind: "test/pair", children: ["b", "c"], out: undefined },
       });
       const interp = {
-        "num/literal": handler(async function* (e) { callCount++; return e.out; }),
-        "test/use": handler(async function* (e) { return yield 0; }),
+        "num/literal": handler(async function* (e) {
+          callCount++;
+          return e.out;
+        }),
+        "test/use": handler(async function* (_e) {
+          return yield 0;
+        }),
         "test/pair": handler(async function* () {
           const l = yield 0;
           const r = yield 1;
@@ -61,8 +61,12 @@ describe("fold volatile & taint", () => {
           root: { kind: "test/pair", children: ["a", "b"], out: undefined },
         });
         const interp = {
-          "test/volatile": handler(async function* () { return ++counter; }),
-          "test/use": handler(async function* () { return yield 0; }),
+          "test/volatile": handler(async function* () {
+            return ++counter;
+          }),
+          "test/use": handler(async function* () {
+            return yield 0;
+          }),
           "test/pair": handler(async function* () {
             const l = yield 0;
             const r = yield 1;
@@ -92,7 +96,9 @@ describe("fold volatile & taint", () => {
           parent: { kind: "test/wrap", children: ["v"], out: undefined },
         });
         const interp = {
-          "test/volatile": handler(async function* () { return "fresh"; }),
+          "test/volatile": handler(async function* () {
+            return "fresh";
+          }),
           "test/wrap": handler(async function* () {
             parentCalls++;
             const val = yield 0;
@@ -123,7 +129,9 @@ describe("fold volatile & taint", () => {
           top: { kind: "test/wrap", children: ["mid"], out: undefined },
         });
         const interp = {
-          "test/volatile": handler(async function* () { return "val"; }),
+          "test/volatile": handler(async function* () {
+            return "val";
+          }),
           "test/wrap": handler(async function* () {
             if ((adj as any)._track) grandparentCalls++;
             const val = yield 0;
@@ -154,8 +162,13 @@ describe("fold volatile & taint", () => {
         });
         let volCounter = 0;
         const interp = {
-          "num/literal": handler(async function* (e) { pureCalls++; return e.out; }),
-          "test/volatile": handler(async function* () { return ++volCounter; }),
+          "num/literal": handler(async function* (e) {
+            pureCalls++;
+            return e.out;
+          }),
+          "test/volatile": handler(async function* () {
+            return ++volCounter;
+          }),
           "test/pair": handler(async function* () {
             const l = yield 0;
             const r = yield 1;
@@ -182,7 +195,10 @@ describe("fold volatile & taint", () => {
         a: { kind: "num/literal", children: [], out: 5 },
       });
       const interp = {
-        "num/literal": handler(async function* (e) { calls++; return e.out; }),
+        "num/literal": handler(async function* (e) {
+          calls++;
+          return e.out;
+        }),
       };
       const state = createFoldState();
       await fold("a", adj, interp, state);
@@ -199,8 +215,13 @@ describe("fold volatile & taint", () => {
         b: { kind: "test/wrap", children: ["shared"], out: undefined },
       });
       const interp = {
-        "test/compute": handler(async function* () { sharedCalls++; return 99; }),
-        "test/wrap": handler(async function* () { return yield 0; }),
+        "test/compute": handler(async function* () {
+          sharedCalls++;
+          return 99;
+        }),
+        "test/wrap": handler(async function* () {
+          return yield 0;
+        }),
       };
       const state = createFoldState();
       const [ra, rb] = await Promise.all([

@@ -5,11 +5,11 @@
  * Split from plugin.ts to stay under 300-line limit.
  */
 
-import { add, boolLit, eq, mul, numLit, strLit, sub } from "./constructors";
+import { add, boolLit, mul, numLit, strLit, sub } from "./constructors";
 import type { CExpr } from "./expr";
 import { makeCExpr } from "./expr";
-import type { KindSpec } from "./registry";
 import type { Interpreter, TraitDef } from "./plugin";
+import type { KindSpec } from "./registry";
 
 // ─── Unified plugin definitions ─────────────────────────────────────
 

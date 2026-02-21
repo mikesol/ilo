@@ -8,7 +8,7 @@
  * - Uncaught errors surface from fold()
  */
 import { describe, expect, it } from "vitest";
-import { type RuntimeEntry, fold } from "../src/index";
+import { fold, type RuntimeEntry } from "../src/index";
 
 // ─── Helpers ──────────────────────────────────────────────────────
 function makeAdj(entries: Record<string, RuntimeEntry>) {
@@ -144,7 +144,9 @@ describe("fold error propagation", () => {
       "test/throw": handler(async function* () {
         throw new Error("inner error");
       }),
-      "num/literal": handler(async function* (e) { return e.out; }),
+      "num/literal": handler(async function* (e) {
+        return e.out;
+      }),
       "test/try": handler(async function* () {
         try {
           return yield 0;
@@ -152,7 +154,9 @@ describe("fold error propagation", () => {
           return yield 1;
         }
       }),
-      "test/use": handler(async function* () { return yield 0; }),
+      "test/use": handler(async function* () {
+        return yield 0;
+      }),
     };
     const result = await fold("outer", adj, interp);
     expect(result).toBe(7);
@@ -165,8 +169,12 @@ describe("fold error propagation", () => {
       root: { kind: "test/seq", children: ["ok", "bomb"], out: undefined },
     });
     const interp = {
-      "num/literal": handler(async function* (e) { return e.out; }),
-      "test/throw": handler(async function* () { throw new Error("late boom"); }),
+      "num/literal": handler(async function* (e) {
+        return e.out;
+      }),
+      "test/throw": handler(async function* () {
+        throw new Error("late boom");
+      }),
       "test/seq": handler(async function* () {
         const a = yield 0;
         const b = yield 1;

@@ -4,6 +4,10 @@
  * DirtyExpr is phantom-branded separately from NExpr to prevent
  * accidental use of uncommitted data. Provides typed add, remove,
  * swap, rewire, and setRoot operations.
+ *
+ * Type-safety: RewireTypeSafe and SwapTypeSafe verify that output types
+ * are preserved when rewiring or swapping entries. Returns branded error
+ * types (not assignable to DirtyExpr) on mismatch.
  */
 
 import type { NExpr, NodeEntry, RuntimeEntry } from "./expr";
@@ -71,7 +75,38 @@ export function removeEntry<O, R extends string, Adj, C extends string, Id exten
   return { __id: d.__id, __adj: newAdj, __counter: d.__counter } as any;
 }
 
-/** Replace an entry in the adjacency map. */
+// ─── SwapTypeSafe ────────────────────────────────────────────────────
+
+/**
+ * Check that NewEntry's output extends the existing entry's output at Id.
+ * New entries (Id not in Adj) are unconstrained.
+ */
+type SwapTypeSafe<
+  Adj,
+  Id extends string,
+  E extends NodeEntry<string, string[], any>,
+> = Id extends keyof Adj
+  ? E extends NodeEntry<any, any, infer NO>
+    ? Adj[Id] extends { out: infer OO }
+      ? NO extends OO
+        ? true
+        : false
+      : true
+    : false
+  : true; // new entry, no constraint
+
+/** Branded error type for type-unsafe swaps. Not assignable to DirtyExpr. */
+export interface SwapTypeError<_Msg extends string = string> {
+  readonly __brand: unique symbol;
+  readonly __swapTypeError: _Msg;
+}
+
+/**
+ * Replace an entry in the adjacency map.
+ *
+ * Type-safe: returns `SwapTypeError` at compile time if the new entry's
+ * output type doesn't match the existing entry's output type.
+ */
 export function swapEntry<
   O,
   R extends string,
@@ -83,10 +118,14 @@ export function swapEntry<
   d: DirtyExpr<O, R, Adj, C>,
   id: Id,
   entry: E,
-): DirtyExpr<O, R, { [K in keyof Adj as K extends Id ? never : K]: Adj[K] } & Record<Id, E>, C> {
+): SwapTypeSafe<Adj, Id, E> extends true
+  ? DirtyExpr<O, R, { [K in keyof Adj as K extends Id ? never : K]: Adj[K] } & Record<Id, E>, C>
+  : SwapTypeError<"new entry output type does not match existing entry output type"> {
   const newAdj = { ...d.__adj, [id]: entry };
   return { __id: d.__id, __adj: newAdj, __counter: d.__counter } as any;
 }
+
+// ─── RewireTypeSafe ──────────────────────────────────────────────────
 
 /** Type-level child list rewiring. */
 type RewireList<C extends string[], Old extends string, New extends string> = C extends [
@@ -107,7 +146,34 @@ export type RewireAdj<Adj, Old extends string, New extends string> = {
     : Adj[K];
 };
 
-/** Replace all references to oldRef with newRef in children arrays. */
+/**
+ * Check that the new ref's output extends the old ref's output.
+ * If oldRef is not in Adj (no-op rewire), it's safe.
+ */
+type RewireTypeSafe<Adj, Old extends string, New extends string> = Old extends keyof Adj
+  ? New extends keyof Adj
+    ? Adj[New] extends { out: infer NO }
+      ? Adj[Old] extends { out: infer OO }
+        ? NO extends OO
+          ? true
+          : false
+        : true
+      : false
+    : false // newRef not in adj
+  : true; // oldRef not in adj = no-op
+
+/** Branded error type for type-unsafe rewires. Not assignable to DirtyExpr. */
+export interface RewireTypeError<_Msg extends string = string> {
+  readonly __brand: unique symbol;
+  readonly __rewireTypeError: _Msg;
+}
+
+/**
+ * Replace all references to oldRef with newRef in children arrays.
+ *
+ * Type-safe: returns `RewireTypeError` at compile time if the new ref's
+ * output type doesn't match the old ref's output type.
+ */
 export function rewireChildren<
   O,
   R extends string,
@@ -119,7 +185,9 @@ export function rewireChildren<
   d: DirtyExpr<O, R, Adj, C>,
   oldRef: Old,
   newRef: New,
-): DirtyExpr<O, R, RewireAdj<Adj, Old, New>, C> {
+): RewireTypeSafe<Adj, Old, New> extends true
+  ? DirtyExpr<O, R, RewireAdj<Adj, Old, New>, C>
+  : RewireTypeError<"new ref output type does not match old ref output type"> {
   const newAdj: Record<string, RuntimeEntry> = {};
   for (const [id, entry] of Object.entries(d.__adj)) {
     newAdj[id] = {

@@ -1,14 +1,15 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
+import { add, fold, type Interpreter, type RuntimeEntry } from "../../src/index";
 import {
-  fold,
-  add,
-  type RuntimeEntry,
-  type Interpreter,
-} from "../../src/index";
-import {
-  structuralApp, point, line, pair,
-  makeCExprProxy, deepThing, accessorApp,
-  adjOf, rootOf,
+  accessorApp,
+  adjOf,
+  deepThing,
+  line,
+  makeCExprProxy,
+  pair,
+  point,
+  rootOf,
+  structuralApp,
 } from "./_structural-helpers";
 
 // =====================================================================
@@ -33,9 +34,7 @@ describe("structural elaboration (04a pattern)", () => {
   });
 
   test("line with nested records", () => {
-    const p = structuralApp(
-      line({ start: { x: 1, y: 2 }, end: { x: add(3, 4), y: 5 } }),
-    );
+    const p = structuralApp(line({ start: { x: 1, y: 2 }, end: { x: add(3, 4), y: 5 } }));
     expect(rootOf(p).kind).toBe("geom/line");
     const ch = (rootOf(p).children as [Record<string, Record<string, string>>])[0];
     expect(adjOf(p)[ch.end.x].kind).toBe("num/add");
@@ -53,9 +52,7 @@ describe("structural elaboration (04a pattern)", () => {
   });
 
   test("line node count is 7", () => {
-    const p = structuralApp(
-      line({ start: { x: 1, y: 2 }, end: { x: add(3, 4), y: 5 } }),
-    );
+    const p = structuralApp(line({ start: { x: 1, y: 2 }, end: { x: add(3, 4), y: 5 } }));
     expect(Object.keys(adjOf(p)).length).toBe(7);
   });
 
@@ -120,9 +117,7 @@ describe("accessor (04b pattern)", () => {
   test("accessorApp builds accessor chain into graph", () => {
     const a = deepThing();
     const evil = a.helloRecord.boy[3].am.i[0].mean;
-    const pt = makeCExprProxy("geom/point", [
-      evil, makeCExprProxy("num/add", [1, 2]),
-    ]);
+    const pt = makeCExprProxy("geom/point", [evil, makeCExprProxy("num/add", [1, 2])]);
     const p = accessorApp(pt);
     const kinds = Object.values(p.__adj).map((e) => e.kind);
     expect(kinds).toContain("geom/point");
@@ -137,7 +132,9 @@ describe("accessor (04b pattern)", () => {
 // =====================================================================
 describe("structural fold via manual adj (fold from 16)", () => {
   const numInterp: Interpreter = {
-    "num/literal": async function* (e) { return e.out as number; },
+    "num/literal": async function* (e) {
+      return e.out as number;
+    },
     "num/add": async function* () {
       return ((yield 0) as number) + ((yield 1) as number);
     },
@@ -156,9 +153,10 @@ describe("structural fold via manual adj (fold from 16)", () => {
       b: { kind: "num/literal", children: [], out: 20 },
       c: { kind: "geom/point", children: [], out: { x: "a", y: "b" } },
     };
-    const r = await fold<{ x: number; y: number }>(
-      "c", adj, { ...numInterp, "geom/point": pointH },
-    );
+    const r = await fold<{ x: number; y: number }>("c", adj, {
+      ...numInterp,
+      "geom/point": pointH,
+    });
     expect(r).toEqual({ x: 10, y: 20 });
   });
 
@@ -170,9 +168,10 @@ describe("structural fold via manual adj (fold from 16)", () => {
       d: { kind: "num/literal", children: [], out: 3 },
       e: { kind: "geom/point", children: [], out: { x: "c", y: "d" } },
     };
-    const r = await fold<{ x: number; y: number }>(
-      "e", adj, { ...numInterp, "geom/point": pointH },
-    );
+    const r = await fold<{ x: number; y: number }>("e", adj, {
+      ...numInterp,
+      "geom/point": pointH,
+    });
     expect(r).toEqual({ x: 3, y: 3 });
   });
 
@@ -202,9 +201,10 @@ describe("structural fold via manual adj (fold from 16)", () => {
       f: { kind: "num/literal", children: [], out: 100 },
       g: { kind: "geom/point", children: [], out: { x: "e", y: "f" } },
     };
-    const r = await fold<{ x: number; y: number }>(
-      "g", adj, { ...numInterp, "geom/point": pointH },
-    );
+    const r = await fold<{ x: number; y: number }>("g", adj, {
+      ...numInterp,
+      "geom/point": pointH,
+    });
     expect(r).toEqual({ x: 16, y: 100 });
   });
 
@@ -215,7 +215,10 @@ describe("structural fold via manual adj (fold from 16)", () => {
       b: { kind: "geom/point", children: [], out: { x: "a", y: "a" } },
     };
     const interp: Interpreter = {
-      "num/literal": async function* (e) { litEvals++; return e.out as number; },
+      "num/literal": async function* (e) {
+        litEvals++;
+        return e.out as number;
+      },
       "geom/point": pointH,
     };
     const r = await fold<{ x: number; y: number }>("b", adj, interp);
@@ -229,9 +232,10 @@ describe("structural fold via manual adj (fold from 16)", () => {
       b: { kind: "num/literal", children: [], out: 0 },
       c: { kind: "geom/point", children: [], out: { x: "a", y: "b" } },
     };
-    const r = await fold<{ x: number; y: number }>(
-      "c", adj, { ...numInterp, "geom/point": pointH },
-    );
+    const r = await fold<{ x: number; y: number }>("c", adj, {
+      ...numInterp,
+      "geom/point": pointH,
+    });
     expect(r).toEqual({ x: 0, y: 0 });
   });
 

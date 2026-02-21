@@ -2,12 +2,25 @@
  * Koan gates (16-bridge): fold, defaults, interpreters, full pipeline.
  * Imports only from ../src/index — never from __koans__.
  */
-import { describe, test, expect } from "vitest";
-import type { RuntimeEntry, Interpreter, PluginDef } from "../src/index";
+import { describe, expect, test } from "vitest";
+import type { Interpreter, PluginDef, RuntimeEntry } from "../src/index";
 import {
-  app, add, mul, numLit, eq, fold, defaults, pipe,
-  replaceWhere, byKind, stdPlugins, numPluginU,
-  mvfm, numPlugin, strPlugin, boolPlugin,
+  add,
+  app,
+  boolPlugin,
+  byKind,
+  commit,
+  defaults,
+  fold,
+  mul,
+  mvfm,
+  numLit,
+  numPlugin,
+  numPluginU,
+  pipe,
+  replaceWhere,
+  stdPlugins,
+  strPlugin,
 } from "../src/index";
 
 // Local plugin defs for fold tests
@@ -15,20 +28,32 @@ const numPD: PluginDef = {
   name: "num",
   nodeKinds: ["num/literal", "num/add", "num/mul", "num/sub"],
   defaultInterpreter: () => ({
-    "num/literal": async function* (e) { return e.out as number; },
-    "num/add": async function* () { return ((yield 0) as number) + ((yield 1) as number); },
-    "num/mul": async function* () { return ((yield 0) as number) * ((yield 1) as number); },
-    "num/sub": async function* () { return ((yield 0) as number) - ((yield 1) as number); },
+    "num/literal": async function* (e) {
+      return e.out as number;
+    },
+    "num/add": async function* () {
+      return ((yield 0) as number) + ((yield 1) as number);
+    },
+    "num/mul": async function* () {
+      return ((yield 0) as number) * ((yield 1) as number);
+    },
+    "num/sub": async function* () {
+      return ((yield 0) as number) - ((yield 1) as number);
+    },
   }),
 };
 const boolPD: PluginDef = {
-  name: "bool", nodeKinds: ["bool/literal"],
+  name: "bool",
+  nodeKinds: ["bool/literal"],
   defaultInterpreter: () => ({
-    "bool/literal": async function* (e) { return e.out as boolean; },
+    "bool/literal": async function* (e) {
+      return e.out as boolean;
+    },
   }),
 };
 const corePD: PluginDef = {
-  name: "core", nodeKinds: ["core/cond"],
+  name: "core",
+  nodeKinds: ["core/cond"],
   defaultInterpreter: () => ({
     "core/cond": async function* () {
       const pred = (yield 0) as boolean;
@@ -37,9 +62,12 @@ const corePD: PluginDef = {
   }),
 };
 const strPD: PluginDef = {
-  name: "str", nodeKinds: ["str/literal", "str/concat"],
+  name: "str",
+  nodeKinds: ["str/literal", "str/concat"],
   defaultInterpreter: () => ({
-    "str/literal": async function* (e) { return e.out as string; },
+    "str/literal": async function* (e) {
+      return e.out as string;
+    },
     "str/concat": async function* (e) {
       const p: string[] = [];
       for (let i = 0; i < e.children.length; i++) p.push((yield i) as string);
@@ -74,9 +102,17 @@ describe("16-bridge", () => {
   test("short-circuit: only taken branch evaluated", async () => {
     let evals = 0;
     const ti: Interpreter = {
-      "bool/literal": async function* (e) { return e.out; },
-      "num/literal": async function* (e) { evals++; return e.out; },
-      "core/cond": async function* () { const p = yield 0; return p ? yield 1 : yield 2; },
+      "bool/literal": async function* (e) {
+        return e.out;
+      },
+      "num/literal": async function* (e) {
+        evals++;
+        return e.out;
+      },
+      "core/cond": async function* () {
+        const p = yield 0;
+        return p ? yield 1 : yield 2;
+      },
     };
     const adj: Record<string, RuntimeEntry> = {
       a: { kind: "bool/literal", children: [], out: true },
@@ -100,7 +136,11 @@ describe("16-bridge", () => {
 
   test("override for plugin without defaultInterpreter", async () => {
     const ci = defaults([numPD, customPD], {
-      custom: { "custom/double": async function* () { return ((yield 0) as number) * 2; } },
+      custom: {
+        "custom/double": async function* () {
+          return ((yield 0) as number) * 2;
+        },
+      },
     });
     const adj: Record<string, RuntimeEntry> = {
       a: { kind: "num/literal", children: [], out: 7 },
@@ -120,8 +160,13 @@ describe("16-bridge", () => {
   test("memoization: shared node evaluated once", async () => {
     let litEvals = 0;
     const ci: Interpreter = {
-      "num/literal": async function* (e) { litEvals++; return e.out as number; },
-      "num/add": async function* () { return ((yield 0) as number) + ((yield 1) as number); },
+      "num/literal": async function* (e) {
+        litEvals++;
+        return e.out as number;
+      },
+      "num/add": async function* () {
+        return ((yield 0) as number) + ((yield 1) as number);
+      },
     };
     const adj: Record<string, RuntimeEntry> = {
       a: { kind: "num/literal", children: [], out: 3 },
@@ -134,16 +179,23 @@ describe("16-bridge", () => {
   test("handler runs exactly once per node", async () => {
     let addRuns = 0;
     const oi: Interpreter = {
-      "num/literal": async function* (e) { return e.out as number; },
-      "num/add": async function* () { addRuns++; return ((yield 0) as number) + ((yield 1) as number); },
-      "num/mul": async function* () { return ((yield 0) as number) * ((yield 1) as number); },
+      "num/literal": async function* (e) {
+        return e.out as number;
+      },
+      "num/add": async function* () {
+        addRuns++;
+        return ((yield 0) as number) + ((yield 1) as number);
+      },
+      "num/mul": async function* () {
+        return ((yield 0) as number) * ((yield 1) as number);
+      },
     };
     expect(await fold<number>(prog.__id, prog.__adj, oi)).toBe(35);
     expect(addRuns).toBe(1);
   });
 
   test("transform then fold", async () => {
-    const t = pipe(prog, (e) => replaceWhere(e, byKind("num/add"), "num/mul"));
+    const t = commit(pipe(prog, (e) => replaceWhere(e, byKind("num/add"), "num/mul")));
     expect(await fold<number>(t.__id, t.__adj, numInterp)).toBe(60);
   });
 
@@ -175,10 +227,18 @@ describe("16-bridge", () => {
   test("unified plugin with override", async () => {
     const oi = defaults(stdPlugins, {
       num: {
-        "num/literal": async function* (e) { return (e.out as number) * 10; },
-        "num/add": async function* () { return ((yield 0) as number) + ((yield 1) as number); },
-        "num/mul": async function* () { return ((yield 0) as number) * ((yield 1) as number); },
-        "num/sub": async function* () { return ((yield 0) as number) - ((yield 1) as number); },
+        "num/literal": async function* (e) {
+          return (e.out as number) * 10;
+        },
+        "num/add": async function* () {
+          return ((yield 0) as number) + ((yield 1) as number);
+        },
+        "num/mul": async function* () {
+          return ((yield 0) as number) * ((yield 1) as number);
+        },
+        "num/sub": async function* () {
+          return ((yield 0) as number) - ((yield 1) as number);
+        },
       },
     });
     const p = app(add(numLit(10), numLit(20)));
@@ -187,29 +247,45 @@ describe("16-bridge", () => {
 
   test("full pipeline: mvfm -> $ -> app -> dagql -> fold", async () => {
     const eqI: Interpreter = {
-      "num/eq": async function* () { return ((yield 0) as number) === ((yield 1) as number); },
-      "str/eq": async function* () { return ((yield 0) as string) === ((yield 1) as string); },
-      "bool/eq": async function* () { return ((yield 0) as boolean) === ((yield 1) as boolean); },
+      "num/eq": async function* () {
+        return ((yield 0) as number) === ((yield 1) as number);
+      },
+      "str/eq": async function* () {
+        return ((yield 0) as string) === ((yield 1) as string);
+      },
+      "bool/eq": async function* () {
+        return ((yield 0) as boolean) === ((yield 1) as boolean);
+      },
     };
-    const fpEq: PluginDef = { name: "eq", nodeKinds: ["num/eq", "str/eq", "bool/eq"], defaultInterpreter: () => eqI };
+    const fpEq: PluginDef = {
+      name: "eq",
+      nodeKinds: ["num/eq", "str/eq", "bool/eq"],
+      defaultInterpreter: () => eqI,
+    };
     const fi = defaults([numPD, strPD, boolPD, fpEq]);
     const $ = mvfm(numPlugin, strPlugin, boolPlugin);
 
     expect(await fold<boolean>(app($.eq(3, 4)).__id, app($.eq(3, 4)).__adj, fi)).toBe(false);
     expect(await fold<boolean>(app($.eq(3, 3)).__id, app($.eq(3, 3)).__adj, fi)).toBe(true);
 
-    const eqToAdd = pipe(app($.eq(3, 3)), (e) => replaceWhere(e, byKind("num/eq"), "num/add"));
+    const eqToAdd = commit(
+      pipe(app($.eq(3, 3)), (e) => replaceWhere(e, byKind("num/eq"), "num/add")),
+    );
     expect(await fold<number>(eqToAdd.__id, eqToAdd.__adj, fi)).toBe(6);
 
-    expect(await fold<boolean>(app($.eq("hello", "hello")).__id, app($.eq("hello", "hello")).__adj, fi)).toBe(true);
-    expect(await fold<boolean>(app($.eq(true, true)).__id, app($.eq(true, true)).__adj, fi)).toBe(true);
+    expect(
+      await fold<boolean>(app($.eq("hello", "hello")).__id, app($.eq("hello", "hello")).__adj, fi),
+    ).toBe(true);
+    expect(await fold<boolean>(app($.eq(true, true)).__id, app($.eq(true, true)).__adj, fi)).toBe(
+      true,
+    );
 
     const nested = app($.eq($.eq(3, 3), $.eq(5, 5)));
     expect(await fold<boolean>(nested.__id, nested.__adj, fi)).toBe(true);
 
     const full = app($.mul($.add(3, 4), 5));
     expect(await fold<number>(full.__id, full.__adj, fi)).toBe(35);
-    const rw = pipe(full, (e) => replaceWhere(e, byKind("num/add"), "num/sub"));
+    const rw = commit(pipe(full, (e) => replaceWhere(e, byKind("num/add"), "num/sub")));
     expect(await fold<number>(rw.__id, rw.__adj, fi)).toBe(-5);
   });
 

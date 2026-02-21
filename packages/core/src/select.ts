@@ -5,7 +5,7 @@
  * with type-level SelectKeys tracking which keys are included.
  */
 
-import type { NExpr, RuntimeEntry } from "./expr";
+import type { NExpr } from "./expr";
 import type { PredBase, SelectKeys } from "./predicates";
 
 /** Select all node IDs in an NExpr that match a predicate. */

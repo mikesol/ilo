@@ -62,12 +62,12 @@ export function createTestInterp(): { interp: Interpreter; state: Record<string,
   const state: Record<string, number> = {};
   const interp: Interpreter = {
     ...defaults([...stdPlugins, ordPlugin]),
-    // biome-ignore lint/correctness/useYield: leaf handlers — Handler type requires AsyncGenerator
+
     "st/cell": async function* (e) {
       state[e.children[0] ?? "default"] = (e.out as number) ?? 0;
       return e.out as number;
     } as Handler,
-    // biome-ignore lint/correctness/useYield: leaf handler
+
     "st/get": async function* (e) {
       const ref = (e.out as string) ?? "default";
       return state[ref] ?? 0;
@@ -85,11 +85,11 @@ export function createTestInterp(): { interp: Interpreter; state: Record<string,
         return yield 1;
       }
     } as Handler,
-    // biome-ignore lint/correctness/useYield: throws immediately — no children to yield
+
     "error/fail": async function* (e) {
       throw new Error((e.out as string) ?? "fail");
     } as Handler,
-    // biome-ignore lint/correctness/useYield: throws immediately — resolved from scope bindings
+
     "core/lambda_param": async function* () {
       throw new Error("lambda_param: should be resolved from scope");
     } as Handler,

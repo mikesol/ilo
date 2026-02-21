@@ -95,8 +95,8 @@ describe("spliceWhere with structural children", () => {
 
   it("splice mul inside nested arithmetic in structural child", async () => {
     // point({ x: add(mul(2,3), 4), y: 5 }) — splice mul
-    // mul(2,3) has children [lit(2), lit(3)], splice reconnects ALL of mul's children
-    // so add gets [lit(2), lit(3), lit(4)] — add yields index 0 + 1 = 2 + 3 = 5
+    // mul(2,3) has children [lit(2), lit(3)], splice picks child[0] = lit(2)
+    // so add gets [lit(2), lit(4)] — add yields 2 + 4 = 6
     const prog = appS(geomPlugin.ctors.point({ x: add(mul(2, 3), 4), y: 5 }));
     const spliced = spliceWhere(prog, byKind("num/mul"));
 
@@ -108,13 +108,13 @@ describe("spliceWhere with structural children", () => {
     const adds = Object.entries(spliced.__adj).filter(([, e]) => e.kind === "num/add");
     expect(adds.length).toBe(1);
     const addEntry = adds[0][1];
-    // add's first child should now be a literal (mul was spliced, its children [2,3] inserted)
+    // add's first child should now be lit(2) — mul was spliced, child[0] picked
     expect(spliced.__adj[addEntry.children[0]].kind).toBe("num/literal");
 
-    // Fold: add(2, 3, 4) — add yields child[0]+child[1] = 2+3 = 5, y = 5
+    // Fold: add(2, 4) — add yields child[0]+child[1] = 2+4 = 6, y = 5
     const { interp } = createTestInterp();
     const result = await fold(spliced as any, interp);
-    expect(result).toEqual({ x: 5, y: 5 });
+    expect(result).toEqual({ x: 6, y: 5 });
   });
 
   it("splice does not corrupt structural record when no match inside", () => {

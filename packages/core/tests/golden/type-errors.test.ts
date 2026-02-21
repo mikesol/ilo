@@ -1,29 +1,29 @@
 import { describe, test } from "vitest";
 import {
-  numLit,
-  add,
-  mul,
-  sub,
-  eq,
-  app,
-  dirty,
-  commit,
-  gc,
-  mapWhere,
-  replaceWhere,
-  byKind,
-  addEntry,
-  removeEntry,
-  swapEntry,
-  type IdOf,
   type AdjOf,
-  type OutOf,
-  type CtrOf,
-  type COutOf,
-  type NodeEntry,
   type AppResult,
-  type StdRegistry,
+  add,
+  addEntry,
+  app,
+  byKind,
+  type COutOf,
+  type CtrOf,
+  commit,
   type DirtyAdjOf,
+  dirty,
+  eq,
+  gc,
+  type IdOf,
+  mapWhere,
+  mul,
+  type NodeEntry,
+  numLit,
+  type OutOf,
+  removeEntry,
+  replaceWhere,
+  type StdRegistry,
+  sub,
+  swapEntry,
 } from "../../src/index";
 
 // Helper: asserts a type is never (compile-time only)
@@ -78,18 +78,13 @@ describe("expression type safety", () => {
 describe("app boundary type errors", () => {
   test("add(false, 'foo') produces never via AppResult", () => {
     // add(false, "foo") — type mismatch: num/add expects [number, number]
-    type _Bad = AssertNever<
-      AppResult<StdRegistry, ReturnType<typeof add<false, "foo">>>
-    >;
+    type _Bad = AssertNever<AppResult<StdRegistry, ReturnType<typeof add<false, "foo">>>>;
   });
 
   test("mul with string arg produces never via AppResult", () => {
     // mul(add(3,4), "hello") — second arg is string, not number
     type _Bad = AssertNever<
-      AppResult<
-        StdRegistry,
-        ReturnType<typeof mul<ReturnType<typeof add<3, 4>>, "hello">>
-      >
+      AppResult<StdRegistry, ReturnType<typeof mul<ReturnType<typeof add<3, 4>>, "hello">>>
     >;
   });
 
@@ -98,12 +93,7 @@ describe("app boundary type errors", () => {
     type _Bad = AssertNever<
       AppResult<
         StdRegistry,
-        ReturnType<
-          typeof eq<
-            ReturnType<typeof add<3, 4>>,
-            ReturnType<typeof eq<"a", "b">>
-          >
-        >
+        ReturnType<typeof eq<ReturnType<typeof add<3, 4>>, ReturnType<typeof eq<"a", "b">>>>
       >
     >;
   });
@@ -187,7 +177,7 @@ describe("map/replace type safety", () => {
 
   test("replaceWhere changes kind — old kind is rejected", () => {
     const prog = app(mul(add(numLit(3), numLit(4)), numLit(5)));
-    const replaced = replaceWhere(prog, byKind("num/add"), "num/sub");
+    const replaced = commit(replaceWhere(prog, byKind("num/add"), "num/sub"));
     type RAdj = AdjOf<typeof replaced>;
     const _ok: RAdj["c"]["kind"] = "num/sub";
     // @ts-expect-error — was "num/add", now "num/sub"

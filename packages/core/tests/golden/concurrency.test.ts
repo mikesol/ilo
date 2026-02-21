@@ -1,12 +1,12 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
+  countingNumInterp,
   fold,
+  type Interpreter,
   numInterp,
   parHandler,
-  seqHandler,
-  countingNumInterp,
   type RuntimeEntry,
-  type Interpreter,
+  seqHandler,
 } from "./_concurrency-helpers";
 
 describe("concurrency golden tests", () => {

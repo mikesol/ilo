@@ -1,19 +1,37 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
-  app, fold, defaults, stdPlugins,
-  replaceWhere, byKind, pipe,
-  mvfm, numPlugin, strPlugin, boolPlugin,
-  type RuntimeEntry, type Interpreter, type PluginDef,
+  app,
+  boolPlugin,
+  byKind,
+  commit,
+  defaults,
+  fold,
+  type Interpreter,
+  mvfm,
+  numPlugin,
+  type PluginDef,
+  pipe,
+  type RuntimeEntry,
+  replaceWhere,
+  stdPlugins,
+  strPlugin,
 } from "../../src/index";
 
 // ── eq interpreter ───────────────────────────────────────────────────
 const eqInterp: Interpreter = {
-  "num/eq": async function* () { return ((yield 0) as number) === ((yield 1) as number); },
-  "str/eq": async function* () { return ((yield 0) as string) === ((yield 1) as string); },
-  "bool/eq": async function* () { return ((yield 0) as boolean) === ((yield 1) as boolean); },
+  "num/eq": async function* () {
+    return ((yield 0) as number) === ((yield 1) as number);
+  },
+  "str/eq": async function* () {
+    return ((yield 0) as string) === ((yield 1) as string);
+  },
+  "bool/eq": async function* () {
+    return ((yield 0) as boolean) === ((yield 1) as boolean);
+  },
 };
 const fpEq: PluginDef = {
-  name: "eq", nodeKinds: ["num/eq","str/eq","bool/eq"],
+  name: "eq",
+  nodeKinds: ["num/eq", "str/eq", "bool/eq"],
   defaultInterpreter: () => eqInterp,
 };
 const fullInterp = defaults([...stdPlugins, fpEq]);
@@ -30,7 +48,7 @@ describe("full pipeline", () => {
   test("mvfm -> app -> pipe(replaceWhere) -> fold", async () => {
     const p = app($.mul($.add(3, 4), 5));
     const rw = pipe(p, (e) => replaceWhere(e, byKind("num/add"), "num/sub"));
-    expect(await fold(rw, fullInterp)).toBe(-5);
+    expect(await fold(commit(rw), fullInterp)).toBe(-5);
   });
   test("eq(3,3) -> num/eq -> fold -> true", async () => {
     expect(await fold(app($.eq(3, 3)), fullInterp)).toBe(true);

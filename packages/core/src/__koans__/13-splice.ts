@@ -41,6 +41,7 @@ import {
   wrapByName,
   byKind,
   isLeaf,
+  commit,
 } from "./12-wrap";
 
 // ─── SpliceList: replace matched children with their own children ────
@@ -155,7 +156,7 @@ function rSplice(
 const prog = app(mul(add(numLit(3), numLit(4)), numLit(5)));
 
 // --- Wrap-then-splice round-trip ---
-const wrapped = wrapByName(prog, "c", "debug/wrap");
+const wrapped = commit(wrapByName(prog, "c", "debug/wrap"));
 const roundTripped = spliceWhere(wrapped, byKind("debug/wrap"));
 type RTAdj = AdjOf<typeof roundTripped>;
 
@@ -179,7 +180,7 @@ type _rtF = RTAdj["f"]["kind"];
 // --- Double-wrap then splice: recursive reconnection ---
 const w1 = wrapByName(prog, "c", "debug/wrap");
 const w2 = wrapByName(w1, "f", "debug/wrap");
-const dblSpliced = spliceWhere(w2, byKind("debug/wrap"));
+const dblSpliced = spliceWhere(commit(w2), byKind("debug/wrap"));
 type DSAdj = AdjOf<typeof dblSpliced>;
 
 // e reconnected through two wrappers back to c

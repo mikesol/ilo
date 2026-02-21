@@ -2,62 +2,35 @@
  * Koan gates (00-05): prove core exports satisfy koan contracts.
  * Imports only from ../../src/index — never from __koans__.
  */
-import { describe, test, expect } from "vitest";
-import type {
-  CExpr,
-  COutOf,
-  CKindOf,
-  NExpr,
-  NodeEntry,
-  RuntimeEntry,
-  KindSpec,
-  TraitKindSpec,
-  StdRegistry,
-  Plugin,
-  RegistryOf,
-  KindPred,
-  LeafPred,
-  CountPred,
-  NotPred,
-  AndPred,
-  OrPred,
-  KindGlobPred,
-  NamePred,
-  SelectKeys,
-  EvalPred,
-  PredBase,
-} from "../src/index";
+import { describe, expect, test } from "vitest";
 import {
-  makeCExpr,
-  isCExpr,
-  incrementId,
   add,
-  mul,
-  sub,
-  eq,
-  numLit,
-  strLit,
+  and,
+  app,
   boolLit,
+  buildKindInputs,
   buildLiftMap,
   buildTraitMap,
-  buildKindInputs,
-  mvfmU,
-  stdPlugins,
-  numPluginU,
-  strPluginU,
-  boolPluginU,
-  ordPlugin,
-  lt,
-  app,
-  createApp,
   byKind,
   byKindGlob,
-  isLeaf,
-  hasChildCount,
-  not,
-  and,
-  or,
   byName,
+  createApp,
+  eq,
+  hasChildCount,
+  incrementId,
+  isCExpr,
+  isLeaf,
+  lt,
+  makeCExpr,
+  mul,
+  mvfmU,
+  not,
+  numLit,
+  or,
+  ordPlugin,
+  stdPlugins,
+  strLit,
+  sub,
 } from "../src/index";
 
 // =====================================================================
@@ -106,9 +79,34 @@ describe("01-increment", () => {
 
   test("chain a through z and beyond", () => {
     const expected = [
-      "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
-      "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
-      "v", "w", "x", "y", "z", "aa", "ab", "ac",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "t",
+      "u",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z",
+      "aa",
+      "ab",
+      "ac",
     ];
     let id = "a";
     for (const exp of expected) {
@@ -211,32 +209,32 @@ describe("04-normalize", () => {
 
   test("add(3,4) root structure", () => {
     expect(prog1.__id).toBe("c");
-    expect(prog1.__adj["a"].kind).toBe("num/literal");
-    expect(prog1.__adj["a"].out).toBe(3);
-    expect(prog1.__adj["b"].kind).toBe("num/literal");
-    expect(prog1.__adj["b"].out).toBe(4);
-    expect(prog1.__adj["c"].kind).toBe("num/add");
-    expect(prog1.__adj["c"].children).toEqual(["a", "b"]);
+    expect(prog1.__adj.a.kind).toBe("num/literal");
+    expect(prog1.__adj.a.out).toBe(3);
+    expect(prog1.__adj.b.kind).toBe("num/literal");
+    expect(prog1.__adj.b.out).toBe(4);
+    expect(prog1.__adj.c.kind).toBe("num/add");
+    expect(prog1.__adj.c.children).toEqual(["a", "b"]);
   });
 
   test("mul(add(3,4),5) has 5 entries, root e, counter f", () => {
     expect(prog2.__id).toBe("e");
     expect(Object.keys(prog2.__adj).length).toBe(5);
-    expect(prog2.__adj["d"].out).toBe(5);
+    expect(prog2.__adj.d.out).toBe(5);
     expect(prog2.__counter).toBe("f");
   });
 
   test("eq(3,4) resolves to num/eq", () => {
-    expect(prog3.__adj["c"].kind).toBe("num/eq");
+    expect(prog3.__adj.c.kind).toBe("num/eq");
   });
 
   test("eq(str,str) resolves to str/eq", () => {
-    expect(prog4.__adj["c"].kind).toBe("str/eq");
+    expect(prog4.__adj.c.kind).toBe("str/eq");
   });
 
   test("nested eq resolves to bool/eq outer", () => {
-    expect(prog5.__adj["g"].kind).toBe("bool/eq");
-    expect(prog5.__adj["c"].kind).toBe("num/eq");
+    expect(prog5.__adj.g.kind).toBe("bool/eq");
+    expect(prog5.__adj.c.kind).toBe("num/eq");
   });
 
   test("add(false,'foo') throws at runtime", () => {

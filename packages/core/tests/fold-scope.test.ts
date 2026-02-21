@@ -8,12 +8,7 @@
  * - Scope restores after scoped evaluation
  */
 import { describe, expect, it } from "vitest";
-import {
-  type RuntimeEntry,
-  VOLATILE_KINDS,
-  fold,
-  recurseScoped,
-} from "../src/index";
+import { fold, type RuntimeEntry, recurseScoped, VOLATILE_KINDS } from "../src/index";
 
 // ─── Helpers ──────────────────────────────────────────────────────
 function makeAdj(entries: Record<string, RuntimeEntry>) {
@@ -50,7 +45,7 @@ describe("fold scoped evaluation", () => {
         const val = yield 0;
         return `wrapped(${val})`;
       }),
-      "test/apply": handler(async function* (e) {
+      "test/apply": handler(async function* (_e) {
         // Evaluate body with param bound to 100
         const result = yield recurseScoped("body", [{ paramId: "param", value: 100 }]);
         return result;
@@ -104,7 +99,7 @@ describe("fold scoped evaluation", () => {
       "num/literal": handler(async function* (e) {
         return e.out;
       }),
-      "test/scope-then-normal": handler(async function* (e) {
+      "test/scope-then-normal": handler(async function* (_e) {
         const scoped = yield recurseScoped("body", [{ paramId: "param", value: 42 }]);
         const normal = yield 1; // "after" node
         return [scoped, normal];
@@ -181,7 +176,9 @@ describe("fold scoped evaluation", () => {
       "test/throw": handler(async function* () {
         throw new Error("body failed");
       }),
-      "num/literal": handler(async function* (e) { return e.out; }),
+      "num/literal": handler(async function* (e) {
+        return e.out;
+      }),
       "test/read": handler(async function* () {
         yield 0; // read param
         yield 1; // this throws

@@ -1,24 +1,36 @@
-import { describe, test, expect } from "vitest";
-import { fold, type RuntimeEntry, type Interpreter } from "../../src/index";
+import { describe, expect, test } from "vitest";
+import { fold, type Interpreter, type RuntimeEntry } from "../../src/index";
 
 type Result<T> = { ok: T; err: null } | { ok: null; err: unknown };
 const ok = <T>(v: T): Result<T> => ({ ok: v, err: null });
 const err = <T>(e: unknown): Result<T> => ({ ok: null, err: e });
 type Adj = Record<string, RuntimeEntry>;
 const n = (kind: string, children: string[], out?: unknown): RuntimeEntry => ({
-  kind, children, out,
+  kind,
+  children,
+  out,
 });
 
 const lit: Interpreter = {
-  "num/literal": async function* (e) { return e.out as number; },
-  "str/literal": async function* (e) { return e.out as string; },
-  "bool/literal": async function* (e) { return e.out as boolean; },
+  "num/literal": async function* (e) {
+    return e.out as number;
+  },
+  "str/literal": async function* (e) {
+    return e.out as string;
+  },
+  "bool/literal": async function* (e) {
+    return e.out as boolean;
+  },
 };
 const failH: Interpreter = {
-  "error/fail": async function* (e) { throw new Error(e.out as string); },
+  "error/fail": async function* (e) {
+    throw new Error(e.out as string);
+  },
 };
 const wrapH: Interpreter = {
-  wrap: async function* () { return yield 0; },
+  wrap: async function* () {
+    return yield 0;
+  },
 };
 
 describe("error handling", () => {
@@ -39,7 +51,9 @@ describe("error handling", () => {
     test("throw in nested child propagates up through chain", async () => {
       const adj: Adj = {
         a: n("error/fail", [], "deep error"),
-        b: n("wrap", ["a"]), c: n("wrap", ["b"]), d: n("wrap", ["c"]),
+        b: n("wrap", ["a"]),
+        c: n("wrap", ["b"]),
+        d: n("wrap", ["c"]),
       };
       await expect(fold("d", adj, { ...failH, ...wrapH })).rejects.toThrow("deep error");
     });
@@ -47,19 +61,27 @@ describe("error handling", () => {
     test("non-Error throw propagates", async () => {
       const adj: Adj = { a: n("error/throw-string", [], "raw string") };
       const interp: Interpreter = {
-        "error/throw-string": async function* (e) { throw e.out; },
+        "error/throw-string": async function* (e) {
+          throw e.out;
+        },
       };
       await expect(fold("a", adj, interp)).rejects.toBe("raw string");
     });
 
     test("first child to throw wins", async () => {
       const adj: Adj = {
-        a: n("error/fail", [], "first"), b: n("num/literal", [], 42),
+        a: n("error/fail", [], "first"),
+        b: n("num/literal", [], 42),
         c: n("seq", ["a", "b"]),
       };
       const interp: Interpreter = {
-        ...lit, ...failH,
-        seq: async function* () { const l = yield 0; const r = yield 1; return [l, r]; },
+        ...lit,
+        ...failH,
+        seq: async function* () {
+          const l = yield 0;
+          const r = yield 1;
+          return [l, r];
+        },
       };
       await expect(fold("c", adj, interp)).rejects.toThrow("first");
     });
@@ -69,12 +91,16 @@ describe("error handling", () => {
   describe("result-based try/catch", () => {
     const resultInterp: Interpreter = {
       ...lit,
-      "error/fail": async function* (e) { return err(new Error(e.out as string)); },
+      "error/fail": async function* (e) {
+        return err(new Error(e.out as string));
+      },
       "result/try": async function* () {
         const body = (yield 0) as Result<unknown>;
         return body.err !== null ? yield 1 : body.ok;
       },
-      "result/ok": async function* () { return ok(yield 0); },
+      "result/ok": async function* () {
+        return ok(yield 0);
+      },
     };
 
     test("try with successful body returns body result", async () => {
@@ -111,13 +137,17 @@ describe("error handling", () => {
     test("catch branch not evaluated on success", async () => {
       let catchEvaluated = false;
       const adj: Adj = {
-        a: n("num/literal", [], 7), body: n("result/ok", ["a"]),
+        a: n("num/literal", [], 7),
+        body: n("result/ok", ["a"]),
         fallback: n("tracked", []),
         root: n("result/try", ["body", "fallback"]),
       };
       const interp: Interpreter = {
         ...resultInterp,
-        tracked: async function* () { catchEvaluated = true; return -1; },
+        tracked: async function* () {
+          catchEvaluated = true;
+          return -1;
+        },
       };
       expect(await fold("root", adj, interp)).toBe(7);
       expect(catchEvaluated).toBe(false);
@@ -132,7 +162,9 @@ describe("error handling", () => {
       };
       const interp: Interpreter = {
         ...resultInterp,
-        "result/passthrough": async function* () { return (yield 0) as Result<unknown>; },
+        "result/passthrough": async function* () {
+          return (yield 0) as Result<unknown>;
+        },
       };
       expect(await fold("root", adj, interp)).toBe(0);
     });
@@ -141,14 +173,21 @@ describe("error handling", () => {
   describe("attempt (Either-style)", () => {
     const attemptInterp: Interpreter = {
       ...lit,
-      "error/fail": async function* (e) { return err(e.out as string); },
-      "result/attempt": async function* () { return (yield 0) as Result<unknown>; },
-      "result/ok": async function* () { return ok(yield 0); },
+      "error/fail": async function* (e) {
+        return err(e.out as string);
+      },
+      "result/attempt": async function* () {
+        return (yield 0) as Result<unknown>;
+      },
+      "result/ok": async function* () {
+        return ok(yield 0);
+      },
     };
 
     test("success returns {ok: value, err: null}", async () => {
       const adj: Adj = {
-        a: n("num/literal", [], 42), body: n("result/ok", ["a"]),
+        a: n("num/literal", [], 42),
+        body: n("result/ok", ["a"]),
         root: n("result/attempt", ["body"]),
       };
       expect(await fold("root", adj, attemptInterp)).toEqual({ ok: 42, err: null });
@@ -169,7 +208,7 @@ describe("error handling", () => {
         wrap: n("result/ok", ["inner"]),
         outer: n("result/attempt", ["wrap"]),
       };
-      const result = await fold("outer", adj, attemptInterp) as Result<Result<unknown>>;
+      const result = (await fold("outer", adj, attemptInterp)) as Result<Result<unknown>>;
       expect(result.err).toBeNull();
       expect(result.ok).toEqual({ ok: null, err: "inner" });
     });
@@ -213,10 +252,15 @@ describe("error handling", () => {
   describe("settle (value-level)", () => {
     const settleInterp: Interpreter = {
       ...lit,
-      "error/fail": async function* (e) { return err(e.out as string); },
-      "result/ok": async function* () { return ok(yield 0); },
+      "error/fail": async function* (e) {
+        return err(e.out as string);
+      },
+      "result/ok": async function* () {
+        return ok(yield 0);
+      },
       "result/settle": async function* (entry) {
-        const fulfilled: unknown[] = [], rejected: unknown[] = [];
+        const fulfilled: unknown[] = [],
+          rejected: unknown[] = [];
         for (let i = 0; i < entry.children.length; i++) {
           const r = (yield i) as Result<unknown>;
           if (r.err !== null) rejected.push(r.err);
@@ -228,24 +272,32 @@ describe("error handling", () => {
 
     test("all succeed: fulfilled has all, rejected empty", async () => {
       const adj: Adj = {
-        a: n("num/literal", [], 1), b: n("num/literal", [], 2), c: n("num/literal", [], 3),
-        ra: n("result/ok", ["a"]), rb: n("result/ok", ["b"]), rc: n("result/ok", ["c"]),
+        a: n("num/literal", [], 1),
+        b: n("num/literal", [], 2),
+        c: n("num/literal", [], 3),
+        ra: n("result/ok", ["a"]),
+        rb: n("result/ok", ["b"]),
+        rc: n("result/ok", ["c"]),
         root: n("result/settle", ["ra", "rb", "rc"]),
       };
       expect(await fold("root", adj, settleInterp)).toEqual({
-        fulfilled: [1, 2, 3], rejected: [],
+        fulfilled: [1, 2, 3],
+        rejected: [],
       });
     });
 
     test("mixed: some succeed, some fail", async () => {
       const adj: Adj = {
-        a: n("num/literal", [], 1), ra: n("result/ok", ["a"]),
+        a: n("num/literal", [], 1),
+        ra: n("result/ok", ["a"]),
         fb: n("error/fail", [], "b failed"),
-        c: n("num/literal", [], 3), rc: n("result/ok", ["c"]),
+        c: n("num/literal", [], 3),
+        rc: n("result/ok", ["c"]),
         root: n("result/settle", ["ra", "fb", "rc"]),
       };
       expect(await fold("root", adj, settleInterp)).toEqual({
-        fulfilled: [1, 3], rejected: ["b failed"],
+        fulfilled: [1, 3],
+        rejected: ["b failed"],
       });
     });
 
@@ -257,7 +309,8 @@ describe("error handling", () => {
         root: n("result/settle", ["fa", "fb", "fc"]),
       };
       expect(await fold("root", adj, settleInterp)).toEqual({
-        fulfilled: [], rejected: ["a failed", "b failed", "c failed"],
+        fulfilled: [],
+        rejected: ["a failed", "b failed", "c failed"],
       });
     });
   });
@@ -268,21 +321,25 @@ describe("error handling", () => {
     });
 
     test("missing handler throws descriptive error", async () => {
-      await expect(fold("a", { a: n("unknown/kind", [], 42) }, lit))
-        .rejects.toThrow("no handler");
+      await expect(fold("a", { a: n("unknown/kind", [], 42) }, lit)).rejects.toThrow("no handler");
     });
 
     test("out-of-bounds child index throws", async () => {
-      const interp: Interpreter = { "bad/ref": async function* () { yield 0; } };
+      const interp: Interpreter = {
+        "bad/ref": async function* () {
+          yield 0;
+        },
+      };
       await expect(fold("a", { a: n("bad/ref", []) }, interp)).rejects.toThrow("no child");
     });
 
     test("async handler rejection propagates", async () => {
       const interp: Interpreter = {
-        "async/fail": async function* () { await Promise.reject(new Error("async boom")); },
+        "async/fail": async function* () {
+          await Promise.reject(new Error("async boom"));
+        },
       };
-      await expect(fold("a", { a: n("async/fail", []) }, interp))
-        .rejects.toThrow("async boom");
+      await expect(fold("a", { a: n("async/fail", []) }, interp)).rejects.toThrow("async boom");
     });
   });
 });

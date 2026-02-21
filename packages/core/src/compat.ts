@@ -72,19 +72,16 @@ export function definePlugin<T extends { name: string; nodeKinds: string[] }>(de
 
 type IsAny<T> = 0 extends 1 & T ? true : false;
 type ExtractNodeParam<F> = F extends (node: infer N, ...args: unknown[]) => unknown ? N : unknown;
-type RejectAnyParam<K extends string, H> = IsAny<ExtractNodeParam<H>> extends true ? never : H;
+type RejectAnyParam<_K extends string, H> = IsAny<ExtractNodeParam<H>> extends true ? never : H;
 
 /** Handler type for a specific typed node. */
-type Handler<N extends TypedNode<unknown>> = N extends TypedNode<infer T>
-  ? (node: N) => AsyncGenerator<unknown, T, unknown>
-  : never;
+type Handler<N extends TypedNode<unknown>> =
+  N extends TypedNode<infer T> ? (node: N) => AsyncGenerator<unknown, T, unknown> : never;
 
 type InterpreterHandlers<K extends string> = string extends K
   ? Record<string, (node: any) => AsyncGenerator<unknown, unknown, unknown>>
   : {
-      [P in K]: P extends keyof NodeTypeMap
-        ? Handler<NodeTypeMap[P] & TypedNode<unknown>>
-        : never;
+      [P in K]: P extends keyof NodeTypeMap ? Handler<NodeTypeMap[P] & TypedNode<unknown>> : never;
     };
 
 /** Old-API curried interpreter factory with type-safe node validation. */

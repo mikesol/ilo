@@ -2,38 +2,30 @@
  * Koan gates (06-15): prove core DAG operation exports satisfy koan contracts.
  * Imports only from ../../src/index — never from __koans__.
  */
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import type { RuntimeEntry } from "../src/index";
 import {
-  app,
   add,
-  mul,
-  numLit,
-  selectWhere,
+  addEntry,
+  and,
+  app,
   byKind,
   byKindGlob,
-  isLeaf,
-  hasChildCount,
-  not,
-  and,
-  mapWhere,
-  replaceWhere,
   collectReachable,
-  liveAdj,
   dirty,
-  addEntry,
+  hasChildCount,
+  isLeaf,
+  liveAdj,
+  mapWhere,
+  mul,
+  not,
+  numLit,
   removeEntry,
-  swapEntry,
+  replaceWhere,
   rewireChildren,
+  selectWhere,
   setRoot,
-  gc,
-  commit,
-  wrapByName,
-  spliceWhere,
-  name,
-  byName,
-  gcPreservingAliases,
-  pipe,
+  swapEntry,
 } from "../src/index";
 
 // Shared program: (3+4)*5
@@ -90,9 +82,9 @@ describe("07-map", () => {
       children: entry.children,
       out: entry.out,
     }));
-    expect(swapped.__adj["c"].kind).toBe("num/sub");
-    expect(swapped.__adj["a"].kind).toBe("num/literal");
-    expect(swapped.__adj["e"].kind).toBe("num/mul");
+    expect(swapped.__adj.c.kind).toBe("num/sub");
+    expect(swapped.__adj.a.kind).toBe("num/literal");
+    expect(swapped.__adj.e.kind).toBe("num/mul");
     expect(swapped.__id).toBe("e");
   });
 
@@ -102,8 +94,8 @@ describe("07-map", () => {
       children: ["c", "d"] as ["c", "d"],
       out: "" as string,
     }));
-    expect(stringified.__adj["e"].kind).toBe("str/repr");
-    expect(stringified.__adj["a"].kind).toBe("num/literal");
+    expect(stringified.__adj.e.kind).toBe("str/repr");
+    expect(stringified.__adj.a.kind).toBe("num/literal");
   });
 
   test("compound predicate maps only leaves", () => {
@@ -112,11 +104,11 @@ describe("07-map", () => {
       children: entry.children,
       out: entry.out,
     }));
-    expect(leafMapped.__adj["a"].kind).toBe("num/const");
-    expect(leafMapped.__adj["b"].kind).toBe("num/const");
-    expect(leafMapped.__adj["d"].kind).toBe("num/const");
-    expect(leafMapped.__adj["c"].kind).toBe("num/add");
-    expect(leafMapped.__adj["e"].kind).toBe("num/mul");
+    expect(leafMapped.__adj.a.kind).toBe("num/const");
+    expect(leafMapped.__adj.b.kind).toBe("num/const");
+    expect(leafMapped.__adj.d.kind).toBe("num/const");
+    expect(leafMapped.__adj.c.kind).toBe("num/add");
+    expect(leafMapped.__adj.e.kind).toBe("num/mul");
   });
 
   test("no entries lost after map", () => {
@@ -135,25 +127,25 @@ describe("07-map", () => {
 describe("08-replace", () => {
   test("replace add to sub", () => {
     const replaced = replaceWhere(prog, byKind("num/add"), "num/sub");
-    expect(replaced.__adj["c"].kind).toBe("num/sub");
-    expect(replaced.__adj["a"].kind).toBe("num/literal");
-    expect(replaced.__adj["e"].kind).toBe("num/mul");
-    expect(replaced.__adj["c"].children).toEqual(["a", "b"]);
+    expect(replaced.__adj.c.kind).toBe("num/sub");
+    expect(replaced.__adj.a.kind).toBe("num/literal");
+    expect(replaced.__adj.e.kind).toBe("num/mul");
+    expect(replaced.__adj.c.children).toEqual(["a", "b"]);
   });
 
   test("replace root", () => {
     const rootReplaced = replaceWhere(prog, byKind("num/mul"), "str/repr");
-    expect(rootReplaced.__adj["e"].kind).toBe("str/repr");
-    expect(rootReplaced.__adj["a"].kind).toBe("num/literal");
+    expect(rootReplaced.__adj.e.kind).toBe("str/repr");
+    expect(rootReplaced.__adj.a.kind).toBe("num/literal");
   });
 
   test("replace all leaves", () => {
     const lr = replaceWhere(prog, isLeaf(), "num/const");
-    expect(lr.__adj["a"].kind).toBe("num/const");
-    expect(lr.__adj["b"].kind).toBe("num/const");
-    expect(lr.__adj["d"].kind).toBe("num/const");
-    expect(lr.__adj["c"].kind).toBe("num/add");
-    expect(lr.__adj["e"].kind).toBe("num/mul");
+    expect(lr.__adj.a.kind).toBe("num/const");
+    expect(lr.__adj.b.kind).toBe("num/const");
+    expect(lr.__adj.d.kind).toBe("num/const");
+    expect(lr.__adj.c.kind).toBe("num/add");
+    expect(lr.__adj.e.kind).toBe("num/mul");
   });
 });
 
@@ -215,7 +207,7 @@ describe("10-dirty", () => {
   test("dirty creates a DirtyExpr with same data", () => {
     const d = dirty(prog);
     expect(d.__id).toBe("e");
-    expect(d.__adj["a"].kind).toBe("num/literal");
+    expect(d.__adj.a.kind).toBe("num/literal");
   });
 
   test("addEntry adds to adj", () => {
@@ -225,15 +217,15 @@ describe("10-dirty", () => {
       children: ["e"],
       out: undefined,
     });
-    expect(d2.__adj["f"].kind).toBe("debug/log");
-    expect(d2.__adj["a"].kind).toBe("num/literal");
+    expect(d2.__adj.f.kind).toBe("debug/log");
+    expect(d2.__adj.a.kind).toBe("num/literal");
   });
 
   test("removeEntry removes from adj", () => {
     const d = dirty(prog);
     const d3 = removeEntry(d, "a");
     expect("a" in d3.__adj).toBe(false);
-    expect(d3.__adj["b"].kind).toBe("num/literal");
+    expect(d3.__adj.b.kind).toBe("num/literal");
   });
 
   test("swapEntry replaces entry", () => {
@@ -243,15 +235,15 @@ describe("10-dirty", () => {
       children: ["a", "b"],
       out: 0,
     });
-    expect(d4.__adj["c"].kind).toBe("num/sub");
-    expect(d4.__adj["a"].kind).toBe("num/literal");
+    expect(d4.__adj.c.kind).toBe("num/sub");
+    expect(d4.__adj.a.kind).toBe("num/literal");
   });
 
   test("rewireChildren replaces child refs globally", () => {
     const d = dirty(prog);
     const d5 = rewireChildren(d, "a", "b");
-    expect(d5.__adj["c"].children).toEqual(["b", "b"]);
-    expect(d5.__adj["e"].children).toEqual(["c", "d"]);
+    expect(d5.__adj.c.children).toEqual(["b", "b"]);
+    expect(d5.__adj.e.children).toEqual(["c", "d"]);
   });
 
   test("setRoot changes root ID", () => {

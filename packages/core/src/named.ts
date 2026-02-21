@@ -7,13 +7,13 @@
  */
 
 import type { DirtyExpr } from "./dirty";
-import type { NExpr, NodeEntry, RuntimeEntry } from "./expr";
+import type { NExpr, NodeEntry } from "./expr";
 import { makeNExpr } from "./expr";
 import type { LiveAdj } from "./gc";
 import { liveAdj } from "./gc";
 
 /** A name alias entry keyed as "@Name" pointing to a target node. */
-export type NameAlias<Name extends string, TargetID extends string, Out> = NodeEntry<
+export type NameAlias<_Name extends string, TargetID extends string, Out> = NodeEntry<
   "@alias",
   [TargetID],
   Out

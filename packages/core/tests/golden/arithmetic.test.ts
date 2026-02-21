@@ -1,15 +1,15 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
-  numLit,
   add,
-  mul,
-  sub,
   app,
-  fold,
   defaults,
-  stdPlugins,
-  type RuntimeEntry,
+  fold,
   type Interpreter,
+  mul,
+  numLit,
+  type RuntimeEntry,
+  stdPlugins,
+  sub,
 } from "../../src/index";
 
 describe("arithmetic golden tests", () => {
@@ -74,10 +74,7 @@ describe("arithmetic golden tests", () => {
       // sub(1,2)=-1, mul(3,4)=12, add(-1,12)=11
       // sub(6,7)=-1, add(5,-1)=4
       // mul(11, 4) = 44
-      const result = await fold(
-        app(mul(add(sub(1, 2), mul(3, 4)), add(5, sub(6, 7)))),
-        interp,
-      );
+      const result = await fold(app(mul(add(sub(1, 2), mul(3, 4)), add(5, sub(6, 7)))), interp);
       expect(result).toBe(44);
     });
 

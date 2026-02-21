@@ -37,8 +37,12 @@ import type {
   RuntimeEntry,
   Increment,
   RewireAdj,
+  DirtyExpr,
+  DirtyAdjOf,
+  DirtyIdOf,
+  DirtyCtrOf,
 } from "./11-commit";
-import { makeNExpr, incrementId, numLit, add, mul, app } from "./11-commit";
+import { makeNExpr, incrementId, numLit, add, mul, app, commit } from "./11-commit";
 
 // ─── TargetOut: extract output type of target node ───────────────────
 type TargetOut<Adj, ID extends string> = ID extends keyof Adj
@@ -85,10 +89,10 @@ export function wrapByName<
   TargetID extends string,
   WrapperKind extends string,
 >(
-  expr: NExpr<O, R, Adj, C>,
+  expr: NExpr<O, R, Adj, C> | DirtyExpr<O, R, Adj, C>,
   targetId: TargetID,
   wrapperKind: WrapperKind,
-): NExpr<
+): DirtyExpr<
   O,
   WrapRoot<R, TargetID, C>,
   WrapOneResult<Adj, TargetID, WrapperKind, C>,
@@ -129,7 +133,7 @@ const prog = app(mul(add(numLit(3), numLit(4)), numLit(5)));
 
 // --- Wrap "c" (add node): e(mul) → f(span) → c(add) ---
 const wrapped = wrapByName(prog, "c", "telemetry/span");
-type WAdj = AdjOf<typeof wrapped>;
+type WAdj = DirtyAdjOf<typeof wrapped>;
 
 // Wrapper "f" exists with correct kind and children
 const _wfKind: WAdj["f"]["kind"] = "telemetry/span";
@@ -145,18 +149,18 @@ const _wcKind: WAdj["c"]["kind"] = "num/add";
 const _wcChildren: WAdj["c"]["children"] = ["a", "b"];
 
 // Root unchanged (target wasn't root)
-type WId = IdOf<typeof wrapped>;
+type WId = DirtyIdOf<typeof wrapped>;
 const _wId: WId = "e";
 
 // Counter advanced
-type WCtr = CtrOf<typeof wrapped>;
+type WCtr = DirtyCtrOf<typeof wrapped>;
 const _wCtr: WCtr = "g";
 
 // --- Wrap root "e": new root is "f" ---
 const wrappedRoot = wrapByName(prog, "e", "debug/root");
-type WRAdj = AdjOf<typeof wrappedRoot>;
+type WRAdj = DirtyAdjOf<typeof wrappedRoot>;
 
-type WRId = IdOf<typeof wrappedRoot>;
+type WRId = DirtyIdOf<typeof wrappedRoot>;
 const _wrId: WRId = "f";
 // @ts-expect-error — root is now "f", not "e"
 const _wrIdBad: WRId = "e";

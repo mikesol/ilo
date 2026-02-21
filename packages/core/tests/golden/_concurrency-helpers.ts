@@ -1,11 +1,7 @@
 /**
  * Shared interpreters and helpers for concurrency golden tests.
  */
-import {
-  fold,
-  type RuntimeEntry,
-  type Interpreter,
-} from "../../src/index";
+import { fold, type Interpreter, type RuntimeEntry } from "../../src/index";
 
 export { fold, type RuntimeEntry, type Interpreter };
 

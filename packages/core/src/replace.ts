@@ -3,8 +3,11 @@
  *
  * replaceWhere is a thin wrapper over mapWhere that swaps only the
  * kind string while preserving children and output.
+ *
+ * Returns DirtyExpr requiring explicit commit() before fold.
  */
 
+import type { DirtyExpr } from "./dirty";
 import type { NExpr, NodeEntry } from "./expr";
 import type { MapAdj, MapOut, MatchingEntries } from "./map";
 import { mapWhere } from "./map";
@@ -16,7 +19,7 @@ type ReplaceKind<Entry, NewKind extends string> =
     ? NodeEntry<NewKind, C, O>
     : never;
 
-/** Replace the kind of all matching nodes. */
+/** Replace the kind of all matching nodes. Returns DirtyExpr. */
 export function replaceWhere<
   O,
   R extends string,
@@ -25,10 +28,10 @@ export function replaceWhere<
   P extends PredBase,
   NewKind extends string,
 >(
-  expr: NExpr<O, R, Adj, C>,
+  expr: NExpr<O, R, Adj, C> | DirtyExpr<O, R, Adj, C>,
   pred: P,
   newKind: NewKind,
-): NExpr<
+): DirtyExpr<
   MapOut<O, Adj, R, P, ReplaceKind<MatchingEntries<Adj, P>, NewKind>>,
   R,
   MapAdj<Adj, P, ReplaceKind<MatchingEntries<Adj, P>, NewKind>>,

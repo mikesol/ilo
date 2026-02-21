@@ -1,17 +1,18 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
-  strLit,
-  app,
-  fold,
   defaults,
-  stdPlugins,
-  type RuntimeEntry,
+  fold,
   type Interpreter,
+  type RuntimeEntry,
+  stdPlugins,
+  strLit,
 } from "../../src/index";
 
 /** Reusable concat interpreter for manual adj tests. */
 const strConcatInterp: Interpreter = {
-  "str/literal": async function* (entry) { return entry.out as string; },
+  "str/literal": async function* (entry) {
+    return entry.out as string;
+  },
   "str/concat": async function* (entry) {
     const parts: string[] = [];
     for (let i = 0; i < entry.children.length; i++) {

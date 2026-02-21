@@ -1,20 +1,39 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
-  numLit, add, mul, sub, app, fold, defaults, stdPlugins,
-  numPluginU,
-  type RuntimeEntry, type Interpreter, type PluginDef,
+  add,
+  app,
+  defaults,
+  fold,
+  type Interpreter,
+  mul,
+  numLit,
+  type PluginDef,
+  type RuntimeEntry,
+  stdPlugins,
+  sub,
 } from "../../src/index";
 
 // ── shared interpreter ───────────────────────────────────────────────
-const numInterp = defaults([{
-  name: "num", nodeKinds: ["num/literal","num/add","num/mul","num/sub"],
-  defaultInterpreter: () => ({
-    "num/literal": async function* (e) { return e.out as number; },
-    "num/add": async function* () { return ((yield 0) as number) + ((yield 1) as number); },
-    "num/mul": async function* () { return ((yield 0) as number) * ((yield 1) as number); },
-    "num/sub": async function* () { return ((yield 0) as number) - ((yield 1) as number); },
-  }),
-}]);
+const numInterp = defaults([
+  {
+    name: "num",
+    nodeKinds: ["num/literal", "num/add", "num/mul", "num/sub"],
+    defaultInterpreter: () => ({
+      "num/literal": async function* (e) {
+        return e.out as number;
+      },
+      "num/add": async function* () {
+        return ((yield 0) as number) + ((yield 1) as number);
+      },
+      "num/mul": async function* () {
+        return ((yield 0) as number) * ((yield 1) as number);
+      },
+      "num/sub": async function* () {
+        return ((yield 0) as number) - ((yield 1) as number);
+      },
+    }),
+  },
+]);
 
 // ── Basic fold ───────────────────────────────────────────────────────
 describe("basic fold", () => {
@@ -41,15 +60,22 @@ describe("basic fold", () => {
     expect(await fold(app(add(numLit(0), numLit(0))), numInterp)).toBe(0);
   });
   test("mul(add(1,1),sub(5,3)) = 4", async () => {
-    expect(await fold(app(mul(add(numLit(1), numLit(1)), sub(numLit(5), numLit(3)))), numInterp)).toBe(4);
+    expect(
+      await fold(app(mul(add(numLit(1), numLit(1)), sub(numLit(5), numLit(3)))), numInterp),
+    ).toBe(4);
   });
 });
 
 // ── Memoization ──────────────────────────────────────────────────────
 describe("memoization", () => {
   const counting = (counter: { n: number }): Interpreter => ({
-    "num/literal": async function* (e) { counter.n++; return e.out as number; },
-    "num/add": async function* () { return ((yield 0) as number) + ((yield 1) as number); },
+    "num/literal": async function* (e) {
+      counter.n++;
+      return e.out as number;
+    },
+    "num/add": async function* () {
+      return ((yield 0) as number) + ((yield 1) as number);
+    },
   });
   test("shared node evaluated once", async () => {
     const c = { n: 0 };
@@ -86,9 +112,16 @@ describe("memoization", () => {
   test("handler runs exactly once per node", async () => {
     let addRuns = 0;
     const oi: Interpreter = {
-      "num/literal": async function* (e) { return e.out as number; },
-      "num/add": async function* () { addRuns++; return ((yield 0) as number) + ((yield 1) as number); },
-      "num/mul": async function* () { return ((yield 0) as number) * ((yield 1) as number); },
+      "num/literal": async function* (e) {
+        return e.out as number;
+      },
+      "num/add": async function* () {
+        addRuns++;
+        return ((yield 0) as number) + ((yield 1) as number);
+      },
+      "num/mul": async function* () {
+        return ((yield 0) as number) * ((yield 1) as number);
+      },
     };
     expect(await fold(app(mul(add(numLit(3), numLit(4)), numLit(5))), oi)).toBe(35);
     expect(addRuns).toBe(1);
@@ -96,8 +129,13 @@ describe("memoization", () => {
   test("shared add node evaluated once", async () => {
     let addRuns = 0;
     const ci: Interpreter = {
-      "num/literal": async function* (e) { return e.out as number; },
-      "num/add": async function* () { addRuns++; return ((yield 0) as number) + ((yield 1) as number); },
+      "num/literal": async function* (e) {
+        return e.out as number;
+      },
+      "num/add": async function* () {
+        addRuns++;
+        return ((yield 0) as number) + ((yield 1) as number);
+      },
     };
     const adj: Record<string, RuntimeEntry> = {
       a: { kind: "num/literal", children: [], out: 1 },
@@ -119,9 +157,16 @@ describe("short-circuit", () => {
     d: { kind: "core/cond", children: ["a", "b", "c"], out: undefined },
   });
   const trackingInterp = (counter: { n: number }): Interpreter => ({
-    "bool/literal": async function* (e) { return e.out; },
-    "num/literal": async function* (e) { counter.n++; return e.out; },
-    "core/cond": async function* () { return (yield 0) ? yield 1 : yield 2; },
+    "bool/literal": async function* (e) {
+      return e.out;
+    },
+    "num/literal": async function* (e) {
+      counter.n++;
+      return e.out;
+    },
+    "core/cond": async function* () {
+      return (yield 0) ? yield 1 : yield 2;
+    },
   });
   test("cond(true) evaluates only then-branch", async () => {
     const c = { n: 0 };
@@ -157,7 +202,9 @@ describe("handler protocol", () => {
     };
     const si: Interpreter = {
       ...numInterp,
-      "geom/wrap": async function* (e) { return yield (e.out as any).ref; },
+      "geom/wrap": async function* (e) {
+        return yield (e.out as any).ref;
+      },
     };
     expect(await fold<number>("b", adj, si)).toBe(99);
   });
@@ -199,12 +246,22 @@ describe("defaults()", () => {
     expect(await fold(app(add(numLit(2), numLit(3))), defaults(stdPlugins))).toBe(5);
   });
   test("override replaces plugin", async () => {
-    const interp = defaults(stdPlugins, { num: {
-      "num/literal": async function* (e) { return (e.out as number) * 100; },
-      "num/add": async function* () { return ((yield 0) as number) + ((yield 1) as number); },
-      "num/mul": async function* () { return ((yield 0) as number) * ((yield 1) as number); },
-      "num/sub": async function* () { return ((yield 0) as number) - ((yield 1) as number); },
-    }});
+    const interp = defaults(stdPlugins, {
+      num: {
+        "num/literal": async function* (e) {
+          return (e.out as number) * 100;
+        },
+        "num/add": async function* () {
+          return ((yield 0) as number) + ((yield 1) as number);
+        },
+        "num/mul": async function* () {
+          return ((yield 0) as number) * ((yield 1) as number);
+        },
+        "num/sub": async function* () {
+          return ((yield 0) as number) - ((yield 1) as number);
+        },
+      },
+    });
     expect(await fold(app(add(numLit(1), numLit(2))), interp)).toBe(300);
   });
   test("throws without defaultInterpreter and no override", () => {
@@ -214,11 +271,27 @@ describe("defaults()", () => {
     expect(defaults([{ name: "e", nodeKinds: [] }])).toEqual({});
   });
   test("override with custom handlers", async () => {
-    const interp = defaults([
-      { name: "num", nodeKinds: ["num/literal"],
-        defaultInterpreter: () => ({ "num/literal": async function* (e) { return e.out as number; } }) },
-      { name: "c", nodeKinds: ["c/dbl"] } as PluginDef,
-    ], { c: { "c/dbl": async function* () { return ((yield 0) as number) * 2; } } });
+    const interp = defaults(
+      [
+        {
+          name: "num",
+          nodeKinds: ["num/literal"],
+          defaultInterpreter: () => ({
+            "num/literal": async function* (e) {
+              return e.out as number;
+            },
+          }),
+        },
+        { name: "c", nodeKinds: ["c/dbl"] } as PluginDef,
+      ],
+      {
+        c: {
+          "c/dbl": async function* () {
+            return ((yield 0) as number) * 2;
+          },
+        },
+      },
+    );
     const adj: Record<string, RuntimeEntry> = {
       a: { kind: "num/literal", children: [], out: 4 },
       b: { kind: "c/dbl", children: ["a"], out: undefined },
@@ -233,8 +306,8 @@ describe("stack safety", () => {
     const D = 10_000;
     const adj: Record<string, RuntimeEntry> = { n0: { kind: "num/literal", children: [], out: 1 } };
     for (let i = 1; i < D; i++)
-      adj[`n${i}`] = { kind: "num/add", children: [`n${i-1}`, `n${i-1}`], out: undefined };
-    const r = await fold<number>(`n${D-1}`, adj, numInterp);
+      adj[`n${i}`] = { kind: "num/add", children: [`n${i - 1}`, `n${i - 1}`], out: undefined };
+    const r = await fold<number>(`n${D - 1}`, adj, numInterp);
     expect(typeof r).toBe("number");
   });
   test("result is a valid number", async () => {

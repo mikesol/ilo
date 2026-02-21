@@ -113,7 +113,7 @@ describe("replaceWhere inside structural subtrees", () => {
     const prog = appS(geomPlugin.ctors.point({ x: mul(2, 3), y: mul(4, 5) }));
 
     // Replace all mul with add
-    const replaced = replaceWhere(prog, byKind("num/mul"), "num/add");
+    const replaced = commit(replaceWhere(prog, byKind("num/mul"), "num/add"));
 
     // Verify the kind was changed
     const muls = selectWhere(replaced, byKind("num/mul"));

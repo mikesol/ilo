@@ -1,16 +1,14 @@
-import { describe, test, expect } from "vitest";
-import {
-  fold,
-  type RuntimeEntry,
-  type Interpreter,
-} from "../../src/index";
+import { describe, expect, test } from "vitest";
+import { fold, type Interpreter, type RuntimeEntry } from "../../src/index";
 
 // State cell pattern: mutable state via closures in handlers.
 // st/let creates a cell, st/get reads it, st/set writes it.
 function makeStInterp() {
   const cells: Record<string, { value: unknown }> = {};
   const interp: Interpreter = {
-    "num/literal": async function* (e) { return e.out; },
+    "num/literal": async function* (e) {
+      return e.out;
+    },
     "st/let": async function* (entry) {
       const initial = yield 0;
       cells[entry.children[0]] = { value: initial };
@@ -35,7 +33,9 @@ function makeStInterp() {
       arr.push(item);
       return arr;
     },
-    "bool/literal": async function* (e) { return e.out; },
+    "bool/literal": async function* (e) {
+      return e.out;
+    },
     "core/cond": async function* () {
       const pred = (yield 0) as boolean;
       return pred ? yield 1 : yield 2;
@@ -112,7 +112,7 @@ describe("state management golden tests", () => {
   describe("push to array", () => {
     test("push adds item to array cell", async () => {
       const { interp, cells } = makeStInterp();
-      cells["arr"] = { value: [1, 2] };
+      cells.arr = { value: [1, 2] };
       const adj: Record<string, RuntimeEntry> = {
         item: { kind: "num/literal", children: [], out: 3 },
         p: { kind: "st/push", children: ["item"], out: "arr" },
@@ -122,7 +122,7 @@ describe("state management golden tests", () => {
 
     test("multiple pushes accumulate", async () => {
       const { interp, cells } = makeStInterp();
-      cells["arr"] = { value: [] as number[] };
+      cells.arr = { value: [] as number[] };
       const adj: Record<string, RuntimeEntry> = {
         a: { kind: "num/literal", children: [], out: 10 },
         b: { kind: "num/literal", children: [], out: 20 },
@@ -133,12 +133,12 @@ describe("state management golden tests", () => {
         seq: { kind: "st/seq", children: ["p1", "p2", "p3"], out: undefined },
       };
       await fold<unknown>("seq", adj, interp);
-      expect(cells["arr"].value).toEqual([10, 20, 30]);
+      expect(cells.arr.value).toEqual([10, 20, 30]);
     });
 
     test("push returns updated array", async () => {
       const { interp, cells } = makeStInterp();
-      cells["arr"] = { value: ["x"] };
+      cells.arr = { value: ["x"] };
       const adj: Record<string, RuntimeEntry> = {
         item: { kind: "num/literal", children: [], out: 99 },
         p: { kind: "st/push", children: ["item"], out: "arr" },

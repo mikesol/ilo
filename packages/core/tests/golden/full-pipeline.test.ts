@@ -1,29 +1,64 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
-  numLit, strLit, boolLit, add, mul, sub, eq,
-  app, fold, defaults, stdPlugins,
-  mvfm, numPlugin, strPlugin, boolPlugin,
-  mvfmU, numPluginU, strPluginU, boolPluginU,
-  selectWhere, replaceWhere, mapWhere, spliceWhere,
-  wrapByName, pipe, byKind, isLeaf,
-  dirty, gc, commit, name, byName,
-  createApp, ordPlugin, lt,
-  type RuntimeEntry, type NExpr, type Interpreter, type PluginDef,
+  add,
+  app,
+  boolPlugin,
+  boolPluginU,
+  byKind,
+  byName,
+  commit,
+  createApp,
+  defaults,
+  dirty,
+  fold,
+  gc,
+  type Interpreter,
+  isLeaf,
+  lt,
+  mul,
+  mvfm,
+  mvfmU,
+  name,
+  numLit,
+  numPlugin,
+  numPluginU,
+  ordPlugin,
+  type PluginDef,
+  pipe,
+  type RuntimeEntry,
+  replaceWhere,
+  selectWhere,
+  spliceWhere,
+  stdPlugins,
+  strPlugin,
+  strPluginU,
+  sub,
 } from "../../src/index";
 
 // ── Shared interpreters ─────────────────────────────────────────────
 const eqInterp: Interpreter = {
-  "num/eq": async function* () { return ((yield 0) as number) === ((yield 1) as number); },
-  "str/eq": async function* () { return ((yield 0) as string) === ((yield 1) as string); },
-  "bool/eq": async function* () { return ((yield 0) as boolean) === ((yield 1) as boolean); },
+  "num/eq": async function* () {
+    return ((yield 0) as number) === ((yield 1) as number);
+  },
+  "str/eq": async function* () {
+    return ((yield 0) as string) === ((yield 1) as string);
+  },
+  "bool/eq": async function* () {
+    return ((yield 0) as boolean) === ((yield 1) as boolean);
+  },
 };
-const ordInterp: Interpreter = {
-  "num/lt": async function* () { return ((yield 0) as number) < ((yield 1) as number); },
-  "str/lt": async function* () { return ((yield 0) as string) < ((yield 1) as string); },
+const _ordInterp: Interpreter = {
+  "num/lt": async function* () {
+    return ((yield 0) as number) < ((yield 1) as number);
+  },
+  "str/lt": async function* () {
+    return ((yield 0) as string) < ((yield 1) as string);
+  },
 };
 
 const fpEq: PluginDef = {
-  name: "eq", nodeKinds: ["num/eq", "str/eq", "bool/eq"],
+  name: "eq",
+  nodeKinds: ["num/eq", "str/eq", "bool/eq"],
   defaultInterpreter: () => eqInterp,
 };
 const fullInterp = defaults([...stdPlugins, fpEq]);
@@ -46,10 +81,12 @@ describe("calculator programs", () => {
 
   test("deeply nested via sub/mul/add constructors", async () => {
     // ((1+2)*(3+4)) - ((5+6)*(7+8))
-    const prog = app(sub(
-      mul(add(numLit(1), numLit(2)), add(numLit(3), numLit(4))),
-      mul(add(numLit(5), numLit(6)), add(numLit(7), numLit(8))),
-    ));
+    const prog = app(
+      sub(
+        mul(add(numLit(1), numLit(2)), add(numLit(3), numLit(4))),
+        mul(add(numLit(5), numLit(6)), add(numLit(7), numLit(8))),
+      ),
+    );
     expect(await fold(prog, numInterp)).toBe(3 * 7 - 11 * 15);
   });
 
@@ -57,14 +94,14 @@ describe("calculator programs", () => {
     // Original: (2+3)*4 = 20, after add->mul: (2*3)*4 = 24
     const prog = app($.mul($.add(2, 3), 4));
     const transformed = pipe(prog, (e) => replaceWhere(e, byKind("num/add"), "num/mul"));
-    expect(await fold(transformed, numInterp)).toBe(24);
+    expect(await fold(commit(transformed), numInterp)).toBe(24);
   });
 
   test("transform mul->add then fold", async () => {
     // Original: (2+3)*4 = 20, after mul->add: (2+3)+4 = 9
     const prog = app($.mul($.add(2, 3), 4));
     const transformed = pipe(prog, (e) => replaceWhere(e, byKind("num/mul"), "num/add"));
-    expect(await fold(transformed, numInterp)).toBe(9);
+    expect(await fold(commit(transformed), numInterp)).toBe(9);
   });
 });
 
@@ -87,7 +124,7 @@ describe("trait dispatch pipeline", () => {
   test("build eq, transform to add via pipe, fold -> number", async () => {
     const prog = app($.eq(3, 3));
     const transformed = pipe(prog, (e) => replaceWhere(e, byKind("num/eq"), "num/add"));
-    expect(await fold(transformed, fullInterp)).toBe(6);
+    expect(await fold(commit(transformed), fullInterp)).toBe(6);
   });
 
   test("selectWhere on eq-produced nodes", async () => {
@@ -110,7 +147,7 @@ describe("DAG transform pipeline", () => {
     const transformed = pipe(
       prog,
       (e) => replaceWhere(e, byKind("num/add"), "num/sub"),
-      (e) => spliceWhere(e, isLeaf()),
+      (e) => spliceWhere(commit(e), isLeaf()),
     );
     // After splice, leaves gone; only sub and mul remain
     expect(Object.keys(transformed.__adj).length).toBe(2);
@@ -124,7 +161,7 @@ describe("DAG transform pipeline", () => {
       (e) => replaceWhere(e, byKind("num/add"), "num/sub"),
       (e) => replaceWhere(e, byKind("num/mul"), "num/add"),
     );
-    expect(await fold(transformed, numInterp)).toBe(4);
+    expect(await fold(commit(transformed), numInterp)).toBe(4);
   });
 
   test("app -> dirty -> gc -> commit -> fold round-trip", async () => {
@@ -144,7 +181,7 @@ describe("DAG transform pipeline", () => {
     expect(aliases.size).toBe(1);
     // Replace add->sub, fold
     const transformed = pipe(named, (e) => replaceWhere(e, byKind("num/add"), "num/sub"));
-    expect(await fold(transformed, numInterp)).toBe(-5);
+    expect(await fold(commit(transformed), numInterp)).toBe(-5);
   });
 
   test("multiple pipe steps then fold", async () => {
@@ -156,7 +193,7 @@ describe("DAG transform pipeline", () => {
       (e) => replaceWhere(e, byKind("num/mul"), "num/add"),
     );
     // After: (1-2)+(3-4) = -1 + -1 = -2
-    expect(await fold(transformed, numInterp)).toBe(-2);
+    expect(await fold(commit(transformed), numInterp)).toBe(-2);
   });
 });
 
@@ -205,10 +242,18 @@ describe("multiple folds", () => {
     // Scaled interpreter: literals * 10
     const scaledInterp = defaults(stdPlugins, {
       num: {
-        "num/literal": async function* (e) { return (e.out as number) * 10; },
-        "num/add": async function* () { return ((yield 0) as number) + ((yield 1) as number); },
-        "num/mul": async function* () { return ((yield 0) as number) * ((yield 1) as number); },
-        "num/sub": async function* () { return ((yield 0) as number) - ((yield 1) as number); },
+        "num/literal": async function* (e) {
+          return (e.out as number) * 10;
+        },
+        "num/add": async function* () {
+          return ((yield 0) as number) + ((yield 1) as number);
+        },
+        "num/mul": async function* () {
+          return ((yield 0) as number) * ((yield 1) as number);
+        },
+        "num/sub": async function* () {
+          return ((yield 0) as number) - ((yield 1) as number);
+        },
       },
     });
     // (30+40)*50 = 3500
@@ -219,7 +264,7 @@ describe("multiple folds", () => {
     const prog = app(mul(add(numLit(3), numLit(4)), numLit(5)));
     expect(await fold(prog, numInterp)).toBe(35);
     const transformed = pipe(prog, (e) => replaceWhere(e, byKind("num/add"), "num/sub"));
-    expect(await fold(transformed, numInterp)).toBe(-5);
+    expect(await fold(commit(transformed), numInterp)).toBe(-5);
   });
 });
 
@@ -256,10 +301,10 @@ describe("realistic scenarios", () => {
     expect(await fold(prog, numInterp)).toBe(45);
     // Rewrite all adds to subs: (2-3)*(4-5) = (-1)*(-1) = 1
     const rewritten = pipe(prog, (e) => replaceWhere(e, byKind("num/add"), "num/sub"));
-    expect(await fold(rewritten, numInterp)).toBe(1);
+    expect(await fold(commit(rewritten), numInterp)).toBe(1);
     // Rewrite mul to add on the rewritten: (2-3)+(4-5) = -2
     const rewritten2 = pipe(rewritten, (e) => replaceWhere(e, byKind("num/mul"), "num/add"));
-    expect(await fold(rewritten2, numInterp)).toBe(-2);
+    expect(await fold(commit(rewritten2), numInterp)).toBe(-2);
   });
 
   test("pipeline composition: build, transform, transform, fold", async () => {
@@ -271,7 +316,7 @@ describe("realistic scenarios", () => {
       (e) => replaceWhere(e, byKind("num/add"), "num/sub"),
     );
     // All ops are now sub: (1-2) sub (3-4) = (-1) - (-1) = 0
-    expect(await fold(result, numInterp)).toBe(0);
+    expect(await fold(commit(result), numInterp)).toBe(0);
   });
 
   test("mixed traits and arithmetic in one program", async () => {

@@ -1,11 +1,25 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
-  numLit, add, mul, sub, app, fold, defaults, stdPlugins,
-  selectWhere, mapWhere, replaceWhere, spliceWhere, wrapByName,
-  byKind, isLeaf, pipe, gc, dirty, commit, name,
-  createApp, numPluginU, strPluginU, boolPluginU,
+  add,
   addEntry,
-  type RuntimeEntry, type NExpr, type Interpreter, type PluginDef,
+  app,
+  byKind,
+  commit,
+  createApp,
+  defaults,
+  dirty,
+  fold,
+  gc,
+  type Interpreter,
+  mapWhere,
+  mul,
+  numLit,
+  numPluginU,
+  pipe,
+  type RuntimeEntry,
+  replaceWhere,
+  stdPlugins,
+  strPluginU,
 } from "../../src/index";
 
 const interp = defaults(stdPlugins);
@@ -63,7 +77,9 @@ describe("edge cases: deep nesting", () => {
 
 describe("edge cases: wide fanout", () => {
   const strConcatInterp: Interpreter = {
-    "str/literal": async function* (entry) { return entry.out as string; },
+    "str/literal": async function* (entry) {
+      return entry.out as string;
+    },
     "str/concat": async function* (entry) {
       const parts: string[] = [];
       for (let i = 0; i < entry.children.length; i++) {
@@ -89,7 +105,10 @@ describe("edge cases: wide fanout", () => {
   test("wide fanout fold evaluates all children", async () => {
     let evalCount = 0;
     const countingInterp: Interpreter = {
-      "str/literal": async function* (entry) { evalCount++; return entry.out as string; },
+      "str/literal": async function* (entry) {
+        evalCount++;
+        return entry.out as string;
+      },
       "str/concat": async function* (entry) {
         const parts: string[] = [];
         for (let i = 0; i < entry.children.length; i++) {
@@ -133,7 +152,10 @@ describe("edge cases: diamond sharing", () => {
   test("shared subexpr evaluated once (counting interpreter)", async () => {
     let sharedEvals = 0;
     const countingInterp: Interpreter = {
-      "num/literal": async function* (entry) { sharedEvals++; return entry.out as number; },
+      "num/literal": async function* (entry) {
+        sharedEvals++;
+        return entry.out as number;
+      },
       "num/add": async function* () {
         return ((yield 0) as number) + ((yield 1) as number);
       },
@@ -206,7 +228,7 @@ describe("edge cases: GC stress", () => {
       adj[`n${i}`] = { kind: "num/add", children: [`n${i - 1}`, "n0"], out: undefined };
     }
     const prog = app(add(numLit(1), numLit(2)));
-    const d = dirty(prog);
+    const _d = dirty(prog);
     // Manually construct a dirty expr with the big adj
     const bigDirty = { __id: "n99", __adj: { ...adj }, __counter: "z" } as any;
     const cleaned = gc(bigDirty);
@@ -249,7 +271,7 @@ describe("edge cases: interleaved operations", () => {
     );
     // mapWhere changes the entry: literals become 30, 40, 50
     // add(30,40)=70, mul(70,50)=3500
-    expect(await fold(mapped, interp)).toBe(3500);
+    expect(await fold(commit(mapped), interp)).toBe(3500);
   });
 
   test("replace -> dirty -> addEntry -> gc -> commit -> fold", async () => {
@@ -258,7 +280,9 @@ describe("edge cases: interleaved operations", () => {
     const d = dirty(replaced);
     // Add an unreachable node
     const withOrphan = addEntry(d, "orphan", {
-      kind: "num/literal", children: [] as string[], out: 999,
+      kind: "num/literal",
+      children: [] as string[],
+      out: 999,
     } as any);
     const cleaned = gc(withOrphan);
     const committed = commit(cleaned);

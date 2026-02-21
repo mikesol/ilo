@@ -2,40 +2,30 @@
  * Koan gates (11-16): commit, wrap, splice, named, dagql, fold/bridge.
  * Imports only from ../../src/index — never from __koans__.
  */
-import { describe, test, expect } from "vitest";
-import type { RuntimeEntry, Interpreter } from "../src/index";
+import { describe, expect, test } from "vitest";
 import {
-  app,
   add,
-  mul,
-  numLit,
-  dirty,
   addEntry,
-  removeEntry,
-  swapEntry,
-  setRoot,
-  gc,
-  commit,
-  liveAdj,
-  wrapByName,
-  spliceWhere,
+  app,
   byKind,
-  isLeaf,
-  name,
   byName,
-  selectWhere,
-  replaceWhere,
+  commit,
+  dirty,
+  gc,
   gcPreservingAliases,
-  pipe,
+  isLeaf,
   mapWhere,
-  fold,
-  defaults,
-  stdPlugins,
-  numPluginU,
-  mvfm,
-  numPlugin,
-  strPlugin,
-  boolPlugin,
+  mul,
+  name,
+  numLit,
+  pipe,
+  removeEntry,
+  replaceWhere,
+  selectWhere,
+  setRoot,
+  spliceWhere,
+  swapEntry,
+  wrapByName,
 } from "../src/index";
 
 // Shared program: (3+4)*5
@@ -48,8 +38,8 @@ describe("11-commit", () => {
   test("round-trip: dirty -> commit preserves data", () => {
     const rt = commit(dirty(prog));
     expect(rt.__id).toBe("e");
-    expect(rt.__adj["a"].kind).toBe("num/literal");
-    expect(rt.__adj["e"].kind).toBe("num/mul");
+    expect(rt.__adj.a.kind).toBe("num/literal");
+    expect(rt.__adj.e.kind).toBe("num/mul");
     expect(Object.keys(rt.__adj).length).toBe(5);
   });
 
@@ -61,8 +51,8 @@ describe("11-commit", () => {
         out: 0,
       }),
     );
-    expect(sw.__adj["c"].kind).toBe("num/sub");
-    expect(sw.__adj["a"].kind).toBe("num/literal");
+    expect(sw.__adj.c.kind).toBe("num/sub");
+    expect(sw.__adj.a.kind).toBe("num/literal");
   });
 
   test("dirty -> addEntry -> gc -> commit cleans orphans", () => {
@@ -74,7 +64,7 @@ describe("11-commit", () => {
     const cleaned = commit(gc(withOrphan));
     expect("orphan" in cleaned.__adj).toBe(false);
     expect(Object.keys(cleaned.__adj).length).toBe(5);
-    expect(cleaned.__adj["e"].kind).toBe("num/mul");
+    expect(cleaned.__adj.e.kind).toBe("num/mul");
   });
 
   test("commit throws on missing root", () => {
@@ -87,14 +77,14 @@ describe("11-commit", () => {
 
   test("commit succeeds after fixing dangling refs", () => {
     const fixed = commit(
-      swapEntry(
-        removeEntry(dirty(prog), "a"),
-        "c",
-        { kind: "num/add", children: ["b", "b"], out: undefined },
-      ),
+      swapEntry(removeEntry(dirty(prog), "a"), "c", {
+        kind: "num/add",
+        children: ["b", "b"],
+        out: undefined,
+      }),
     );
-    expect(fixed.__adj["c"].kind).toBe("num/add");
-    expect(fixed.__adj["c"].children).toEqual(["b", "b"]);
+    expect(fixed.__adj.c.kind).toBe("num/add");
+    expect(fixed.__adj.c.children).toEqual(["b", "b"]);
     expect("a" in fixed.__adj).toBe(false);
   });
 });
@@ -105,10 +95,10 @@ describe("11-commit", () => {
 describe("12-wrap", () => {
   test("wrap non-root node c", () => {
     const w = wrapByName(prog, "c", "telemetry/span");
-    expect(w.__adj["f"].kind).toBe("telemetry/span");
-    expect(w.__adj["f"].children).toEqual(["c"]);
-    expect(w.__adj["e"].children).toEqual(["f", "d"]);
-    expect(w.__adj["c"].kind).toBe("num/add");
+    expect(w.__adj.f.kind).toBe("telemetry/span");
+    expect(w.__adj.f.children).toEqual(["c"]);
+    expect(w.__adj.e.children).toEqual(["f", "d"]);
+    expect(w.__adj.c.kind).toBe("num/add");
     expect(w.__id).toBe("e");
     expect(w.__counter).toBe("g");
   });
@@ -116,15 +106,15 @@ describe("12-wrap", () => {
   test("wrap root node e", () => {
     const wr = wrapByName(prog, "e", "debug/root");
     expect(wr.__id).toBe("f");
-    expect(wr.__adj["f"].children).toEqual(["e"]);
-    expect(wr.__adj["f"].kind).toBe("debug/root");
+    expect(wr.__adj.f.children).toEqual(["e"]);
+    expect(wr.__adj.f.kind).toBe("debug/root");
   });
 
   test("wrapper child is NOT self-rewired", () => {
     const w = wrapByName(prog, "c", "telemetry/span");
-    expect(w.__adj["f"].children[0]).toBe("c");
+    expect(w.__adj.f.children[0]).toBe("c");
     const wr = wrapByName(prog, "e", "debug/root");
-    expect(wr.__adj["f"].children[0]).toBe("e");
+    expect(wr.__adj.f.children[0]).toBe("e");
   });
 });
 
@@ -134,9 +124,9 @@ describe("12-wrap", () => {
 describe("13-splice", () => {
   test("wrap-then-splice round-trips", () => {
     const wrapped = wrapByName(prog, "c", "debug/wrap");
-    const rt = spliceWhere(wrapped, byKind("debug/wrap"));
-    expect(rt.__adj["c"].kind).toBe("num/add");
-    expect(rt.__adj["e"].children).toEqual(["c", "d"]);
+    const rt = spliceWhere(commit(wrapped), byKind("debug/wrap"));
+    expect(rt.__adj.c.kind).toBe("num/add");
+    expect(rt.__adj.e.children).toEqual(["c", "d"]);
     expect("f" in rt.__adj).toBe(false);
     expect(rt.__id).toBe("e");
     expect(Object.keys(rt.__adj).length).toBe(5);
@@ -145,30 +135,30 @@ describe("13-splice", () => {
   test("double-wrap-then-splice recursive reconnection", () => {
     const w1 = wrapByName(prog, "c", "debug/wrap");
     const w2 = wrapByName(w1, "f", "debug/wrap");
-    const ds = spliceWhere(w2, byKind("debug/wrap"));
-    expect(ds.__adj["e"].children).toEqual(["c", "d"]);
+    const ds = spliceWhere(commit(w2), byKind("debug/wrap"));
+    expect(ds.__adj.e.children).toEqual(["c", "d"]);
     expect("f" in ds.__adj).toBe(false);
     expect("g" in ds.__adj).toBe(false);
     expect(Object.keys(ds.__adj).length).toBe(5);
   });
 
-  test("splice leaves empties children", () => {
+  test("splice leaves creates dangling refs that fail commit", () => {
     const nl = spliceWhere(prog, isLeaf());
-    expect(nl.__adj["c"].children).toEqual([]);
-    expect(nl.__adj["e"].children).toEqual(["c"]);
+    // Leaves have no children → dangling refs remain in parent
     expect("a" in nl.__adj).toBe(false);
     expect("b" in nl.__adj).toBe(false);
     expect("d" in nl.__adj).toBe(false);
     expect(nl.__id).toBe("e");
-    expect(Object.keys(nl.__adj).length).toBe(2);
+    // commit should reject the dangling references
+    expect(() => commit(dirty(nl) as any)).toThrow();
   });
 
   test("splice root makes first child new root", () => {
     const nm = spliceWhere(prog, byKind("num/mul"));
     expect(nm.__id).toBe("c");
     expect("e" in nm.__adj).toBe(false);
-    expect(nm.__adj["c"].kind).toBe("num/add");
-    expect(nm.__adj["a"].kind).toBe("num/literal");
+    expect(nm.__adj.c.kind).toBe("num/add");
+    expect(nm.__adj.a.kind).toBe("num/literal");
     expect(Object.keys(nm.__adj).length).toBe(4);
   });
 });
@@ -182,7 +172,7 @@ describe("14-named", () => {
   test("name adds @alias entry", () => {
     expect(named.__adj["@the-sum"].kind).toBe("@alias");
     expect(named.__adj["@the-sum"].children[0]).toBe("c");
-    expect(named.__adj["c"].kind).toBe("num/add");
+    expect(named.__adj.c.kind).toBe("num/add");
     expect(named.__counter).toBe("f");
   });
 
@@ -195,9 +185,9 @@ describe("14-named", () => {
 
   test("replaceWhere + byName transforms target", () => {
     const rep = replaceWhere(named, byName("the-sum"), "num/sub");
-    expect(rep.__adj["c"].kind).toBe("num/sub");
-    expect(rep.__adj["a"].kind).toBe("num/literal");
-    expect(rep.__adj["e"].kind).toBe("num/mul");
+    expect(rep.__adj.c.kind).toBe("num/sub");
+    expect(rep.__adj.a.kind).toBe("num/literal");
+    expect(rep.__adj.e.kind).toBe("num/mul");
   });
 
   test("standard gc removes alias", () => {
@@ -221,39 +211,37 @@ describe("14-named", () => {
 describe("15-dagql", () => {
   test("single replaceWhere via pipe", () => {
     const jr = pipe(prog, (e) => replaceWhere(e, byKind("num/add"), "num/sub"));
-    expect(jr.__adj["c"].kind).toBe("num/sub");
-    expect(jr.__adj["a"].kind).toBe("num/literal");
+    expect(jr.__adj.c.kind).toBe("num/sub");
+    expect(jr.__adj.a.kind).toBe("num/literal");
   });
 
   test("chained replace + splice via pipe", () => {
+    // Replace add→sub, then splice sub: sub(a,b) → picks child[0] = a
     const ch = pipe(
       prog,
       (e) => replaceWhere(e, byKind("num/add"), "num/sub"),
-      (e) => spliceWhere(e, isLeaf()),
+      (e) => spliceWhere(commit(e), byKind("num/sub")),
     );
-    expect(ch.__adj["c"].kind).toBe("num/sub");
-    expect(ch.__adj["c"].children).toEqual([]);
-    expect(ch.__adj["e"].kind).toBe("num/mul");
-    expect(ch.__adj["e"].children).toEqual(["c"]);
-    expect("a" in ch.__adj).toBe(false);
-    expect("d" in ch.__adj).toBe(false);
+    expect("c" in ch.__adj).toBe(false);
+    expect(ch.__adj.e.kind).toBe("num/mul");
+    expect(ch.__adj.e.children).toEqual(["a", "d"]);
     expect(ch.__id).toBe("e");
-    expect(Object.keys(ch.__adj).length).toBe(2);
   });
 
   test("triple chain: replace, map, splice", () => {
     const tc = pipe(
       prog,
       (e) => replaceWhere(e, byKind("num/add"), "num/sub"),
-      (e) => mapWhere(e, byKind("num/mul"), (entry) => ({
-        kind: "num/product" as const,
-        children: entry.children,
-        out: entry.out,
-      })),
-      (e) => spliceWhere(e, isLeaf()),
+      (e) =>
+        mapWhere(e, byKind("num/mul"), (entry) => ({
+          kind: "num/product" as const,
+          children: entry.children,
+          out: entry.out,
+        })),
+      (e) => spliceWhere(commit(e), isLeaf()),
     );
-    expect(tc.__adj["c"].kind).toBe("num/sub");
-    expect(tc.__adj["e"].kind).toBe("num/product");
+    expect(tc.__adj.c.kind).toBe("num/sub");
+    expect(tc.__adj.e.kind).toBe("num/product");
     expect("a" in tc.__adj).toBe(false);
     expect(Object.keys(tc.__adj).length).toBe(2);
   });

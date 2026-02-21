@@ -4,11 +4,12 @@
  * wrapByName inserts a new node between a target and all its parents.
  * The wrapper gets the target's output type and the next counter ID.
  * Critical: the wrapper itself must NOT have its child rewired to itself.
+ *
+ * Returns DirtyExpr requiring explicit commit() before fold.
  */
 
-import type { RewireAdj } from "./dirty";
+import type { DirtyExpr, RewireAdj } from "./dirty";
 import type { NExpr, NodeEntry, RuntimeEntry } from "./expr";
-import { makeNExpr } from "./expr";
 import type { Increment } from "./increment";
 import { incrementId } from "./increment";
 import { remapChildren } from "./structural-children";
@@ -43,7 +44,7 @@ type WrapRoot<
   WrapperID extends string,
 > = R extends TargetID ? WrapperID : R;
 
-/** Insert a wrapper node above the target, rewiring all parents. */
+/** Insert a wrapper node above the target. Returns DirtyExpr. */
 export function wrapByName<
   O,
   R extends string,
@@ -52,10 +53,15 @@ export function wrapByName<
   TargetID extends string,
   WrapperKind extends string,
 >(
-  expr: NExpr<O, R, Adj, C>,
+  expr: NExpr<O, R, Adj, C> | DirtyExpr<O, R, Adj, C>,
   targetId: TargetID,
   wrapperKind: WrapperKind,
-): NExpr<O, WrapRoot<R, TargetID, C>, WrapOneResult<Adj, TargetID, WrapperKind, C>, Increment<C>> {
+): DirtyExpr<
+  O,
+  WrapRoot<R, TargetID, C>,
+  WrapOneResult<Adj, TargetID, WrapperKind, C>,
+  Increment<C>
+> {
   const wrapperId = expr.__counter;
   const nextCounter = incrementId(wrapperId);
   const targetEntry = expr.__adj[targetId];
@@ -75,5 +81,9 @@ export function wrapByName<
   };
 
   const newRoot = expr.__id === targetId ? wrapperId : expr.__id;
-  return makeNExpr(newRoot, newAdj, nextCounter) as any;
+  return {
+    __id: newRoot,
+    __adj: newAdj,
+    __counter: nextCounter,
+  } as any;
 }

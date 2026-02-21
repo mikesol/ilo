@@ -15,7 +15,7 @@
  */
 
 import type { NExpr, OutOf, RuntimeEntry } from "./expr";
-import type { FoldYield, Handler, Interpreter, RecurseScopedEffect } from "./plugin";
+import type { FoldYield, Interpreter, RecurseScopedEffect } from "./plugin";
 
 // ─── Volatile kinds ─────────────────────────────────────────────────
 
@@ -127,7 +127,6 @@ export async function fold(
 
     const scoped = resolveScopedParam(id, entry);
     if (scoped.found) {
-      // biome-ignore lint/correctness/useYield: leaf scoped param returns directly
       const gen = (async function* () {
         return scoped.value;
       })();
