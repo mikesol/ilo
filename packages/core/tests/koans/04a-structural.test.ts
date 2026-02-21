@@ -12,7 +12,7 @@ test("koan gate 04a-structural: records/tuples containing CExpr are elaborated",
   const recordNode = prog.__adj[childRef];
   expect(recordNode.kind).toBe("core/record");
 
-  const fields = recordNode.children as Record<string, string>;
+  const fields = recordNode.out as Record<string, string>;
   expect(prog.__adj[fields.x]?.kind).toBe("num/add");
   expect(prog.__adj[fields.y]?.kind).toBe("num/literal");
 });

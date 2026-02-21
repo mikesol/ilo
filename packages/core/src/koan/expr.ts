@@ -12,7 +12,7 @@ export type NodeEntry<Kind extends string, ChildIDs extends string[], Out> = {
 /** Runtime adjacency entry. */
 export interface RuntimeEntry {
   kind: string;
-  children: unknown;
+  children: string[];
   out: unknown;
 }
 
@@ -48,10 +48,7 @@ export function makeCExpr<O, Kind extends string, Args extends readonly unknown[
 /** Runtime CExpr detector. */
 export function isCExpr(x: unknown): x is CExpr<unknown> {
   return (
-    typeof x === "object" &&
-    x !== null &&
-    CREF in x &&
-    (x as { [CREF]?: unknown })[CREF] === true
+    typeof x === "object" && x !== null && CREF in x && (x as { [CREF]?: unknown })[CREF] === true
   );
 }
 
