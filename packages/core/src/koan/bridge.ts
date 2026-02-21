@@ -11,17 +11,29 @@ export function defaults(
   overrides: Record<string, Interpreter> = {},
 ): Interpreter {
   const out: Interpreter = {};
+  const kindOwner = new Map<string, string>();
   for (const plugin of plugins) {
+    let interp: Interpreter;
     if (plugin.name in overrides) {
-      Object.assign(out, overrides[plugin.name]);
+      interp = overrides[plugin.name];
+    } else if (plugin.defaultInterpreter) {
+      interp = plugin.defaultInterpreter();
+    } else if (plugin.nodeKinds.length === 0) {
       continue;
+    } else {
+      throw new Error(`Plugin "${plugin.name}" has no defaultInterpreter and no override`);
     }
-    if (plugin.defaultInterpreter) {
-      Object.assign(out, plugin.defaultInterpreter());
-      continue;
+
+    for (const [kind, handler] of Object.entries(interp)) {
+      const existingOwner = kindOwner.get(kind);
+      if (existingOwner) {
+        throw new Error(
+          `defaults: duplicate interpreter for "${kind}" from "${plugin.name}" (already registered by "${existingOwner}")`,
+        );
+      }
+      kindOwner.set(kind, plugin.name);
+      out[kind] = handler;
     }
-    if (plugin.nodeKinds.length === 0) continue;
-    throw new Error(`Plugin "${plugin.name}" has no defaultInterpreter and no override`);
   }
   return out;
 }

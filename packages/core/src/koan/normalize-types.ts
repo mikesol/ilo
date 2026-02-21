@@ -4,6 +4,95 @@ import type { Increment } from "./increment";
 /** Never-safe conditional helper used by recursive elaboration types. */
 export type NeverGuard<T, Then = never> = [T] extends [never] ? never : Then;
 
+type ElaborateTupleArg<
+  Reg,
+  Arg extends readonly unknown[],
+  Expected extends readonly unknown[],
+  Adj,
+  Ctr extends string,
+> = NeverGuard<
+  ElaborateChildren<Reg, Arg, Expected, Adj, Ctr>,
+  ElaborateChildren<Reg, Arg, Expected, Adj, Ctr> extends [
+    infer A2,
+    infer C2 extends string,
+    infer Ids extends string[],
+  ]
+    ? [A2 & Record<C2, NodeEntry<"core/tuple", [], Ids>>, Increment<C2>, C2, Expected]
+    : never
+>;
+
+type ObjectKeys<T> = Extract<keyof T, string>;
+
+type ElaborateObjectFields<
+  Reg,
+  Arg extends object,
+  Expected extends object,
+  Remaining extends string,
+  Adj,
+  Ctr extends string,
+  OutMap extends Record<string, string> = {},
+> = [Remaining] extends [never]
+  ? [Adj, Ctr, OutMap]
+  : Remaining extends infer K extends string
+    ? K extends keyof Expected
+      ? K extends keyof Arg
+        ? NeverGuard<
+            ElaborateArg<Reg, Arg[K], Expected[K], Adj, Ctr>,
+            ElaborateArg<Reg, Arg[K], Expected[K], Adj, Ctr> extends [
+              infer A2,
+              infer C2 extends string,
+              infer Id extends string,
+              unknown,
+            ]
+              ? NeverGuard<
+                  ElaborateObjectFields<
+                    Reg,
+                    Arg,
+                    Expected,
+                    Exclude<Remaining, K>,
+                    A2,
+                    C2,
+                    OutMap & Record<K, Id>
+                  >,
+                  ElaborateObjectFields<
+                    Reg,
+                    Arg,
+                    Expected,
+                    Exclude<Remaining, K>,
+                    A2,
+                    C2,
+                    OutMap & Record<K, Id>
+                  > extends [
+                    infer A3,
+                    infer C3 extends string,
+                    infer M extends Record<string, string>,
+                  ]
+                    ? [A3, C3, M]
+                    : never
+                >
+              : never
+          >
+        : never
+      : never
+    : never;
+
+type ElaborateObjectArg<
+  Reg,
+  Arg extends object,
+  Expected extends object,
+  Adj,
+  Ctr extends string,
+> = NeverGuard<
+  ElaborateObjectFields<Reg, Arg, Expected, ObjectKeys<Expected>, Adj, Ctr>,
+  ElaborateObjectFields<Reg, Arg, Expected, ObjectKeys<Expected>, Adj, Ctr> extends [
+    infer A2,
+    infer C2 extends string,
+    infer M extends Record<string, string>,
+  ]
+    ? [A2 & Record<C2, NodeEntry<"core/record", [], M>>, Increment<C2>, C2, Expected]
+    : never
+>;
+
 type ElaborateArg<Reg, Arg, Expected, Adj, Ctr extends string> =
   Arg extends CExpr<unknown, infer K extends string, infer A extends readonly unknown[]>
     ? NeverGuard<
@@ -19,11 +108,19 @@ type ElaborateArg<Reg, Arg, Expected, Adj, Ctr extends string> =
             : never
           : never
       >
-    : Arg extends Expected
-      ? LiftKind<Expected> extends infer LK extends string
-        ? [Adj & Record<Ctr, NodeEntry<LK, [], Expected>>, Increment<Ctr>, Ctr, Expected]
+    : Expected extends readonly unknown[]
+      ? Arg extends readonly unknown[]
+        ? ElaborateTupleArg<Reg, Arg, Expected, Adj, Ctr>
         : never
-      : never;
+      : Expected extends object
+        ? Arg extends object
+          ? ElaborateObjectArg<Reg, Arg, Expected, Adj, Ctr>
+          : never
+        : Arg extends Expected
+          ? LiftKind<Expected> extends infer LK extends string
+            ? [Adj & Record<Ctr, NodeEntry<LK, [], Expected>>, Increment<Ctr>, Ctr, Expected]
+            : never
+          : never;
 
 type ElaborateChildren<
   Reg,

@@ -39,7 +39,7 @@ export type MatchingEntries<Adj, P> = {
  * Check that NewEntry output type extends all matched entries' output types.
  * Returns true when safe (or no matches), false on any mismatch.
  */
-type MapTypeSafe<Adj, P, NewEntry extends NodeEntry<string, string[], unknown>> = keyof {
+export type MapTypeSafe<Adj, P, NewEntry extends NodeEntry<string, string[], unknown>> = keyof {
   [K in keyof Adj as K extends string
     ? EvalPred<P, Adj[K], K, Adj> extends true
       ? Adj[K] extends NodeEntry<string, string[], infer MO>
