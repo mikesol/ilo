@@ -5,7 +5,21 @@
  * Split from plugin.ts to stay under 300-line limit.
  */
 
-import { abs, add, ceil, div, floor, max, min, mod, mul, neg, numLit, round, sub } from "./constructors";
+import {
+  abs,
+  add,
+  ceil,
+  div,
+  floor,
+  max,
+  min,
+  mod,
+  mul,
+  neg,
+  numLit,
+  round,
+  sub,
+} from "./constructors";
 import type { Interpreter, TraitDef } from "./plugin";
 import type { KindSpec } from "./registry";
 import { boolPlugin as _boolPlugin } from "./std-plugins-bool";
@@ -178,8 +192,6 @@ export const numPlugin = {
 } as const;
 
 // Str, bool, and ord plugins split to separate files to stay under 300-line limit.
-import { boolPlugin as _boolPlugin } from "./std-plugins-bool";
-import { strPlugin as _strPlugin } from "./std-plugins-str";
 export { boolPlugin } from "./std-plugins-bool";
 export { lt, ordPlugin } from "./std-plugins-ord";
 export { strPlugin } from "./std-plugins-str";
