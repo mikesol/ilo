@@ -92,8 +92,11 @@ export async function createPlaygroundScope(
     createCrystalBallResendClient(),
   );
 
+  // Exclude core exports whose names clash with common example variable names
+  // (e.g. `const app = mvfm(prelude)` conflicts with core's `app` export).
+  const { app: _app, ...coreRest } = core as Record<string, unknown>;
   const injected: Record<string, unknown> = {
-    ...core,
+    ...coreRest,
     console_: pluginConsole.consolePlugin(),
     ...consoleRest,
     zod: pluginZod.zod,
