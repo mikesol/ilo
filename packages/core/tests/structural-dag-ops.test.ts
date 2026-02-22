@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import type { CExpr, KindSpec, Plugin } from "../src/index";
 import {
   add,
-  boolPluginU,
+  boolPlugin,
   commit,
   createApp,
   dirty,
@@ -17,8 +17,8 @@ import {
   gc,
   makeCExpr,
   mul,
-  numPluginU,
-  strPluginU,
+  numPlugin,
+  strPlugin,
   sub,
 } from "../src/index";
 import { createTestInterp } from "./kitchen-sink-helpers";
@@ -62,7 +62,7 @@ const pairPlugin = {
   shapes: { "data/pair": ["number", "number"] },
 } satisfies Plugin;
 
-const appS = createApp(numPluginU, strPluginU, boolPluginU, geomPlugin, pairPlugin);
+const appS = createApp(numPlugin, strPlugin, boolPlugin, geomPlugin, pairPlugin);
 
 // ═════════════════════════════════════════════════════════════════════
 // GC must preserve structural children

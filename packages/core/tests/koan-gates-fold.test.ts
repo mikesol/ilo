@@ -12,10 +12,9 @@ import {
   defaults,
   fold,
   mul,
-  mvfm,
+  mvfmU,
   numLit,
   numPlugin,
-  numPluginU,
   pipe,
   replaceWhere,
   stdPlugins,
@@ -220,7 +219,7 @@ describe("16-bridge", () => {
   });
 
   test("individual unified plugin in defaults", async () => {
-    expect(await fold<number>(prog.__id, prog.__adj, defaults([numPluginU]))).toBe(35);
+    expect(await fold<number>(prog.__id, prog.__adj, defaults([numPlugin]))).toBe(35);
   });
 
   test("unified plugin with override", async () => {
@@ -262,7 +261,7 @@ describe("16-bridge", () => {
       defaultInterpreter: () => eqI,
     };
     const fi = defaults([numPD, strPD, boolPD, fpEq]);
-    const $ = mvfm(numPlugin, strPlugin, boolPlugin);
+    const $ = mvfmU(numPlugin, strPlugin, boolPlugin);
 
     expect(await fold<boolean>(app($.eq(3, 4)).__id, app($.eq(3, 4)).__adj, fi)).toBe(false);
     expect(await fold<boolean>(app($.eq(3, 3)).__id, app($.eq(3, 3)).__adj, fi)).toBe(true);

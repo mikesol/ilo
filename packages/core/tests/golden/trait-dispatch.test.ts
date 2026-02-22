@@ -10,7 +10,7 @@ import {
   fold,
   type Interpreter,
   lt,
-  mvfm,
+  mvfmU,
   numPlugin,
   ordPlugin,
   pipe,
@@ -139,7 +139,7 @@ describe("nested trait dispatch", () => {
 // Trait dispatch with mvfm
 // ═════════════════════════════════════════════════════════════════
 describe("trait dispatch with mvfm", () => {
-  const $ = mvfm(numPlugin, strPlugin, boolPlugin);
+  const $ = mvfmU(numPlugin, strPlugin, boolPlugin);
 
   test("$.eq(3, 4) produces CExpr with kind 'eq'", () => {
     const expr = $.eq(3, 4);

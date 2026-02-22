@@ -202,9 +202,9 @@ describe("state management golden tests", () => {
   // Volatile behavior: production fold skips memoization for st/get nodes.
   // The koan fold memoizes ALL nodes. These tests document expected behavior.
   describe("volatile behavior documentation", () => {
-    test("same get node is memoized (koan fold limitation)", async () => {
-      // Two seq steps yield the same st/get "g", but fold memoizes it.
-      // Production fold with VOLATILE_KINDS would re-evaluate, returning 5.
+    test("same get node re-evaluates with volatile fold", async () => {
+      // Two seq steps yield the same st/get "g". With VOLATILE_KINDS,
+      // st/get is re-evaluated each time, so it returns the updated value 5.
       const { interp } = makeStInterp();
       const adj: Record<string, RuntimeEntry> = {
         init: { kind: "num/literal", children: [], out: 0 },
@@ -214,8 +214,8 @@ describe("state management golden tests", () => {
         body: { kind: "st/seq", children: ["g", "s", "g"], out: undefined },
         root: { kind: "st/let", children: ["init", "body"], out: undefined },
       };
-      // Koan fold: memoized stale value. Production volatile fold: 5.
-      expect(await fold<number>("root", adj, interp)).toBe(0);
+      // Volatile fold: st/get skips memoization, returns fresh value 5.
+      expect(await fold<number>("root", adj, interp)).toBe(5);
     });
 
     test("distinct get nodes avoid memoization issue", async () => {

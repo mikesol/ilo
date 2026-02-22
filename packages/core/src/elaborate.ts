@@ -68,6 +68,26 @@ function elaborate(
       if (cexpr.__kind === "core/access") return visitAccess(cexpr);
       return visit(value)[0];
     }
+    // Dynamic shape: walk value's own structure
+    if (shape === "*") {
+      if (Array.isArray(value)) {
+        return value.map((v) => visitStructural(v, "*"));
+      }
+      if (typeof value === "object" && value !== null) {
+        const result: Record<string, unknown> = {};
+        for (const key of Object.keys(value)) {
+          result[key] = visitStructural((value as Record<string, unknown>)[key], "*");
+        }
+        return result;
+      }
+      const typeTag = typeof value;
+      const lk = liftMap[typeTag];
+      if (!lk) throw new Error(`Cannot lift ${typeTag}`);
+      const nid = counter;
+      counter = incrementId(counter);
+      entries[nid] = { kind: lk, children: [], out: value };
+      return nid;
+    }
     if (Array.isArray(shape) && Array.isArray(value)) {
       return value.map((v, i) => visitStructural(v, shape[i]));
     }
@@ -103,8 +123,18 @@ function elaborate(
 
       if (kind in traitMap) {
         const childResults = args.map((a) => visit(a));
-        const childType = childResults[0][1];
-        const resolved = traitMap[kind]?.[childType];
+        // Resolve trait using first non-"object"/"unknown" type, fallback to first
+        let childType = childResults[0][1];
+        if ((childType === "object" || childType === "unknown") && childResults.length > 1) {
+          const alt = childResults[1][1];
+          if (alt !== "object" && alt !== "unknown") childType = alt;
+        }
+        let resolved = traitMap[kind]?.[childType];
+        // Fallback: for "object"/"unknown" types, try to pick any available implementation
+        if (!resolved && (childType === "object" || childType === "unknown")) {
+          const available = Object.values(traitMap[kind] ?? {});
+          if (available.length > 0) resolved = available[0];
+        }
         if (!resolved) {
           throw new Error(`No trait "${kind}" instance for type "${childType}"`);
         }
@@ -112,7 +142,13 @@ function elaborate(
         const childIds = childResults.map(([id]) => id);
         const nodeId = counter;
         counter = incrementId(counter);
-        if (kindInputs[kind] && childResults[1][1] !== childResults[0][1]) {
+        // Type mismatch check for binary traits (skip when either arg is object/unknown)
+        if (
+          childResults.length > 1 &&
+          childResults[0][1] !== "object" && childResults[0][1] !== "unknown" &&
+          childResults[1][1] !== "object" && childResults[1][1] !== "unknown" &&
+          childResults[1][1] !== childResults[0][1]
+        ) {
           throw new Error(
             `Trait "${cexpr.__kind}": args have different types (${childResults[0][1]} vs ${childResults[1][1]})`,
           );
@@ -135,7 +171,7 @@ function elaborate(
       for (let i = 0; i < args.length; i++) {
         const exp = expectedInputs ? expectedInputs[i] : undefined;
         const [childId, childType] = visit(args[i], exp);
-        if (exp && childType !== exp) {
+        if (exp && childType !== exp && childType !== "unknown" && childType !== "object") {
           throw new Error(`${kind}: expected ${exp} for arg ${i}, got ${childType}`);
         }
         childIds.push(childId);

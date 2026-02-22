@@ -3,7 +3,6 @@ import {
   add,
   app,
   boolPlugin,
-  boolPluginU,
   byKind,
   byName,
   commit,
@@ -16,12 +15,10 @@ import {
   isLeaf,
   lt,
   mul,
-  mvfm,
   mvfmU,
   name,
   numLit,
   numPlugin,
-  numPluginU,
   ordPlugin,
   type PluginDef,
   pipe,
@@ -31,7 +28,6 @@ import {
   spliceWhere,
   stdPlugins,
   strPlugin,
-  strPluginU,
   sub,
 } from "../../src/index";
 
@@ -63,7 +59,7 @@ const fpEq: PluginDef = {
 };
 const fullInterp = defaults([...stdPlugins, fpEq]);
 const numInterp = defaults(stdPlugins);
-const $ = mvfm(numPlugin, strPlugin, boolPlugin);
+const $ = mvfmU(numPlugin, strPlugin, boolPlugin);
 
 // ═════════════════════════════════════════════════════════════════════
 // Calculator programs
@@ -209,14 +205,14 @@ describe("createApp extensibility", () => {
   });
 
   test("createApp with custom plugin tuple, fold works", async () => {
-    const appCustom = createApp(numPluginU, strPluginU);
+    const appCustom = createApp(numPlugin, strPlugin);
     const prog = appCustom(add(3, 4));
-    const interp = defaults([numPluginU, strPluginU]);
+    const interp = defaults([numPlugin, strPlugin]);
     expect(await fold(prog, interp)).toBe(7);
   });
 
   test("unified plugins via mvfmU -> app -> fold", async () => {
-    const $u = mvfmU(numPluginU, strPluginU, boolPluginU);
+    const $u = mvfmU(numPlugin, strPlugin, boolPlugin);
     const prog = app($u.mul($u.add(2, 3), 4));
     const interp = defaults(stdPlugins);
     expect(await fold(prog, interp)).toBe(20);

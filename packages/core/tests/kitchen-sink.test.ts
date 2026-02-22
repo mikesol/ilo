@@ -9,7 +9,7 @@ import type { CExpr, KindSpec, Plugin } from "../src/index";
 import {
   add,
   app,
-  boolPluginU,
+  boolPlugin,
   byKind,
   commit,
   createApp,
@@ -22,11 +22,11 @@ import {
   makeCExpr,
   mul,
   name,
-  numPluginU,
+  numPlugin,
   pipe,
   replaceWhere,
   selectWhere,
-  strPluginU,
+  strPlugin,
   sub,
 } from "../src/index";
 import { createTestInterp } from "./kitchen-sink-helpers";
@@ -52,7 +52,7 @@ const geomPlugin = {
   shapes: { "geom/point": { x: "number", y: "number" } },
 } satisfies Plugin;
 
-const appS = createApp(numPluginU, strPluginU, boolPluginU, geomPlugin);
+const appS = createApp(numPlugin, strPlugin, boolPlugin, geomPlugin);
 
 // ═════════════════════════════════════════════════════════════════════
 // PHASE 1: Build -> elaborate -> fold -> verify

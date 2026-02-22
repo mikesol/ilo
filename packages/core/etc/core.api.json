@@ -1115,61 +1115,11 @@
         {
           "kind": "Variable",
           "canonicalReference": "@mvfm/core!boolPlugin:var",
-          "docComment": "/**\n * Standard boolean operations plugin (simple form).\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "boolPlugin: "
-            },
-            {
-              "kind": "Content",
-              "text": "{\n    readonly ctors: {\n        readonly boolLit: typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "boolLit",
-              "canonicalReference": "@mvfm/core!boolLit:function"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    };\n    readonly kinds: {\n        readonly \"bool/literal\": "
-            },
-            {
-              "kind": "Reference",
-              "text": "KindSpec",
-              "canonicalReference": "@mvfm/core!KindSpec:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<[], boolean>;\n        readonly \"bool/eq\": "
-            },
-            {
-              "kind": "Reference",
-              "text": "KindSpec",
-              "canonicalReference": "@mvfm/core!KindSpec:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<[boolean, boolean], boolean>;\n    };\n    readonly traits: {\n        readonly eq: {\n            readonly boolean: \"bool/eq\";\n        };\n    };\n}"
-            }
-          ],
-          "fileUrlPath": "dist/plugin-simple.d.ts",
-          "isReadonly": true,
-          "releaseTag": "Public",
-          "name": "boolPlugin",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 8
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "@mvfm/core!boolPluginU:var",
           "docComment": "/**\n * Unified boolean operations plugin with interpreter.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "boolPluginU: "
+              "text": "boolPlugin: "
             },
             {
               "kind": "Content",
@@ -1224,7 +1174,7 @@
           "fileUrlPath": "dist/std-plugins.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
-          "name": "boolPluginU",
+          "name": "boolPlugin",
           "variableTypeTokenRange": {
             "startIndex": 1,
             "endIndex": 12
@@ -7921,86 +7871,6 @@
         },
         {
           "kind": "Function",
-          "canonicalReference": "@mvfm/core!mvfm:function(1)",
-          "docComment": "/**\n * Compose simple plugins into a unified constructor bag with eq.\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export declare function mvfm<const P extends "
-            },
-            {
-              "kind": "Content",
-              "text": "readonly "
-            },
-            {
-              "kind": "Reference",
-              "text": "PluginShape",
-              "canonicalReference": "@mvfm/core!PluginShape:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<any, any, any>[]"
-            },
-            {
-              "kind": "Content",
-              "text": ">(...plugins: "
-            },
-            {
-              "kind": "Content",
-              "text": "P"
-            },
-            {
-              "kind": "Content",
-              "text": "): "
-            },
-            {
-              "kind": "Reference",
-              "text": "SimpleDollarSign",
-              "canonicalReference": "@mvfm/core!~SimpleDollarSign:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<P>"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "dist/plugin-simple.d.ts",
-          "returnTypeTokenRange": {
-            "startIndex": 7,
-            "endIndex": 9
-          },
-          "releaseTag": "Public",
-          "overloadIndex": 1,
-          "parameters": [
-            {
-              "parameterName": "plugins",
-              "parameterTypeTokenRange": {
-                "startIndex": 5,
-                "endIndex": 6
-              },
-              "isOptional": false
-            }
-          ],
-          "typeParameters": [
-            {
-              "typeParameterName": "P",
-              "constraintTokenRange": {
-                "startIndex": 1,
-                "endIndex": 4
-              },
-              "defaultTypeTokenRange": {
-                "startIndex": 0,
-                "endIndex": 0
-              }
-            }
-          ],
-          "name": "mvfm"
-        },
-        {
-          "kind": "Function",
           "canonicalReference": "@mvfm/core!mvfmU:function(1)",
           "docComment": "/**\n * Compose unified plugins into a constructor bag with auto-generated trait ctors.\n */\n",
           "excerptTokens": [
@@ -8300,7 +8170,7 @@
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "export type NameAlias<Name extends "
+              "text": "export type NameAlias<_Name extends "
             },
             {
               "kind": "Content",
@@ -8337,7 +8207,7 @@
           "name": "NameAlias",
           "typeParameters": [
             {
-              "typeParameterName": "Name",
+              "typeParameterName": "_Name",
               "constraintTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
@@ -9086,97 +8956,11 @@
         {
           "kind": "Variable",
           "canonicalReference": "@mvfm/core!numPlugin:var",
-          "docComment": "/**\n * Standard numeric operations plugin (simple form).\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "numPlugin: "
-            },
-            {
-              "kind": "Content",
-              "text": "{\n    readonly ctors: {\n        readonly add: typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "add",
-              "canonicalReference": "@mvfm/core!add:function"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n        readonly mul: typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "mul",
-              "canonicalReference": "@mvfm/core!mul:function"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n        readonly numLit: typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "numLit",
-              "canonicalReference": "@mvfm/core!numLit:function"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    };\n    readonly kinds: {\n        readonly \"num/literal\": "
-            },
-            {
-              "kind": "Reference",
-              "text": "KindSpec",
-              "canonicalReference": "@mvfm/core!KindSpec:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<[], number>;\n        readonly \"num/add\": "
-            },
-            {
-              "kind": "Reference",
-              "text": "KindSpec",
-              "canonicalReference": "@mvfm/core!KindSpec:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<[number, number], number>;\n        readonly \"num/mul\": "
-            },
-            {
-              "kind": "Reference",
-              "text": "KindSpec",
-              "canonicalReference": "@mvfm/core!KindSpec:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<[number, number], number>;\n        readonly \"num/eq\": "
-            },
-            {
-              "kind": "Reference",
-              "text": "KindSpec",
-              "canonicalReference": "@mvfm/core!KindSpec:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<[number, number], boolean>;\n    };\n    readonly traits: {\n        readonly eq: {\n            readonly number: \"num/eq\";\n        };\n    };\n}"
-            }
-          ],
-          "fileUrlPath": "dist/plugin-simple.d.ts",
-          "isReadonly": true,
-          "releaseTag": "Public",
-          "name": "numPlugin",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 16
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "@mvfm/core!numPluginU:var",
           "docComment": "/**\n * Unified numeric operations plugin with interpreter.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "numPluginU: "
+              "text": "numPlugin: "
             },
             {
               "kind": "Content",
@@ -9285,7 +9069,7 @@
           "fileUrlPath": "dist/std-plugins.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
-          "name": "numPluginU",
+          "name": "numPlugin",
           "variableTypeTokenRange": {
             "startIndex": 1,
             "endIndex": 24
@@ -11114,197 +10898,6 @@
               "isOptional": false,
               "releaseTag": "Public",
               "name": "nodeKinds",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            }
-          ],
-          "extendsTokenRanges": []
-        },
-        {
-          "kind": "Interface",
-          "canonicalReference": "@mvfm/core!PluginShape:interface",
-          "docComment": "/**\n * Shape of a simple plugin: constructors, kind specs, and trait mappings.\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export interface PluginShape<Ctors extends "
-            },
-            {
-              "kind": "Reference",
-              "text": "Record",
-              "canonicalReference": "!Record:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<string, (...args: any[]) => any>"
-            },
-            {
-              "kind": "Content",
-              "text": ", Kinds extends "
-            },
-            {
-              "kind": "Reference",
-              "text": "Record",
-              "canonicalReference": "!Record:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<string, "
-            },
-            {
-              "kind": "Reference",
-              "text": "KindSpec",
-              "canonicalReference": "@mvfm/core!KindSpec:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<any, any>>"
-            },
-            {
-              "kind": "Content",
-              "text": ", Traits extends "
-            },
-            {
-              "kind": "Reference",
-              "text": "Record",
-              "canonicalReference": "!Record:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<string, "
-            },
-            {
-              "kind": "Reference",
-              "text": "Record",
-              "canonicalReference": "!Record:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<string, string>>"
-            },
-            {
-              "kind": "Content",
-              "text": "> "
-            }
-          ],
-          "fileUrlPath": "dist/plugin-simple.d.ts",
-          "releaseTag": "Public",
-          "typeParameters": [
-            {
-              "typeParameterName": "Ctors",
-              "constraintTokenRange": {
-                "startIndex": 1,
-                "endIndex": 3
-              },
-              "defaultTypeTokenRange": {
-                "startIndex": 0,
-                "endIndex": 0
-              }
-            },
-            {
-              "typeParameterName": "Kinds",
-              "constraintTokenRange": {
-                "startIndex": 4,
-                "endIndex": 8
-              },
-              "defaultTypeTokenRange": {
-                "startIndex": 0,
-                "endIndex": 0
-              }
-            },
-            {
-              "typeParameterName": "Traits",
-              "constraintTokenRange": {
-                "startIndex": 9,
-                "endIndex": 13
-              },
-              "defaultTypeTokenRange": {
-                "startIndex": 0,
-                "endIndex": 0
-              }
-            }
-          ],
-          "name": "PluginShape",
-          "preserveMemberOrder": false,
-          "members": [
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "@mvfm/core!PluginShape#ctors:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "readonly ctors: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "Ctors"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": true,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "ctors",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "@mvfm/core!PluginShape#kinds:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "readonly kinds: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "Kinds"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": true,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "kinds",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "@mvfm/core!PluginShape#traits:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "readonly traits: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "Traits"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": true,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "traits",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
@@ -14417,61 +14010,11 @@
         {
           "kind": "Variable",
           "canonicalReference": "@mvfm/core!strPlugin:var",
-          "docComment": "/**\n * Standard string operations plugin (simple form).\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "strPlugin: "
-            },
-            {
-              "kind": "Content",
-              "text": "{\n    readonly ctors: {\n        readonly strLit: typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "strLit",
-              "canonicalReference": "@mvfm/core!strLit:function"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    };\n    readonly kinds: {\n        readonly \"str/literal\": "
-            },
-            {
-              "kind": "Reference",
-              "text": "KindSpec",
-              "canonicalReference": "@mvfm/core!KindSpec:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<[], string>;\n        readonly \"str/eq\": "
-            },
-            {
-              "kind": "Reference",
-              "text": "KindSpec",
-              "canonicalReference": "@mvfm/core!KindSpec:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<[string, string], boolean>;\n    };\n    readonly traits: {\n        readonly eq: {\n            readonly string: \"str/eq\";\n        };\n    };\n}"
-            }
-          ],
-          "fileUrlPath": "dist/plugin-simple.d.ts",
-          "isReadonly": true,
-          "releaseTag": "Public",
-          "name": "strPlugin",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 8
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "@mvfm/core!strPluginU:var",
           "docComment": "/**\n * Unified string operations plugin with interpreter.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "strPluginU: "
+              "text": "strPlugin: "
             },
             {
               "kind": "Content",
@@ -14526,7 +14069,7 @@
           "fileUrlPath": "dist/std-plugins.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
-          "name": "strPluginU",
+          "name": "strPlugin",
           "variableTypeTokenRange": {
             "startIndex": 1,
             "endIndex": 12

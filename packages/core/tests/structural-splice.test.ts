@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import type { CExpr, KindSpec, Plugin } from "../src/index";
 import {
   add,
-  boolPluginU,
+  boolPlugin,
   byKind,
   commit,
   createApp,
@@ -16,9 +16,9 @@ import {
   gc,
   makeCExpr,
   mul,
-  numPluginU,
+  numPlugin,
   spliceWhere,
-  strPluginU,
+  strPlugin,
 } from "../src/index";
 import { createTestInterp } from "./kitchen-sink-helpers";
 
@@ -43,7 +43,7 @@ const geomPlugin = {
   shapes: { "geom/point": { x: "number", y: "number" } },
 } satisfies Plugin;
 
-const appS = createApp(numPluginU, strPluginU, boolPluginU, geomPlugin);
+const appS = createApp(numPlugin, strPlugin, boolPlugin, geomPlugin);
 
 // ═════════════════════════════════════════════════════════════════════
 // spliceWhere must reach inside structural children
