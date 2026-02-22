@@ -192,7 +192,9 @@ function createDefaultInterpreter(config: ResendConfig): Interpreter {
     if (!clientPromise) {
       clientPromise = dynamicImport("resend").then((moduleValue) => {
         const Resend = moduleValue.Resend as new (key: string) => Record<string, unknown>;
-        return wrapResendSdk(new Resend(config.apiKey) as Parameters<typeof wrapResendSdk>[0]);
+        return wrapResendSdk(
+          new Resend(config.apiKey) as unknown as Parameters<typeof wrapResendSdk>[0],
+        );
       });
     }
     return clientPromise;

@@ -168,7 +168,7 @@ function buildTwilioApi(): TwilioMethods["twilio"] {
         return makeCExpr("twilio/list_messages", [liftArg(params)]);
       },
     },
-  ) as TwilioMessagesResource;
+  ) as unknown as TwilioMessagesResource;
 
   const calls = Object.assign(
     (sid: string | CExpr<string>): TwilioCallContext => ({
@@ -187,7 +187,7 @@ function buildTwilioApi(): TwilioMethods["twilio"] {
         return makeCExpr("twilio/list_calls", [liftArg(params)]);
       },
     },
-  ) as TwilioCallsResource;
+  ) as unknown as TwilioCallsResource;
 
   return { messages, calls };
 }

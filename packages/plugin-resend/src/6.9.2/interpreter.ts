@@ -131,7 +131,9 @@ export const resendInterpreter: Interpreter = lazyInterpreter(() =>
           const apiKey = requiredEnv("RESEND_API_KEY");
           clientPromise = dynamicImport("resend").then((moduleValue) => {
             const Resend = moduleValue.Resend as new (key: string) => Record<string, unknown>;
-            return wrapResendSdk(new Resend(apiKey) as Parameters<typeof wrapResendSdk>[0]);
+            return wrapResendSdk(
+              new Resend(apiKey) as unknown as Parameters<typeof wrapResendSdk>[0],
+            );
           });
         }
         return clientPromise;
