@@ -327,7 +327,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-redis!clientInterpreter:function(1)",
-          "docComment": "/**\n * Creates a client-side interpreter that proxies all operations to a server.\n *\n * Each handler resolves its TypedNode children via `eval_()`, then sends the resolved data to `{baseUrl}/mvfm/execute` as a JSON POST.\n *\n * @param options - Handler options.\n *\n * @param nodeKinds - Node kinds to create handlers for.\n *\n * @returns An Interpreter that proxies all operations to the server.\n */\n",
+          "docComment": "/**\n * Creates a client-side interpreter that proxies all operations to a server.\n *\n * Each handler resolves its children via positional yields, then sends the resolved data to `{baseUrl}/mvfm/execute` as a JSON POST.\n *\n * @param options - Handler options.\n *\n * @param nodeKinds - Node kinds to create handlers for.\n *\n * @returns An Interpreter that proxies all operations to the server.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -390,7 +390,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-redis!createRedisInterpreter:function(1)",
-          "docComment": "/**\n * Creates an interpreter for `redis/*` node kinds.\n *\n * @param client - The {@link RedisClient} to execute against.\n *\n * @returns An Interpreter handling all redis node kinds.\n */\n",
+          "docComment": "/**\n * Creates an interpreter for `redis/*` node kinds using the RuntimeEntry + positional yield pattern.\n *\n * @param client - The {@link RedisClient} to execute against.\n *\n * @returns An Interpreter handling all redis node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -406,17 +406,9 @@
               "text": "): "
             },
             {
-              "kind": "Content",
-              "text": "import(\"@mvfm/core\")."
-            },
-            {
               "kind": "Reference",
               "text": "Interpreter",
               "canonicalReference": "@mvfm/plugin-redis!~Interpreter:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"redis/get\" | \"redis/set\" | \"redis/incr\" | \"redis/incrby\" | \"redis/decr\" | \"redis/decrby\" | \"redis/mget\" | \"redis/mset\" | \"redis/append\" | \"redis/getrange\" | \"redis/setrange\" | \"redis/del\" | \"redis/exists\" | \"redis/expire\" | \"redis/pexpire\" | \"redis/ttl\" | \"redis/pttl\" | \"redis/hget\" | \"redis/hset\" | \"redis/hmget\" | \"redis/hgetall\" | \"redis/hdel\" | \"redis/hexists\" | \"redis/hlen\" | \"redis/hkeys\" | \"redis/hvals\" | \"redis/hincrby\" | \"redis/lpush\" | \"redis/rpush\" | \"redis/lpop\" | \"redis/rpop\" | \"redis/llen\" | \"redis/lrange\" | \"redis/lindex\" | \"redis/lset\" | \"redis/lrem\" | \"redis/linsert\">"
             },
             {
               "kind": "Content",
@@ -426,7 +418,7 @@
           "fileUrlPath": "dist/5.4.1/interpreter.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 3,
-            "endIndex": 6
+            "endIndex": 4
           },
           "releaseTag": "Public",
           "overloadIndex": 1,
@@ -445,7 +437,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-redis!redis:function(1)",
-          "docComment": "/**\n * Redis plugin factory. Namespace: `redis/`.\n *\n * Creates a plugin that exposes string, key, hash, and list command methods for building parameterized Redis AST nodes.\n *\n * @param config - A {@link RedisConfig} object or Redis URL string.\n *\n * @returns A PluginDefinition for the redis plugin.\n */\n",
+          "docComment": "/**\n * Creates the redis plugin definition (unified Plugin type).\n *\n * This plugin has NO defaultInterpreter. You must provide one via `defaults(plugins, { redis: createRedisInterpreter(client) })`.\n *\n * @param config - A {@link RedisConfig} object or Redis URL string. Config is captured by the interpreter, not stored on AST nodes.\n *\n * @returns A unified Plugin that contributes `$.redis`.\n *\n * @example\n * ```ts\n * const plugin = redis({ host: \"127.0.0.1\" });\n * const $ = mvfmU(numPluginU, strPluginU, plugin);\n * const expr = $.redis.get(\"mykey\");\n * const nexpr = app(expr);\n * const interp = defaults([numPluginU, strPluginU, plugin], {\n *   redis: createRedisInterpreter(myClient),\n * });\n * const result = await fold(nexpr, interp);\n * ```\n *\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -466,25 +458,1006 @@
             },
             {
               "kind": "Content",
-              "text": "import(\"@mvfm/core\")."
+              "text": "{\n    name: \"redis\";\n    ctors: {\n        redis: {\n            get(key: import(\"@mvfm/core\")."
             },
             {
               "kind": "Reference",
-              "text": "PluginDefinition",
-              "canonicalReference": "@mvfm/plugin-redis!~PluginDefinition:interface"
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
             },
             {
               "kind": "Content",
-              "text": "<import(\"./types\")."
+              "text": "<string> | string): import(\"@mvfm/core\")."
             },
             {
               "kind": "Reference",
-              "text": "RedisMethods",
-              "canonicalReference": "@mvfm/plugin-redis!RedisMethods:interface"
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
             },
             {
               "kind": "Content",
-              "text": ", {}, \"redis/get\" | \"redis/set\" | \"redis/incr\" | \"redis/incrby\" | \"redis/decr\" | \"redis/decrby\" | \"redis/mget\" | \"redis/mset\" | \"redis/append\" | \"redis/getrange\" | \"redis/setrange\" | \"redis/del\" | \"redis/exists\" | \"redis/expire\" | \"redis/pexpire\" | \"redis/ttl\" | \"redis/pttl\" | \"redis/hget\" | \"redis/hset\" | \"redis/hmget\" | \"redis/hgetall\" | \"redis/hdel\" | \"redis/hexists\" | \"redis/hlen\" | \"redis/hkeys\" | \"redis/hvals\" | \"redis/hincrby\" | \"redis/lpush\" | \"redis/rpush\" | \"redis/lpop\" | \"redis/rpop\" | \"redis/llen\" | \"redis/lrange\" | \"redis/lindex\" | \"redis/lset\" | \"redis/lrem\" | \"redis/linsert\">"
+              "text": "<string | null>;\n            set(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, value: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number, ...args: (import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number)[]): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | null>;\n            incr(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            incrby(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, increment: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            decr(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            decrby(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, decrement: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            mget(...keys: (import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string)[]): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<(string | null)[]>;\n            mset(mapping: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, string | number>> | "
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, string | number>): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<\"OK\">;\n            append(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, value: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            getrange(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, start: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number, end: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string>;\n            setrange(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, offset: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number, value: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            del(...keys: (import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string)[]): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            exists(...keys: (import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string)[]): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            expire(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, seconds: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            pexpire(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, milliseconds: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            ttl(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            pttl(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            hget(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, field: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | null>;\n            hset(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, mapping: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, string | number>> | "
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, string | number>): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            hmget(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, ...fields: (import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string)[]): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<(string | null)[]>;\n            hgetall(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string[]>;\n            hdel(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, ...fields: (import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string)[]): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            hexists(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, field: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            hlen(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            hkeys(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string[]>;\n            hvals(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string[]>;\n            hincrby(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, field: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, increment: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            lpush(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, ...elements: (import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number)[]): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            rpush(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, ...elements: (import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number)[]): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            lpop(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, count?: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | null | string[]>;\n            rpop(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, count?: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | null | string[]>;\n            llen(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            lrange(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, start: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number, stop: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string[]>;\n            lindex(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, index: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | null>;\n            lset(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, index: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number, element: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<\"OK\">;\n            lrem(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, count: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number> | number, element: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n            linsert(key: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, position: \"BEFORE\" | \"AFTER\", pivot: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number, element: import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string | number> | string | number): import(\"@mvfm/core\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<number>;\n        };\n    };\n    kinds: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, "
+            },
+            {
+              "kind": "Reference",
+              "text": "KindSpec",
+              "canonicalReference": "@mvfm/plugin-redis!~KindSpec:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown[], unknown>>;\n    traits: {};\n    lifts: {};\n    nodeKinds: (\"redis/array\" | \"redis/record\" | \"redis/get\" | \"redis/set\" | \"redis/incr\" | \"redis/incrby\" | \"redis/decr\" | \"redis/decrby\" | \"redis/mget\" | \"redis/mset\" | \"redis/append\" | \"redis/getrange\" | \"redis/setrange\" | \"redis/del\" | \"redis/exists\" | \"redis/expire\" | \"redis/pexpire\" | \"redis/ttl\" | \"redis/pttl\" | \"redis/hget\" | \"redis/hset\" | \"redis/hmget\" | \"redis/hgetall\" | \"redis/hdel\" | \"redis/hexists\" | \"redis/hlen\" | \"redis/hkeys\" | \"redis/hvals\" | \"redis/hincrby\" | \"redis/lpush\" | \"redis/rpush\" | \"redis/lpop\" | \"redis/rpop\" | \"redis/llen\" | \"redis/lrange\" | \"redis/lindex\" | \"redis/lset\" | \"redis/lrem\" | \"redis/linsert\")[];\n}"
             },
             {
               "kind": "Content",
@@ -494,7 +1467,7 @@
           "fileUrlPath": "dist/5.4.1/index.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 4,
-            "endIndex": 9
+            "endIndex": 227
           },
           "releaseTag": "Public",
           "overloadIndex": 1,
@@ -831,8 +1804,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -840,8 +1813,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -849,8 +1822,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -858,8 +1831,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -867,8 +1840,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -876,8 +1849,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -885,8 +1858,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -894,8 +1867,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -903,8 +1876,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -912,8 +1885,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -921,8 +1894,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -930,8 +1903,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -939,8 +1912,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -948,8 +1921,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -957,8 +1930,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -966,8 +1939,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -975,8 +1948,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -984,8 +1957,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -993,8 +1966,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1020,8 +1993,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1029,8 +2002,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1038,8 +2011,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1047,8 +2020,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1056,8 +2029,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1065,8 +2038,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1074,8 +2047,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1083,8 +2056,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1092,8 +2065,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1101,8 +2074,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1110,8 +2083,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1119,8 +2092,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1128,8 +2101,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1137,8 +2110,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1146,8 +2119,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1155,8 +2128,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1164,8 +2137,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1173,8 +2146,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1182,8 +2155,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1191,8 +2164,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1200,8 +2173,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1209,8 +2182,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1218,8 +2191,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1227,8 +2200,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1236,8 +2209,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1245,8 +2218,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1254,8 +2227,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1263,8 +2236,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1272,8 +2245,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1281,8 +2254,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1290,8 +2263,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1317,8 +2290,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1326,8 +2299,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1335,8 +2308,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1344,8 +2317,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1353,8 +2326,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1362,8 +2335,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1371,8 +2344,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1380,8 +2353,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1389,8 +2362,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1398,8 +2371,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1407,8 +2380,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1416,8 +2389,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1425,8 +2398,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1434,8 +2407,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1443,8 +2416,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1452,8 +2425,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1461,8 +2434,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1470,8 +2443,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1479,8 +2452,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1488,8 +2461,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1497,8 +2470,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1506,8 +2479,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1515,8 +2488,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1524,8 +2497,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1533,8 +2506,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1542,8 +2515,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1551,8 +2524,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1560,8 +2533,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1569,8 +2542,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1578,8 +2551,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1587,8 +2560,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1596,8 +2569,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1605,8 +2578,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1614,8 +2587,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1623,8 +2596,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1632,8 +2605,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1641,8 +2614,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1650,8 +2623,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1659,8 +2632,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1668,8 +2641,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1677,8 +2650,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1686,8 +2659,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1695,8 +2668,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1704,8 +2677,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1713,8 +2686,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1722,8 +2695,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1731,8 +2704,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1740,8 +2713,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1749,8 +2722,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1758,8 +2731,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1767,8 +2740,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1776,8 +2749,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1785,8 +2758,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1794,8 +2767,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1803,8 +2776,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-redis!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-redis!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1828,85 +2801,32 @@
           "extendsTokenRanges": []
         },
         {
-          "kind": "Function",
-          "canonicalReference": "@mvfm/plugin-redis!serverEvaluate:function(1)",
-          "docComment": "/**\n * Creates a unified evaluator using the redis server interpreter.\n *\n * @param client - The {@link RedisClient} to execute against.\n *\n * @param baseInterpreter - Base interpreter for evaluating sub-expressions.\n *\n * @returns An async AST evaluator function.\n */\n",
+          "kind": "Variable",
+          "canonicalReference": "@mvfm/plugin-redis!redisPlugin:var",
+          "docComment": "/**\n * Alias for {@link redis}, kept for readability at call sites.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "export declare function serverEvaluate(client: "
+              "text": "redisPlugin: "
+            },
+            {
+              "kind": "Content",
+              "text": "typeof "
             },
             {
               "kind": "Reference",
-              "text": "RedisClient",
-              "canonicalReference": "@mvfm/plugin-redis!RedisClient:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", baseInterpreter: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Interpreter",
-              "canonicalReference": "@mvfm/plugin-redis!~Interpreter:type"
-            },
-            {
-              "kind": "Content",
-              "text": "): "
-            },
-            {
-              "kind": "Content",
-              "text": "(root: "
-            },
-            {
-              "kind": "Reference",
-              "text": "TypedNode",
-              "canonicalReference": "@mvfm/plugin-redis!~TypedNode:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<unknown>"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
+              "text": "redis",
+              "canonicalReference": "@mvfm/plugin-redis!redis:function"
             }
           ],
-          "fileUrlPath": "dist/5.4.1/handler.server.d.ts",
-          "returnTypeTokenRange": {
-            "startIndex": 5,
-            "endIndex": 10
-          },
+          "fileUrlPath": "dist/5.4.1/index.d.ts",
+          "isReadonly": true,
           "releaseTag": "Public",
-          "overloadIndex": 1,
-          "parameters": [
-            {
-              "parameterName": "client",
-              "parameterTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              },
-              "isOptional": false
-            },
-            {
-              "parameterName": "baseInterpreter",
-              "parameterTypeTokenRange": {
-                "startIndex": 3,
-                "endIndex": 4
-              },
-              "isOptional": false
-            }
-          ],
-          "name": "serverEvaluate"
+          "name": "redisPlugin",
+          "variableTypeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 3
+          }
         },
         {
           "kind": "Function",

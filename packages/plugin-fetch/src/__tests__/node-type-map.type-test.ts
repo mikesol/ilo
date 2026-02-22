@@ -1,34 +1,38 @@
-import type { TypedNode } from "@mvfm/core";
-import { defineInterpreter } from "@mvfm/core";
-import type { FetchHeadersNode, FetchRequestNode } from "../whatwg/interpreter";
+import type { Interpreter, RuntimeEntry } from "@mvfm/core";
+import { fetch } from "../whatwg";
 
-const _fetchPositive = defineInterpreter<"fetch/request" | "fetch/headers">()({
-  // biome-ignore lint/correctness/useYield: compile-time signature test
-  "fetch/request": async function* (_node: FetchRequestNode) {
-    return new Response();
-  },
-  // biome-ignore lint/correctness/useYield: compile-time signature test
-  "fetch/headers": async function* (_node: FetchHeadersNode) {
-    return {};
-  },
-});
+// Verify the plugin returns the correct shape
+const plugin = fetch();
 
-const _fetchBadAny = defineInterpreter<"fetch/request">()({
-  // @ts-expect-error registered kind cannot use any node parameter
-  // biome-ignore lint/correctness/useYield: compile-time signature test
-  "fetch/request": async function* (_node: any) {
-    return new Response();
-  },
-});
+// Name is the literal "fetch"
+const _name: "fetch" = plugin.name;
 
-interface WrongFetchNode extends TypedNode<number> {
-  kind: "fetch/request";
-}
+// nodeKinds includes all expected kinds
+const _kinds: readonly string[] = plugin.nodeKinds;
 
-const _fetchBadNode = defineInterpreter<"fetch/request">()({
-  // @ts-expect-error wrong node shape for fetch/request
-  // biome-ignore lint/correctness/useYield: compile-time signature test
-  "fetch/request": async function* (_node: WrongFetchNode) {
-    return 1;
-  },
-});
+// defaultInterpreter returns an Interpreter
+const _interp: Interpreter = plugin.defaultInterpreter();
+
+// Each handler accepts RuntimeEntry
+const _handler: (entry: RuntimeEntry) => AsyncGenerator<unknown, unknown, unknown> =
+  _interp["fetch/request"];
+
+// ctors.fetch is callable
+const _fetchExpr = plugin.ctors.fetch("url");
+const _fetchWithInit = plugin.ctors.fetch("url", { method: "POST" });
+const _jsonExpr = plugin.ctors.fetch.json(_fetchExpr);
+const _textExpr = plugin.ctors.fetch.text(_fetchExpr);
+const _statusExpr = plugin.ctors.fetch.status(_fetchExpr);
+const _headersExpr = plugin.ctors.fetch.headers(_fetchExpr);
+
+// Suppress unused variable warnings
+void _name;
+void _kinds;
+void _interp;
+void _handler;
+void _fetchExpr;
+void _fetchWithInit;
+void _jsonExpr;
+void _textExpr;
+void _statusExpr;
+void _headersExpr;

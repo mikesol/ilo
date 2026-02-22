@@ -7,15 +7,11 @@
  */
 
 // Use relative paths to source to avoid pnpm workspace resolution issues
-import { boolean } from "../packages/core/src/plugins/boolean/index.js";
-import { control } from "../packages/core/src/plugins/control/index.js";
-import { eq } from "../packages/core/src/plugins/eq/index.js";
-import { error } from "../packages/core/src/plugins/error/index.js";
-import { fiber } from "../packages/core/src/plugins/fiber/index.js";
-import { num } from "../packages/core/src/plugins/num/index.js";
-import { ord } from "../packages/core/src/plugins/ord/index.js";
-import { st } from "../packages/core/src/plugins/st/index.js";
-import { str } from "../packages/core/src/plugins/str/index.js";
+import { boolPlugin, numPlugin, ordPlugin, strPlugin } from "../packages/core/src/std-plugins.js";
+import { control } from "../packages/core/src/control.js";
+import { error } from "../packages/core/src/error.js";
+import { st } from "../packages/core/src/st.js";
+import { fiber } from "../packages/core/src/fiber.js";
 import { consolePlugin } from "../packages/plugin-console/src/22.0.0/index.js";
 import { postgres as postgresPlugin } from "../packages/plugin-postgres/src/3.4.8/index.js";
 import { redis as redisPlugin } from "../packages/plugin-redis/src/5.4.1/index.js";
@@ -47,15 +43,12 @@ const INTERNAL_KINDS = new Set([
 ]);
 
 // Collect all node kinds from documented plugins.
-// Each plugin definition has a `nodeKinds: string[]` array.
-// Typeclass dispatch plugins (semiring, semigroup, etc.) have empty
-// nodeKinds because they delegate to type-specific plugins.
-const plugins: Array<{ nodeKinds: string[]; traits?: any }> = [
-  boolean,
-  num,
-  str,
-  eq,
-  ord,
+// Plugins may declare kinds via `nodeKinds: string[]` or `kinds: Record<string, ...>`.
+const plugins: Array<{ nodeKinds?: readonly string[]; kinds?: Record<string, unknown>; traits?: any }> = [
+  boolPlugin,
+  numPlugin,
+  strPlugin,
+  ordPlugin,
   st,
   control,
   error,
@@ -66,7 +59,7 @@ const plugins: Array<{ nodeKinds: string[]; traits?: any }> = [
   s3Plugin({ region: "us-east-1" }),
   fetchPlugin(),
   pinoPlugin(),
-  zodPlugin,
+  zodPlugin(),
   openaiPlugin({ apiKey: "unused" }),
   anthropicPlugin({ apiKey: "unused" }),
   falPlugin({ credentials: "unused" }),
@@ -96,7 +89,9 @@ for (const kind of CORE_KINDS) {
 }
 
 for (const plugin of plugins) {
-  for (const kind of plugin.nodeKinds) {
+  // Extract node kinds from either nodeKinds array or kinds record keys
+  const kindNames = plugin.nodeKinds ?? (plugin.kinds ? Object.keys(plugin.kinds) : []);
+  for (const kind of kindNames) {
     if (!INTERNAL_KINDS.has(kind)) {
       allKinds.add(kind);
     }
@@ -105,12 +100,15 @@ for (const plugin of plugins) {
   if (plugin.traits) {
     const traits = plugin.traits as Record<
       string,
-      { nodeKinds: Record<string, string> }
+      { mapping?: Record<string, string>; nodeKinds?: Record<string, string> }
     >;
     for (const trait of Object.values(traits)) {
-      for (const kind of Object.values(trait.nodeKinds)) {
-        if (!INTERNAL_KINDS.has(kind)) {
-          allKinds.add(kind);
+      const kindMap = trait.mapping ?? trait.nodeKinds;
+      if (kindMap) {
+        for (const kind of Object.values(kindMap)) {
+          if (!INTERNAL_KINDS.has(kind)) {
+            allKinds.add(kind);
+          }
         }
       }
     }

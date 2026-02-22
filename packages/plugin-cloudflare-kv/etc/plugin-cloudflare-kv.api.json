@@ -327,7 +327,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-cloudflare-kv!clientInterpreter:function(1)",
-          "docComment": "/**\n * Creates a client-side interpreter that proxies all operations to a server.\n *\n * Each handler resolves its TypedNode children via `eval_()`, then sends the resolved data to `{baseUrl}/mvfm/execute` as a JSON POST.\n *\n * @param options - Handler options.\n *\n * @param nodeKinds - Node kinds to create handlers for.\n *\n * @returns An Interpreter that proxies all operations to the server.\n */\n",
+          "docComment": "/**\n * Creates a client-side interpreter that proxies all operations to a server.\n *\n * Each handler resolves its RuntimeEntry children via positional yield, then sends the resolved data to `{baseUrl}/mvfm/execute` as a JSON POST.\n *\n * @param options - Handler options.\n *\n * @param nodeKinds - Node kinds to create handlers for.\n *\n * @returns An Interpreter that proxies all operations to the server.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -390,11 +390,11 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-cloudflare-kv!cloudflareKv:function(1)",
-          "docComment": "/**\n * Cloudflare KV plugin factory. Namespace: `cloudflare-kv/`.\n *\n * Creates a plugin that exposes get, put, delete, and list methods for building Cloudflare KV AST nodes.\n *\n * @param config - A {@link CloudflareKvConfig} with namespaceId.\n *\n * @returns A PluginDefinition for the cloudflare-kv plugin.\n */\n",
+          "docComment": "/**\n * Creates the cloudflare-kv plugin definition (unified Plugin type).\n *\n * This plugin has NO defaultInterpreter. You must provide one via `defaults(plugins, { \"cloudflare-kv\": createCloudflareKvInterpreter(client) })`.\n *\n * @param _config - A {@link CloudflareKvConfig} with namespaceId. Config is captured by the interpreter, not stored on AST nodes.\n *\n * @returns A unified Plugin that contributes `$.kv`.\n *\n * @example\n * ```ts\n * const plugin = cloudflareKv({ namespaceId: \"MY_KV\" });\n * const $ = mvfmU(numPluginU, strPluginU, plugin);\n * const expr = $.kv.get(\"my-key\");\n * const nexpr = app(expr);\n * const interp = defaults([numPluginU, strPluginU, plugin], {\n *   \"cloudflare-kv\": createCloudflareKvInterpreter(myClient),\n * });\n * const result = await fold(nexpr, interp);\n * ```\n *\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "export declare function cloudflareKv(config: "
+              "text": "export declare function cloudflareKv(_config: "
             },
             {
               "kind": "Reference",
@@ -407,12 +407,39 @@
             },
             {
               "kind": "Content",
-              "text": "import(\"@mvfm/core\")."
+              "text": "{\n    name: \"cloudflare-kv\";\n    ctors: {\n        kv: {\n            get: "
             },
             {
               "kind": "Reference",
-              "text": "PluginDefinition",
-              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~PluginDefinition:interface"
+              "text": "KvGet",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!KvGet:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n            put(key: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, value: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string, options?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
             },
             {
               "kind": "Content",
@@ -420,12 +447,111 @@
             },
             {
               "kind": "Reference",
-              "text": "CloudflareKvMethods",
-              "canonicalReference": "@mvfm/plugin-cloudflare-kv!CloudflareKvMethods:interface"
+              "text": "KvPutOptions",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!KvPutOptions:interface"
             },
             {
               "kind": "Content",
-              "text": ", {}, \"cloudflare-kv/get\" | \"cloudflare-kv/get_json\" | \"cloudflare-kv/put\" | \"cloudflare-kv/delete\" | \"cloudflare-kv/list\">"
+              "text": "> | "
+            },
+            {
+              "kind": "Reference",
+              "text": "KvPutOptions",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!KvPutOptions:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n            delete(key: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string> | string): "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n            list(options?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "KvListOptions",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!KvListOptions:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "> | "
+            },
+            {
+              "kind": "Reference",
+              "text": "KvListOptions",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!KvListOptions:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "KvListResult",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!KvListResult:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ">;\n        };\n    };\n    kinds: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, "
+            },
+            {
+              "kind": "Reference",
+              "text": "KindSpec",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~KindSpec:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown[], unknown>>;\n    traits: {};\n    lifts: {};\n    nodeKinds: (\"cloudflare-kv/array\" | \"cloudflare-kv/record\" | \"cloudflare-kv/get\" | \"cloudflare-kv/get_json\" | \"cloudflare-kv/put\" | \"cloudflare-kv/delete\" | \"cloudflare-kv/list\")[];\n}"
             },
             {
               "kind": "Content",
@@ -435,13 +561,13 @@
           "fileUrlPath": "dist/4.20260213.0/index.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 3,
-            "endIndex": 8
+            "endIndex": 36
           },
           "releaseTag": "Public",
           "overloadIndex": 1,
           "parameters": [
             {
-              "parameterName": "config",
+              "parameterName": "_config",
               "parameterTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
@@ -829,7 +955,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "@mvfm/plugin-cloudflare-kv!CloudflareKvMethods:interface",
-          "docComment": "/**\n * Cloudflare KV operations added to the DSL context.\n *\n * Mirrors the KVNamespace API: get, put, delete, list. Each method produces a namespaced AST node.\n */\n",
+          "docComment": "/**\n * Cloudflare KV operations added to the DSL context.\n *\n * Mirrors the KVNamespace API: get, put, delete, list. Each method produces a namespaced CExpr node.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -865,8 +991,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -874,8 +1000,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -883,8 +1009,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -910,8 +1036,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -919,8 +1045,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -928,8 +1054,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -937,8 +1063,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -964,8 +1090,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -998,9 +1124,37 @@
           "extendsTokenRanges": []
         },
         {
+          "kind": "Variable",
+          "canonicalReference": "@mvfm/plugin-cloudflare-kv!cloudflareKvPlugin:var",
+          "docComment": "/**\n * Alias for {@link cloudflareKv}, kept for readability at call sites.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "cloudflareKvPlugin: "
+            },
+            {
+              "kind": "Content",
+              "text": "typeof "
+            },
+            {
+              "kind": "Reference",
+              "text": "cloudflareKv",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!cloudflareKv:function"
+            }
+          ],
+          "fileUrlPath": "dist/4.20260213.0/index.d.ts",
+          "isReadonly": true,
+          "releaseTag": "Public",
+          "name": "cloudflareKvPlugin",
+          "variableTypeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 3
+          }
+        },
+        {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-cloudflare-kv!createCloudflareKvInterpreter:function(1)",
-          "docComment": "/**\n * Creates an interpreter for `cloudflare-kv/*` node kinds.\n *\n * @param client - The {@link CloudflareKvClient} to execute against.\n *\n * @returns An Interpreter handling all cloudflare-kv node kinds.\n */\n",
+          "docComment": "/**\n * Creates an interpreter for `cloudflare-kv/*` node kinds using the RuntimeEntry + positional yield pattern.\n *\n * @param client - The {@link CloudflareKvClient} to execute against.\n *\n * @returns An Interpreter handling all cloudflare-kv node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1070,8 +1224,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1083,8 +1237,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1123,8 +1277,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1144,8 +1298,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1200,8 +1354,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1221,8 +1375,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-cloudflare-kv!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1991,7 +2145,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-cloudflare-kv!serverEvaluate:function(1)",
-          "docComment": "/**\n * Creates a unified evaluator using the cloudflare-kv server interpreter.\n *\n * @param client - The {@link CloudflareKvClient} to execute against.\n *\n * @param baseInterpreter - Base interpreter for evaluating sub-expressions.\n *\n * @returns An async AST evaluator function.\n */\n",
+          "docComment": "/**\n * Creates a combined interpreter merging cloudflare-kv handlers with a base interpreter.\n *\n * @param client - The {@link CloudflareKvClient} to execute against.\n *\n * @param baseInterpreter - Base interpreter for evaluating sub-expressions.\n *\n * @returns A merged Interpreter for both base and cloudflare-kv node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -2016,26 +2170,9 @@
               "text": "): "
             },
             {
-              "kind": "Content",
-              "text": "(root: "
-            },
-            {
               "kind": "Reference",
-              "text": "TypedNode",
-              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~TypedNode:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<unknown>"
+              "text": "Interpreter",
+              "canonicalReference": "@mvfm/plugin-cloudflare-kv!~Interpreter:type"
             },
             {
               "kind": "Content",
@@ -2045,7 +2182,7 @@
           "fileUrlPath": "dist/4.20260213.0/handler.server.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 5,
-            "endIndex": 10
+            "endIndex": 6
           },
           "releaseTag": "Public",
           "overloadIndex": 1,

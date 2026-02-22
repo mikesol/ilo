@@ -18,26 +18,42 @@ import type { ModerationCreateParams } from 'openai/resources/moderations';
 import type { ModerationCreateResponse } from 'openai/resources/moderations';
 import type OpenAI from 'openai';
 
-// @public
-export interface ClientHandlerOptions {
-    baseUrl: string;
-    contractHash: string;
-    fetch?: typeof globalThis.fetch;
-    headers?: Record<string, string>;
-}
-
 // Warning: (ae-forgotten-export) The symbol "Interpreter" needs to be exported by the entry point index.d.ts
 //
 // @public
-export function clientInterpreter(options: ClientHandlerOptions, nodeKinds: string[]): Interpreter;
-
-// @public
 export function createOpenAIInterpreter(client: OpenAIClient): Interpreter;
 
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
-export function openai(config: OpenAIConfig): PluginDefinition<OpenAIMethods, {}, "openai/create_chat_completion" | "openai/retrieve_chat_completion" | "openai/list_chat_completions" | "openai/update_chat_completion" | "openai/delete_chat_completion" | "openai/create_embedding" | "openai/create_moderation" | "openai/create_completion">;
+export function openai(config: OpenAIConfig): {
+    name: "openai";
+    ctors: {
+        openai: {
+            chat: {
+                completions: {
+                    create(params: ChatCompletionCreateParamsNonStreaming | CExpr<ChatCompletionCreateParamsNonStreaming>): CExpr<ChatCompletion>;
+                    retrieve(id: string | CExpr<string>): CExpr<ChatCompletion>;
+                    list(params?: ChatCompletionListParams | CExpr<ChatCompletionListParams>): CExpr<ChatCompletionsPage>;
+                    update(id: string | CExpr<string>, params: ChatCompletionUpdateParams | CExpr<ChatCompletionUpdateParams>): CExpr<ChatCompletion>;
+                    delete(id: string | CExpr<string>): CExpr<ChatCompletionDeleted>;
+                };
+            };
+            embeddings: {
+                create(params: EmbeddingCreateParams | CExpr<EmbeddingCreateParams>): CExpr<CreateEmbeddingResponse>;
+            };
+            moderations: {
+                create(params: ModerationCreateParams | CExpr<ModerationCreateParams>): CExpr<ModerationCreateResponse>;
+            };
+            completions: {
+                create(params: CompletionCreateParamsNonStreaming | CExpr<CompletionCreateParamsNonStreaming>): CExpr<Completion>;
+            };
+        };
+    };
+    kinds: Record<string, KindSpec<unknown[], unknown>>;
+    traits: {};
+    lifts: {};
+    nodeKinds: ("openai/create_chat_completion" | "openai/retrieve_chat_completion" | "openai/list_chat_completions" | "openai/update_chat_completion" | "openai/delete_chat_completion" | "openai/create_embedding" | "openai/create_moderation" | "openai/create_completion" | "openai/record" | "openai/array")[];
+    defaultInterpreter: () => Interpreter;
+};
 
 // @public
 export interface OpenAIClient {
@@ -59,39 +75,35 @@ export interface OpenAIMethods {
     openai: {
         chat: {
             completions: {
-                create(params: Expr<ChatCompletionCreateParamsNonStreaming> | ChatCompletionCreateParamsNonStreaming): Expr<ChatCompletion>;
-                retrieve(id: Expr<string> | string): Expr<ChatCompletion>;
-                list(params?: Expr<ChatCompletionListParams> | ChatCompletionListParams): Expr<ChatCompletionsPage>;
-                update(id: Expr<string> | string, params: Expr<ChatCompletionUpdateParams> | ChatCompletionUpdateParams): Expr<ChatCompletion>;
-                delete(id: Expr<string> | string): Expr<ChatCompletionDeleted>;
+                create(params: ChatCompletionCreateParamsNonStreaming | CExpr<ChatCompletionCreateParamsNonStreaming>): CExpr<ChatCompletion>;
+                retrieve(id: string | CExpr<string>): CExpr<ChatCompletion>;
+                list(params?: ChatCompletionListParams | CExpr<ChatCompletionListParams>): CExpr<ChatCompletionsPage>;
+                update(id: string | CExpr<string>, params: ChatCompletionUpdateParams | CExpr<ChatCompletionUpdateParams>): CExpr<ChatCompletion>;
+                delete(id: string | CExpr<string>): CExpr<ChatCompletionDeleted>;
             };
         };
         embeddings: {
-            create(params: Expr<EmbeddingCreateParams> | EmbeddingCreateParams): Expr<CreateEmbeddingResponse>;
+            create(params: EmbeddingCreateParams | CExpr<EmbeddingCreateParams>): CExpr<CreateEmbeddingResponse>;
         };
         moderations: {
-            create(params: Expr<ModerationCreateParams> | ModerationCreateParams): Expr<ModerationCreateResponse>;
+            create(params: ModerationCreateParams | CExpr<ModerationCreateParams>): CExpr<ModerationCreateResponse>;
         };
         completions: {
-            create(params: Expr<CompletionCreateParamsNonStreaming> | CompletionCreateParamsNonStreaming): Expr<Completion>;
+            create(params: CompletionCreateParamsNonStreaming | CExpr<CompletionCreateParamsNonStreaming>): CExpr<Completion>;
         };
     };
 }
 
-// Warning: (ae-forgotten-export) The symbol "TypedNode" needs to be exported by the entry point index.d.ts
-//
 // @public
-export function serverEvaluate(client: OpenAIClient, baseInterpreter: Interpreter): (root: TypedNode) => Promise<unknown>;
-
-// @public
-export function serverInterpreter(client: OpenAIClient): Interpreter;
+export const openaiPlugin: typeof openai;
 
 // @public
 export function wrapOpenAISdk(client: OpenAI): OpenAIClient;
 
 // Warnings were encountered during analysis:
 //
-// dist/6.21.0/index.d.ts:19:17 - (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
+// dist/6.21.0/index.d.ts:71:21 - (ae-forgotten-export) The symbol "CExpr" needs to be exported by the entry point index.d.ts
+// dist/6.21.0/index.d.ts:96:5 - (ae-forgotten-export) The symbol "KindSpec" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

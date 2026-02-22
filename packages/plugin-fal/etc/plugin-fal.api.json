@@ -189,208 +189,9 @@
       "preserveMemberOrder": false,
       "members": [
         {
-          "kind": "Interface",
-          "canonicalReference": "@mvfm/plugin-fal!ClientHandlerOptions:interface",
-          "docComment": "/**\n * Options for the client-side interpreter.\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export interface ClientHandlerOptions "
-            }
-          ],
-          "fileUrlPath": "dist/1.9.1/handler.client.d.ts",
-          "releaseTag": "Public",
-          "name": "ClientHandlerOptions",
-          "preserveMemberOrder": false,
-          "members": [
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "@mvfm/plugin-fal!ClientHandlerOptions#baseUrl:member",
-              "docComment": "/**\n * Base URL for remote execution endpoint.\n */\n",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "baseUrl: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "baseUrl",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "@mvfm/plugin-fal!ClientHandlerOptions#contractHash:member",
-              "docComment": "/**\n * Contract hash from compiled program metadata.\n */\n",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "contractHash: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "contractHash",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "@mvfm/plugin-fal!ClientHandlerOptions#fetch:member",
-              "docComment": "/**\n * Optional fetch override.\n */\n",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "fetch?: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "typeof "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "globalThis.fetch",
-                  "canonicalReference": "!fetch:function"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": true,
-              "releaseTag": "Public",
-              "name": "fetch",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 3
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "@mvfm/plugin-fal!ClientHandlerOptions#headers:member",
-              "docComment": "/**\n * Optional extra request headers.\n */\n",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "headers?: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Record",
-                  "canonicalReference": "!Record:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<string, string>"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": true,
-              "releaseTag": "Public",
-              "name": "headers",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 3
-              }
-            }
-          ],
-          "extendsTokenRanges": []
-        },
-        {
-          "kind": "Function",
-          "canonicalReference": "@mvfm/plugin-fal!clientInterpreter:function(1)",
-          "docComment": "/**\n * Creates a client-side interpreter that proxies all operations to a server.\n *\n * Each handler resolves its TypedNode children via `eval_()`, then sends the resolved data to `{baseUrl}/mvfm/execute` as a JSON POST.\n *\n * @param options - Handler options.\n *\n * @param nodeKinds - Node kinds to create handlers for.\n *\n * @returns An Interpreter that proxies all operations to the server.\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export declare function clientInterpreter(options: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ClientHandlerOptions",
-              "canonicalReference": "@mvfm/plugin-fal!ClientHandlerOptions:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", nodeKinds: "
-            },
-            {
-              "kind": "Content",
-              "text": "string[]"
-            },
-            {
-              "kind": "Content",
-              "text": "): "
-            },
-            {
-              "kind": "Reference",
-              "text": "Interpreter",
-              "canonicalReference": "@mvfm/plugin-fal!~Interpreter:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "dist/1.9.1/handler.client.d.ts",
-          "returnTypeTokenRange": {
-            "startIndex": 5,
-            "endIndex": 6
-          },
-          "releaseTag": "Public",
-          "overloadIndex": 1,
-          "parameters": [
-            {
-              "parameterName": "options",
-              "parameterTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              },
-              "isOptional": false
-            },
-            {
-              "parameterName": "nodeKinds",
-              "parameterTypeTokenRange": {
-                "startIndex": 3,
-                "endIndex": 4
-              },
-              "isOptional": false
-            }
-          ],
-          "name": "clientInterpreter"
-        },
-        {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-fal!createFalInterpreter:function(1)",
-          "docComment": "/**\n * Creates an interpreter for `fal/*` node kinds.\n *\n * @param client - The {@link FalClient} to execute against.\n *\n * @returns An Interpreter handling all fal node kinds.\n */\n",
+          "docComment": "/**\n * Creates an interpreter for `fal/*` node kinds using the new RuntimeEntry + positional yield pattern.\n *\n * Config (credentials) is captured in the closure, not stored on AST nodes.\n *\n * @param client - The {@link FalClient} to execute against.\n *\n * @returns An Interpreter handling all fal node kinds.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -437,7 +238,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@mvfm/plugin-fal!fal:function(1)",
-          "docComment": "/**\n * Fal plugin factory. Namespace: `fal/`.\n *\n * Creates a plugin that exposes run, subscribe, and queue methods for building parameterized fal API call AST nodes.\n *\n * @param config - A {@link FalConfig} with credentials.\n *\n * @returns A PluginDefinition for the fal plugin.\n */\n",
+          "docComment": "/**\n * Creates the fal plugin definition (unified Plugin type).\n *\n * @param config - A {@link FalConfig} with credentials.\n *\n * @returns A unified Plugin that contributes `$.fal`.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -454,12 +255,30 @@
             },
             {
               "kind": "Content",
-              "text": "import(\"@mvfm/core\")."
+              "text": "{\n    name: \"fal\";\n    ctors: {\n        fal: {\n            run(endpointId: string | "
             },
             {
               "kind": "Reference",
-              "text": "PluginDefinition",
-              "canonicalReference": "@mvfm/plugin-fal!~PluginDefinition:interface"
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string>, options?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "FalRunOptions",
+              "canonicalReference": "@mvfm/plugin-fal!FalRunOptions:type"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
             },
             {
               "kind": "Content",
@@ -467,12 +286,300 @@
             },
             {
               "kind": "Reference",
-              "text": "FalMethods",
-              "canonicalReference": "@mvfm/plugin-fal!FalMethods:interface"
+              "text": "Awaited",
+              "canonicalReference": "!Awaited:type"
             },
             {
               "kind": "Content",
-              "text": ", {}, \"fal/run\" | \"fal/subscribe\" | \"fal/queue_submit\" | \"fal/queue_status\" | \"fal/queue_result\" | \"fal/queue_cancel\">"
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "ReturnType",
+              "canonicalReference": "!ReturnType:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "FalSdkClient",
+              "canonicalReference": "@fal-ai/client!FalClient:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[\"run\"]>>>;\n            subscribe(endpointId: string | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string>, options?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "FalSubscribeOptions",
+              "canonicalReference": "@mvfm/plugin-fal!FalSubscribeOptions:type"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Awaited",
+              "canonicalReference": "!Awaited:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "ReturnType",
+              "canonicalReference": "!ReturnType:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "FalSdkClient",
+              "canonicalReference": "@fal-ai/client!FalClient:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[\"subscribe\"]>>>;\n            queue: {\n                submit(endpointId: string | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string>, options: "
+            },
+            {
+              "kind": "Reference",
+              "text": "FalSubmitOptions",
+              "canonicalReference": "@mvfm/plugin-fal!FalSubmitOptions:type"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Awaited",
+              "canonicalReference": "!Awaited:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "ReturnType",
+              "canonicalReference": "!ReturnType:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "FalSdkQueueClient",
+              "canonicalReference": "@fal-ai/client!QueueClient:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[\"submit\"]>>>;\n                status(endpointId: string | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string>, options: "
+            },
+            {
+              "kind": "Reference",
+              "text": "FalQueueStatusOptions",
+              "canonicalReference": "@mvfm/plugin-fal!FalQueueStatusOptions:type"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Awaited",
+              "canonicalReference": "!Awaited:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "ReturnType",
+              "canonicalReference": "!ReturnType:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "FalSdkQueueClient",
+              "canonicalReference": "@fal-ai/client!QueueClient:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[\"status\"]>>>;\n                result(endpointId: string | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string>, options: "
+            },
+            {
+              "kind": "Reference",
+              "text": "FalQueueResultOptions",
+              "canonicalReference": "@mvfm/plugin-fal!FalQueueResultOptions:type"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Awaited",
+              "canonicalReference": "!Awaited:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "ReturnType",
+              "canonicalReference": "!ReturnType:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "FalSdkQueueClient",
+              "canonicalReference": "@fal-ai/client!QueueClient:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[\"result\"]>>>;\n                cancel(endpointId: string | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string>, options: "
+            },
+            {
+              "kind": "Reference",
+              "text": "FalQueueCancelOptions",
+              "canonicalReference": "@mvfm/plugin-fal!FalQueueCancelOptions:type"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n            };\n        };\n    };\n    kinds: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, "
+            },
+            {
+              "kind": "Reference",
+              "text": "KindSpec",
+              "canonicalReference": "@mvfm/plugin-fal!~KindSpec:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<unknown[], unknown>>;\n    traits: {};\n    lifts: {};\n    nodeKinds: (\"fal/run\" | \"fal/subscribe\" | \"fal/queue_submit\" | \"fal/queue_status\" | \"fal/queue_result\" | \"fal/queue_cancel\" | \"fal/record\" | \"fal/array\")[];\n    defaultInterpreter: () => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Interpreter",
+              "canonicalReference": "@mvfm/plugin-fal!~Interpreter:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n}"
             },
             {
               "kind": "Content",
@@ -482,7 +589,7 @@
           "fileUrlPath": "dist/1.9.1/index.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 3,
-            "endIndex": 8
+            "endIndex": 76
           },
           "releaseTag": "Public",
           "overloadIndex": 1,
@@ -1095,7 +1202,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "@mvfm/plugin-fal!FalMethods:interface",
-          "docComment": "",
+          "docComment": "/**\n * Fal operations added to the DSL context by the fal plugin.\n *\n * Mirrors the \\@fal-ai/client API: run, subscribe, and queue operations for AI media generation endpoints.\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1118,16 +1225,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "{\n        run(endpointId: "
+                  "text": "{\n        run(endpointId: string | "
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
-                  "text": "<string> | string, options?: "
+                  "text": "<string>, options?: "
                 },
                 {
                   "kind": "Reference",
@@ -1140,8 +1247,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1172,16 +1279,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "[\"run\"]>>>;\n        subscribe(endpointId: "
+                  "text": "[\"run\"]>>>;\n        subscribe(endpointId: string | "
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
-                  "text": "<string> | string, options?: "
+                  "text": "<string>, options?: "
                 },
                 {
                   "kind": "Reference",
@@ -1194,8 +1301,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1226,16 +1333,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "[\"subscribe\"]>>>;\n        queue: {\n            submit(endpointId: "
+                  "text": "[\"subscribe\"]>>>;\n        queue: {\n            submit(endpointId: string | "
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
-                  "text": "<string> | string, options: "
+                  "text": "<string>, options: "
                 },
                 {
                   "kind": "Reference",
@@ -1248,8 +1355,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1280,16 +1387,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "[\"submit\"]>>>;\n            status(endpointId: "
+                  "text": "[\"submit\"]>>>;\n            status(endpointId: string | "
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
-                  "text": "<string> | string, options: "
+                  "text": "<string>, options: "
                 },
                 {
                   "kind": "Reference",
@@ -1302,8 +1409,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1334,16 +1441,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "[\"status\"]>>>;\n            result(endpointId: "
+                  "text": "[\"status\"]>>>;\n            result(endpointId: string | "
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
-                  "text": "<string> | string, options: "
+                  "text": "<string>, options: "
                 },
                 {
                   "kind": "Reference",
@@ -1356,8 +1463,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1388,16 +1495,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "[\"result\"]>>>;\n            cancel(endpointId: "
+                  "text": "[\"result\"]>>>;\n            cancel(endpointId: string | "
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
-                  "text": "<string> | string, options: "
+                  "text": "<string>, options: "
                 },
                 {
                   "kind": "Reference",
@@ -1410,8 +1517,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "Expr",
-                  "canonicalReference": "@mvfm/plugin-fal!~Expr:type"
+                  "text": "CExpr",
+                  "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
                 },
                 {
                   "kind": "Content",
@@ -1435,6 +1542,34 @@
           "extendsTokenRanges": []
         },
         {
+          "kind": "Variable",
+          "canonicalReference": "@mvfm/plugin-fal!falPlugin:var",
+          "docComment": "/**\n * Alias for {@link fal}, kept for readability at call sites.\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "falPlugin: "
+            },
+            {
+              "kind": "Content",
+              "text": "typeof "
+            },
+            {
+              "kind": "Reference",
+              "text": "fal",
+              "canonicalReference": "@mvfm/plugin-fal!fal:function"
+            }
+          ],
+          "fileUrlPath": "dist/1.9.1/index.d.ts",
+          "isReadonly": true,
+          "releaseTag": "Public",
+          "name": "falPlugin",
+          "variableTypeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 3
+          }
+        },
+        {
           "kind": "TypeAlias",
           "canonicalReference": "@mvfm/plugin-fal!FalQueueCancelOptions:type",
           "docComment": "/**\n * SDK-aligned queue.cancel options, excluding unsupported runtime-only fields.\n */\n",
@@ -1445,8 +1580,17 @@
             },
             {
               "kind": "Reference",
-              "text": "Exprify",
-              "canonicalReference": "@mvfm/plugin-fal!~Exprify:type"
+              "text": "QueueCancelOptionsShape",
+              "canonicalReference": "@mvfm/plugin-fal!~QueueCancelOptionsShape:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
             },
             {
               "kind": "Content",
@@ -1471,7 +1615,7 @@
           "name": "FalQueueCancelOptions",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 5
+            "endIndex": 7
           }
         },
         {
@@ -1485,8 +1629,17 @@
             },
             {
               "kind": "Reference",
-              "text": "Exprify",
-              "canonicalReference": "@mvfm/plugin-fal!~Exprify:type"
+              "text": "QueueResultOptionsShape",
+              "canonicalReference": "@mvfm/plugin-fal!~QueueResultOptionsShape:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
             },
             {
               "kind": "Content",
@@ -1511,7 +1664,7 @@
           "name": "FalQueueResultOptions",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 5
+            "endIndex": 7
           }
         },
         {
@@ -1525,8 +1678,17 @@
             },
             {
               "kind": "Reference",
-              "text": "Exprify",
-              "canonicalReference": "@mvfm/plugin-fal!~Exprify:type"
+              "text": "QueueStatusOptionsShape",
+              "canonicalReference": "@mvfm/plugin-fal!~QueueStatusOptionsShape:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
             },
             {
               "kind": "Content",
@@ -1551,7 +1713,7 @@
           "name": "FalQueueStatusOptions",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 5
+            "endIndex": 7
           }
         },
         {
@@ -1565,8 +1727,17 @@
             },
             {
               "kind": "Reference",
-              "text": "Exprify",
-              "canonicalReference": "@mvfm/plugin-fal!~Exprify:type"
+              "text": "RunOptionsShape",
+              "canonicalReference": "@mvfm/plugin-fal!~RunOptionsShape:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
             },
             {
               "kind": "Content",
@@ -1591,7 +1762,7 @@
           "name": "FalRunOptions",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 5
+            "endIndex": 7
           }
         },
         {
@@ -1605,8 +1776,17 @@
             },
             {
               "kind": "Reference",
-              "text": "Exprify",
-              "canonicalReference": "@mvfm/plugin-fal!~Exprify:type"
+              "text": "SubmitOptionsShape",
+              "canonicalReference": "@mvfm/plugin-fal!~SubmitOptionsShape:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
             },
             {
               "kind": "Content",
@@ -1631,7 +1811,7 @@
           "name": "FalSubmitOptions",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 5
+            "endIndex": 7
           }
         },
         {
@@ -1645,8 +1825,17 @@
             },
             {
               "kind": "Reference",
-              "text": "Exprify",
-              "canonicalReference": "@mvfm/plugin-fal!~Exprify:type"
+              "text": "SubscribeOptionsShape",
+              "canonicalReference": "@mvfm/plugin-fal!~SubscribeOptionsShape:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "CExpr",
+              "canonicalReference": "@mvfm/plugin-fal!~CExpr:type"
             },
             {
               "kind": "Content",
@@ -1671,136 +1860,8 @@
           "name": "FalSubscribeOptions",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 5
+            "endIndex": 7
           }
-        },
-        {
-          "kind": "Function",
-          "canonicalReference": "@mvfm/plugin-fal!serverEvaluate:function(1)",
-          "docComment": "/**\n * Creates a unified evaluator using the fal server interpreter.\n *\n * @param client - The {@link FalClient} to execute against.\n *\n * @param baseInterpreter - Base interpreter for evaluating sub-expressions.\n *\n * @returns An async AST evaluator function.\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export declare function serverEvaluate(client: "
-            },
-            {
-              "kind": "Reference",
-              "text": "FalClient",
-              "canonicalReference": "@mvfm/plugin-fal!FalClient:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", baseInterpreter: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Interpreter",
-              "canonicalReference": "@mvfm/plugin-fal!~Interpreter:type"
-            },
-            {
-              "kind": "Content",
-              "text": "): "
-            },
-            {
-              "kind": "Content",
-              "text": "(root: "
-            },
-            {
-              "kind": "Reference",
-              "text": "TypedNode",
-              "canonicalReference": "@mvfm/plugin-fal!~TypedNode:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<unknown>"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "dist/1.9.1/handler.server.d.ts",
-          "returnTypeTokenRange": {
-            "startIndex": 5,
-            "endIndex": 10
-          },
-          "releaseTag": "Public",
-          "overloadIndex": 1,
-          "parameters": [
-            {
-              "parameterName": "client",
-              "parameterTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              },
-              "isOptional": false
-            },
-            {
-              "parameterName": "baseInterpreter",
-              "parameterTypeTokenRange": {
-                "startIndex": 3,
-                "endIndex": 4
-              },
-              "isOptional": false
-            }
-          ],
-          "name": "serverEvaluate"
-        },
-        {
-          "kind": "Function",
-          "canonicalReference": "@mvfm/plugin-fal!serverInterpreter:function(1)",
-          "docComment": "/**\n * Creates a server-side interpreter for `fal/*` node kinds.\n *\n * @param client - The {@link FalClient} to execute against.\n *\n * @returns An Interpreter for fal node kinds.\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export declare function serverInterpreter(client: "
-            },
-            {
-              "kind": "Reference",
-              "text": "FalClient",
-              "canonicalReference": "@mvfm/plugin-fal!FalClient:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "): "
-            },
-            {
-              "kind": "Reference",
-              "text": "Interpreter",
-              "canonicalReference": "@mvfm/plugin-fal!~Interpreter:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "dist/1.9.1/handler.server.d.ts",
-          "returnTypeTokenRange": {
-            "startIndex": 3,
-            "endIndex": 4
-          },
-          "releaseTag": "Public",
-          "overloadIndex": 1,
-          "parameters": [
-            {
-              "parameterName": "client",
-              "parameterTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              },
-              "isOptional": false
-            }
-          ],
-          "name": "serverInterpreter"
         },
         {
           "kind": "Function",

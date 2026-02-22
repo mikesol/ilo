@@ -17,10 +17,22 @@ export interface ClientHandlerOptions {
 // @public
 export function clientInterpreter(options: ClientHandlerOptions, nodeKinds: string[]): Interpreter;
 
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
-export function cloudflareKv(config: CloudflareKvConfig): PluginDefinition<CloudflareKvMethods, {}, "cloudflare-kv/get" | "cloudflare-kv/get_json" | "cloudflare-kv/put" | "cloudflare-kv/delete" | "cloudflare-kv/list">;
+export function cloudflareKv(_config: CloudflareKvConfig): {
+    name: "cloudflare-kv";
+    ctors: {
+        kv: {
+            get: KvGet;
+            put(key: CExpr<string> | string, value: CExpr<string> | string, options?: CExpr<KvPutOptions> | KvPutOptions): CExpr<void>;
+            delete(key: CExpr<string> | string): CExpr<void>;
+            list(options?: CExpr<KvListOptions> | KvListOptions): CExpr<KvListResult>;
+        };
+    };
+    kinds: Record<string, KindSpec<unknown[], unknown>>;
+    traits: {};
+    lifts: {};
+    nodeKinds: ("cloudflare-kv/array" | "cloudflare-kv/record" | "cloudflare-kv/get" | "cloudflare-kv/get_json" | "cloudflare-kv/put" | "cloudflare-kv/delete" | "cloudflare-kv/list")[];
+};
 
 // @public
 export interface CloudflareKvClient {
@@ -55,20 +67,23 @@ export interface CloudflareKvConfig {
 export interface CloudflareKvMethods {
     kv: {
         get: KvGet;
-        put(key: Expr<string> | string, value: Expr<string> | string, options?: Expr<KvPutOptions> | KvPutOptions): Expr<void>;
-        delete(key: Expr<string> | string): Expr<void>;
-        list(options?: Expr<KvListOptions> | KvListOptions): Expr<KvListResult>;
+        put(key: CExpr<string> | string, value: CExpr<string> | string, options?: CExpr<KvPutOptions> | KvPutOptions): CExpr<void>;
+        delete(key: CExpr<string> | string): CExpr<void>;
+        list(options?: CExpr<KvListOptions> | KvListOptions): CExpr<KvListResult>;
     };
 }
+
+// @public
+export const cloudflareKvPlugin: typeof cloudflareKv;
 
 // @public
 export function createCloudflareKvInterpreter(client: CloudflareKvClient): Interpreter;
 
 // @public
 export interface KvGet {
-    (key: Expr<string> | string): Expr<string | null>;
-    (key: Expr<string> | string, type: "text"): Expr<string | null>;
-    <T = unknown>(key: Expr<string> | string, type: "json"): Expr<T | null>;
+    (key: CExpr<string> | string): CExpr<string | null>;
+    (key: CExpr<string> | string, type: "text"): CExpr<string | null>;
+    <T = unknown>(key: CExpr<string> | string, type: "json"): CExpr<T | null>;
 }
 
 // @public
@@ -126,10 +141,8 @@ export interface KvPutOptions {
     metadata?: unknown;
 }
 
-// Warning: (ae-forgotten-export) The symbol "TypedNode" needs to be exported by the entry point index.d.ts
-//
 // @public
-export function serverEvaluate(client: CloudflareKvClient, baseInterpreter: Interpreter): (root: TypedNode) => Promise<unknown>;
+export function serverEvaluate(client: CloudflareKvClient, baseInterpreter: Interpreter): Interpreter;
 
 // @public
 export function serverInterpreter(client: CloudflareKvClient): Interpreter;
@@ -139,7 +152,8 @@ export function wrapKVNamespace(kv: KVNamespaceLike): CloudflareKvClient;
 
 // Warnings were encountered during analysis:
 //
-// dist/4.20260213.0/index.d.ts:23:9 - (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
+// dist/4.20260213.0/index.d.ts:98:13 - (ae-forgotten-export) The symbol "CExpr" needs to be exported by the entry point index.d.ts
+// dist/4.20260213.0/index.d.ts:105:5 - (ae-forgotten-export) The symbol "KindSpec" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
