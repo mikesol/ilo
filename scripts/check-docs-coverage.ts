@@ -11,6 +11,7 @@ import { boolPlugin, numPlugin, ordPlugin, strPlugin } from "../packages/core/sr
 import { control } from "../packages/core/src/control.js";
 import { error } from "../packages/core/src/error.js";
 import { st } from "../packages/core/src/st.js";
+import { fiber } from "../packages/core/src/fiber.js";
 import { consolePlugin } from "../packages/plugin-console/src/22.0.0/index.js";
 import { postgres as postgresPlugin } from "../packages/plugin-postgres/src/3.4.8/index.js";
 import { redis as redisPlugin } from "../packages/plugin-redis/src/5.4.1/index.js";
@@ -42,10 +43,8 @@ const INTERNAL_KINDS = new Set([
 ]);
 
 // Collect all node kinds from documented plugins.
-// Each plugin definition has a `nodeKinds: string[]` array.
-// Typeclass dispatch plugins (semiring, semigroup, etc.) have empty
-// nodeKinds because they delegate to type-specific plugins.
-const plugins: Array<{ nodeKinds: string[]; traits?: any }> = [
+// Plugins may declare kinds via `nodeKinds: string[]` or `kinds: Record<string, ...>`.
+const plugins: Array<{ nodeKinds?: readonly string[]; kinds?: Record<string, unknown>; traits?: any }> = [
   boolPlugin,
   numPlugin,
   strPlugin,
@@ -53,13 +52,14 @@ const plugins: Array<{ nodeKinds: string[]; traits?: any }> = [
   st,
   control,
   error,
+  fiber,
   consolePlugin(),
   postgresPlugin(),
   redisPlugin(),
   s3Plugin({ region: "us-east-1" }),
   fetchPlugin(),
   pinoPlugin(),
-  zodPlugin,
+  zodPlugin(),
   openaiPlugin({ apiKey: "unused" }),
   anthropicPlugin({ apiKey: "unused" }),
   falPlugin({ credentials: "unused" }),
@@ -89,7 +89,9 @@ for (const kind of CORE_KINDS) {
 }
 
 for (const plugin of plugins) {
-  for (const kind of plugin.nodeKinds) {
+  // Extract node kinds from either nodeKinds array or kinds record keys
+  const kindNames = plugin.nodeKinds ?? (plugin.kinds ? Object.keys(plugin.kinds) : []);
+  for (const kind of kindNames) {
     if (!INTERNAL_KINDS.has(kind)) {
       allKinds.add(kind);
     }
