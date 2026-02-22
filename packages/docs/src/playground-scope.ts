@@ -23,7 +23,7 @@ export async function createPlaygroundScope(
     pluginConsole.wrapConsole(fakeConsole as any),
   );
   const realDefaults = core.defaults;
-  const realFoldAST = core.foldAST;
+  const realFold = core.fold;
 
   // Group mock handler keys (e.g. "st/let") by plugin name (e.g. "st")
   // so they can be passed as overrides to defaults().
@@ -36,7 +36,7 @@ export async function createPlaygroundScope(
     }
   }
 
-  // Track the last foldAST return value for display in the playground.
+  // Track the last fold return value for display in the playground.
   let lastFoldResult: unknown;
 
   const pluginFetch = await import("@mvfm/plugin-fetch");
@@ -182,8 +182,8 @@ export async function createPlaygroundScope(
     injected.memoryS3Interpreter = pluginS3.createS3Interpreter(client);
   }
 
-  injected.foldAST = async (...args: any[]) => {
-    const result = await (realFoldAST as any)(...args);
+  injected.fold = async (...args: any[]) => {
+    const result = await (realFold as any)(...args);
     lastFoldResult = result;
     return result;
   };
