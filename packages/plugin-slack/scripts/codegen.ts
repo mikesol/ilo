@@ -514,12 +514,6 @@ function generateInterpreterGroup(group: GroupData): string {
   const pascal = slugToPascal(group.fileSlug);
 
   lines.push(`import type { Interpreter, RuntimeEntry } from "@mvfm/core";`);
-  lines.push(
-    `import type { SLACK_NODE_KINDS_${constSuffix} } from "./node-kinds-${group.fileSlug}";`
-  );
-  lines.push("");
-
-  lines.push(`type Slack${pascal}Kind = (typeof SLACK_NODE_KINDS_${constSuffix})[number];`);
   lines.push("");
 
   lines.push(`export const NODE_TO_METHOD_${constSuffix}: Record<string, string> = {`);

@@ -11,12 +11,10 @@ describe("slack: users", () => {
     expect($.slack.users.conversations({ user: "U123" }).__kind).toBe("slack/users_conversations");
   });
 
-  it("produces CExpr with undefined arg when users.list params omitted", () => {
+  it("produces CExpr with no args when users.list params omitted", () => {
     const expr = ($.slack.users as any).list();
     expect(expr.__kind).toBe("slack/users_list");
-    // Non-optional method: params=undefined is lifted as a single undefined arg
-    expect(expr.__args).toHaveLength(1);
-    expect(expr.__args[0]).toBeUndefined();
+    expect(expr.__args).toHaveLength(0);
   });
 });
 
@@ -55,11 +53,9 @@ describe("slack: files", () => {
     expect($.slack.files.delete({ file: "F123" }).__kind).toBe("slack/files_delete");
   });
 
-  it("produces CExpr with undefined arg when files.list params omitted", () => {
+  it("produces CExpr with no args when files.list params omitted", () => {
     const expr = ($.slack.files as any).list();
     expect(expr.__kind).toBe("slack/files_list");
-    // Non-optional method: params=undefined is lifted as a single undefined arg
-    expect(expr.__args).toHaveLength(1);
-    expect(expr.__args[0]).toBeUndefined();
+    expect(expr.__args).toHaveLength(0);
   });
 });
