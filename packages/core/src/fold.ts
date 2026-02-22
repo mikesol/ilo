@@ -20,7 +20,15 @@ import type { FoldYield, Interpreter, RecurseScopedEffect } from "./plugin";
 // ─── Volatile kinds ─────────────────────────────────────────────────
 
 /** Node kinds that skip memoization and taint their ancestors. */
-export const VOLATILE_KINDS = new Set<string>(["core/lambda_param"]);
+export const VOLATILE_KINDS = new Set<string>([
+  "core/lambda_param",
+  "st/get",
+  "st/set",
+  "st/push",
+  "error/try",
+  "error/caught",
+  "control/while",
+]);
 
 // ─── FoldState: externalized cache for sharing across fold calls ────
 
