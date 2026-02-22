@@ -91,7 +91,6 @@ function variantChecks(variant: string | undefined): CheckDescriptor[] {
 }
 
 export const numberInterpreter: SchemaInterpreterMap = {
-  // biome-ignore lint/correctness/useYield: conforms to SchemaInterpreterMap generator signature
   "zod/number": async function* (node: ZodNumberNode): AsyncGenerator<unknown, z.ZodType, unknown> {
     const variant = node.variant as string | undefined;
     const explicitChecks = (node.checks as CheckDescriptor[]) ?? [];
@@ -101,7 +100,6 @@ export const numberInterpreter: SchemaInterpreterMap = {
     const base = errorFn ? ctor({ error: errorFn }) : ctor();
     return applyNumberChecks(base as z.ZodNumber, allChecks);
   },
-  // biome-ignore lint/correctness/useYield: conforms to SchemaInterpreterMap generator signature
   "zod/nan": async function* (node: ZodNanNode): AsyncGenerator<unknown, z.ZodType, unknown> {
     const errorFn = toZodError(node.error as ErrorConfig | undefined);
     return errorFn ? z.nan({ error: errorFn }) : z.nan();

@@ -9,26 +9,32 @@ import type { QueueClient } from '@fal-ai/client';
 import type { QueueStatus } from '@fal-ai/client';
 import type { Result } from '@fal-ai/client';
 
-// @public
-export interface ClientHandlerOptions {
-    baseUrl: string;
-    contractHash: string;
-    fetch?: typeof globalThis.fetch;
-    headers?: Record<string, string>;
-}
-
 // Warning: (ae-forgotten-export) The symbol "Interpreter" needs to be exported by the entry point index.d.ts
 //
 // @public
-export function clientInterpreter(options: ClientHandlerOptions, nodeKinds: string[]): Interpreter;
-
-// @public
 export function createFalInterpreter(client: FalClient): Interpreter;
 
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
-export function fal(config: FalConfig): PluginDefinition<FalMethods, {}, "fal/run" | "fal/subscribe" | "fal/queue_submit" | "fal/queue_status" | "fal/queue_result" | "fal/queue_cancel">;
+export function fal(config: FalConfig): {
+    name: "fal";
+    ctors: {
+        fal: {
+            run(endpointId: string | CExpr<string>, options?: FalRunOptions): CExpr<Awaited<ReturnType<FalClient_2["run"]>>>;
+            subscribe(endpointId: string | CExpr<string>, options?: FalSubscribeOptions): CExpr<Awaited<ReturnType<FalClient_2["subscribe"]>>>;
+            queue: {
+                submit(endpointId: string | CExpr<string>, options: FalSubmitOptions): CExpr<Awaited<ReturnType<QueueClient["submit"]>>>;
+                status(endpointId: string | CExpr<string>, options: FalQueueStatusOptions): CExpr<Awaited<ReturnType<QueueClient["status"]>>>;
+                result(endpointId: string | CExpr<string>, options: FalQueueResultOptions): CExpr<Awaited<ReturnType<QueueClient["result"]>>>;
+                cancel(endpointId: string | CExpr<string>, options: FalQueueCancelOptions): CExpr<void>;
+            };
+        };
+    };
+    kinds: Record<string, KindSpec<unknown[], unknown>>;
+    traits: {};
+    lifts: {};
+    nodeKinds: ("fal/run" | "fal/subscribe" | "fal/queue_submit" | "fal/queue_status" | "fal/queue_result" | "fal/queue_cancel" | "fal/record" | "fal/array")[];
+    defaultInterpreter: () => Interpreter;
+};
 
 // @public
 export interface FalClient {
@@ -48,65 +54,60 @@ export interface FalConfig {
 // @public
 export const falInterpreter: Interpreter;
 
-// @public (undocumented)
+// @public
 export interface FalMethods {
     fal: {
-        run(endpointId: Expr<string> | string, options?: FalRunOptions): Expr<Awaited<ReturnType<FalClient_2["run"]>>>;
-        subscribe(endpointId: Expr<string> | string, options?: FalSubscribeOptions): Expr<Awaited<ReturnType<FalClient_2["subscribe"]>>>;
+        run(endpointId: string | CExpr<string>, options?: FalRunOptions): CExpr<Awaited<ReturnType<FalClient_2["run"]>>>;
+        subscribe(endpointId: string | CExpr<string>, options?: FalSubscribeOptions): CExpr<Awaited<ReturnType<FalClient_2["subscribe"]>>>;
         queue: {
-            submit(endpointId: Expr<string> | string, options: FalSubmitOptions): Expr<Awaited<ReturnType<QueueClient["submit"]>>>;
-            status(endpointId: Expr<string> | string, options: FalQueueStatusOptions): Expr<Awaited<ReturnType<QueueClient["status"]>>>;
-            result(endpointId: Expr<string> | string, options: FalQueueResultOptions): Expr<Awaited<ReturnType<QueueClient["result"]>>>;
-            cancel(endpointId: Expr<string> | string, options: FalQueueCancelOptions): Expr<void>;
+            submit(endpointId: string | CExpr<string>, options: FalSubmitOptions): CExpr<Awaited<ReturnType<QueueClient["submit"]>>>;
+            status(endpointId: string | CExpr<string>, options: FalQueueStatusOptions): CExpr<Awaited<ReturnType<QueueClient["status"]>>>;
+            result(endpointId: string | CExpr<string>, options: FalQueueResultOptions): CExpr<Awaited<ReturnType<QueueClient["result"]>>>;
+            cancel(endpointId: string | CExpr<string>, options: FalQueueCancelOptions): CExpr<void>;
         };
     };
 }
 
-// Warning: (ae-forgotten-export) The symbol "Exprify" needs to be exported by the entry point index.d.ts
+// @public
+export const falPlugin: typeof fal;
+
 // Warning: (ae-forgotten-export) The symbol "QueueCancelOptionsShape" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type FalQueueCancelOptions = Exprify<QueueCancelOptionsShape>;
+export type FalQueueCancelOptions = QueueCancelOptionsShape | CExpr<QueueCancelOptionsShape>;
 
 // Warning: (ae-forgotten-export) The symbol "QueueResultOptionsShape" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type FalQueueResultOptions = Exprify<QueueResultOptionsShape>;
+export type FalQueueResultOptions = QueueResultOptionsShape | CExpr<QueueResultOptionsShape>;
 
 // Warning: (ae-forgotten-export) The symbol "QueueStatusOptionsShape" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type FalQueueStatusOptions = Exprify<QueueStatusOptionsShape>;
+export type FalQueueStatusOptions = QueueStatusOptionsShape | CExpr<QueueStatusOptionsShape>;
 
 // Warning: (ae-forgotten-export) The symbol "RunOptionsShape" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type FalRunOptions = Exprify<RunOptionsShape>;
+export type FalRunOptions = RunOptionsShape | CExpr<RunOptionsShape>;
 
 // Warning: (ae-forgotten-export) The symbol "SubmitOptionsShape" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type FalSubmitOptions = Exprify<SubmitOptionsShape>;
+export type FalSubmitOptions = SubmitOptionsShape | CExpr<SubmitOptionsShape>;
 
 // Warning: (ae-forgotten-export) The symbol "SubscribeOptionsShape" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type FalSubscribeOptions = Exprify<SubscribeOptionsShape>;
-
-// Warning: (ae-forgotten-export) The symbol "TypedNode" needs to be exported by the entry point index.d.ts
-//
-// @public
-export function serverEvaluate(client: FalClient, baseInterpreter: Interpreter): (root: TypedNode) => Promise<unknown>;
-
-// @public
-export function serverInterpreter(client: FalClient): Interpreter;
+export type FalSubscribeOptions = SubscribeOptionsShape | CExpr<SubscribeOptionsShape>;
 
 // @public
 export function wrapFalSdk(client: FalClient_2): FalClient;
 
 // Warnings were encountered during analysis:
 //
-// dist/1.9.1/index.d.ts:36:9 - (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
+// dist/1.9.1/index.d.ts:68:13 - (ae-forgotten-export) The symbol "CExpr" needs to be exported by the entry point index.d.ts
+// dist/1.9.1/index.d.ts:83:5 - (ae-forgotten-export) The symbol "KindSpec" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

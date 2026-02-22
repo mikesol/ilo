@@ -1,6 +1,5 @@
 import type { Interpreter, RuntimeEntry } from "@mvfm/core";
 import { wrapTwilioSdk } from "./client-twilio-sdk";
-import type { TwilioConfig } from "./index";
 
 /**
  * Twilio client interface consumed by the twilio handler.
@@ -105,7 +104,7 @@ function requiredEnv(name: "TWILIO_ACCOUNT_SID" | "TWILIO_AUTH_TOKEN"): string {
   return value;
 }
 
-function lazyInterpreter(factory: () => Interpreter): Interpreter {
+function _lazyInterpreter(factory: () => Interpreter): Interpreter {
   let cached: Interpreter | undefined;
   const get = () => (cached ??= factory());
   return new Proxy({} as Interpreter, {

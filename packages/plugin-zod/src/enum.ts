@@ -106,14 +106,12 @@ export function enumNamespace(
 }
 
 export const enumInterpreter: SchemaInterpreterMap = {
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/enum": async function* (node: ZodEnumNode) {
     const values = node.values as [string, ...string[]];
     const errorFn = toZodError(node.error as ErrorConfig | undefined);
     const errOpt = errorFn ? { error: errorFn } : {};
     return z.enum(values, errOpt);
   },
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/native_enum": async function* (node: ZodNativeEnumNode) {
     const entries = node.entries as Record<string, string | number>;
     const errorFn = toZodError(node.error as ErrorConfig | undefined);

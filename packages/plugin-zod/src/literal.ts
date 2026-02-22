@@ -54,7 +54,6 @@ export function literalNamespace(): ZodLiteralNamespace {
 }
 
 export const literalInterpreter: SchemaInterpreterMap = {
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/literal": async function* (node: ZodLiteralNode) {
     const value = node.value;
     if (Array.isArray(value)) return z.literal(value as [string, ...string[]]);

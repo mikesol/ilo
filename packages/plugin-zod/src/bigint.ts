@@ -151,7 +151,6 @@ function applyBigIntChecks(schema: z.ZodBigInt, checks: CheckDescriptor[]): z.Zo
 }
 
 export const bigintInterpreter: SchemaInterpreterMap = {
-  // biome-ignore lint/correctness/useYield: conforms to SchemaInterpreterMap generator signature
   "zod/bigint": async function* (node: ZodBigIntNode): AsyncGenerator<unknown, z.ZodType, unknown> {
     const checks = (node.checks as CheckDescriptor[]) ?? [];
     const errorFn = toZodError(node.error as ErrorConfig | undefined);

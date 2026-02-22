@@ -1,5 +1,4 @@
-import type { FoldYield, Handler, Interpreter, RuntimeEntry } from "@mvfm/core";
-import { recurseScoped } from "@mvfm/core";
+import type { FoldYield, Interpreter, RuntimeEntry } from "@mvfm/core";
 import { z } from "zod";
 import { createArrayInterpreter } from "./array";
 import { bigintInterpreter } from "./bigint";
@@ -28,7 +27,7 @@ import { specialInterpreter } from "./special";
 import { stringInterpreter } from "./string";
 import { stringboolInterpreter } from "./stringbool";
 import { createTemplateLiteralInterpreter } from "./template-literal";
-import type { AnyZodSchemaNode, ZodLambdaNode } from "./types";
+import type { AnyZodSchemaNode } from "./types";
 import { createUnionInterpreter } from "./union";
 import { zodNonoptional, zodPrefault, zodTupleRest } from "./zod-compat";
 

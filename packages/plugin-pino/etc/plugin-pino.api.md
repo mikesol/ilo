@@ -18,12 +18,20 @@ export interface ClientHandlerOptions {
 export function clientInterpreter(options: ClientHandlerOptions, nodeKinds: string[]): Interpreter;
 
 // @public
-export function createPinoInterpreter(client: PinoClient): Interpreter;
+export function createPinoInterpreter(client?: PinoClient, _config?: PinoConfig): Interpreter;
 
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
-export function pino(config?: PinoConfig): PluginDefinition<PinoMethods, {}, "pino/trace" | "pino/debug" | "pino/info" | "pino/warn" | "pino/error" | "pino/fatal">;
+export function pino(config?: PinoConfig): {
+    name: "pino";
+    ctors: {
+        pino: PinoLogger;
+    };
+    kinds: Record<string, KindSpec<unknown[], unknown>>;
+    traits: {};
+    lifts: {};
+    nodeKinds: ("pino/trace" | "pino/debug" | "pino/info" | "pino/warn" | "pino/error" | "pino/fatal" | "pino/record" | "pino/array")[];
+    defaultInterpreter: () => Interpreter;
+};
 
 // @public
 export interface PinoClient {
@@ -69,28 +77,33 @@ export interface PinoInstance {
 // @public
 export const pinoInterpreter: Interpreter;
 
+// Warning: (ae-forgotten-export) The symbol "LEVELS" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type PinoLevel = (typeof LEVELS)[number];
+
 // @public
 export interface PinoLogger {
-    child(bindings: Expr<Record<string, unknown>> | Record<string, unknown>): PinoLogger;
-    debug(msg: Expr<string> | string): Expr<void>;
+    child(bindings: CExpr<Record<string, unknown>> | Record<string, unknown>): PinoLogger;
+    debug(msg: CExpr<string> | string): CExpr<void>;
     // (undocumented)
-    debug(mergeObject: Expr<Record<string, unknown>> | Record<string, unknown>, msg: Expr<string> | string): Expr<void>;
-    error(msg: Expr<string> | string): Expr<void>;
+    debug(mergeObject: CExpr<Record<string, unknown>> | Record<string, unknown>, msg: CExpr<string> | string): CExpr<void>;
+    error(msg: CExpr<string> | string): CExpr<void>;
     // (undocumented)
-    error(mergeObject: Expr<Record<string, unknown>> | Record<string, unknown>, msg: Expr<string> | string): Expr<void>;
-    fatal(msg: Expr<string> | string): Expr<void>;
+    error(mergeObject: CExpr<Record<string, unknown>> | Record<string, unknown>, msg: CExpr<string> | string): CExpr<void>;
+    fatal(msg: CExpr<string> | string): CExpr<void>;
     // (undocumented)
-    fatal(mergeObject: Expr<Record<string, unknown>> | Record<string, unknown>, msg: Expr<string> | string): Expr<void>;
-    info(msg: Expr<string> | string): Expr<void>;
+    fatal(mergeObject: CExpr<Record<string, unknown>> | Record<string, unknown>, msg: CExpr<string> | string): CExpr<void>;
+    info(msg: CExpr<string> | string): CExpr<void>;
     // (undocumented)
-    info(mergeObject: Expr<Record<string, unknown>> | Record<string, unknown>, msg: Expr<string> | string): Expr<void>;
-    // Warning: (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
-    trace(msg: Expr<string> | string): Expr<void>;
+    info(mergeObject: CExpr<Record<string, unknown>> | Record<string, unknown>, msg: CExpr<string> | string): CExpr<void>;
+    // Warning: (ae-forgotten-export) The symbol "CExpr" needs to be exported by the entry point index.d.ts
+    trace(msg: CExpr<string> | string): CExpr<void>;
     // (undocumented)
-    trace(mergeObject: Expr<Record<string, unknown>> | Record<string, unknown>, msg: Expr<string> | string): Expr<void>;
-    warn(msg: Expr<string> | string): Expr<void>;
+    trace(mergeObject: CExpr<Record<string, unknown>> | Record<string, unknown>, msg: CExpr<string> | string): CExpr<void>;
+    warn(msg: CExpr<string> | string): CExpr<void>;
     // (undocumented)
-    warn(mergeObject: Expr<Record<string, unknown>> | Record<string, unknown>, msg: Expr<string> | string): Expr<void>;
+    warn(mergeObject: CExpr<Record<string, unknown>> | Record<string, unknown>, msg: CExpr<string> | string): CExpr<void>;
 }
 
 // @public
@@ -98,16 +111,23 @@ export interface PinoMethods {
     pino: PinoLogger;
 }
 
-// Warning: (ae-forgotten-export) The symbol "TypedNode" needs to be exported by the entry point index.d.ts
+// @public
+export const pinoPlugin: typeof pino;
+
+// Warning: (ae-forgotten-export) The symbol "NExpr" needs to be exported by the entry point index.d.ts
 //
 // @public
-export function serverEvaluate(client: PinoClient, baseInterpreter: Interpreter): (root: TypedNode) => Promise<unknown>;
+export function serverEvaluate(client: PinoClient, baseInterpreter: Interpreter): (expr: NExpr<unknown, string, unknown, string>) => Promise<unknown>;
 
 // @public
 export function serverInterpreter(client: PinoClient): Interpreter;
 
 // @public
 export function wrapPino(logger: PinoInstance): PinoClient;
+
+// Warnings were encountered during analysis:
+//
+// dist/10.3.1/index.d.ts:65:5 - (ae-forgotten-export) The symbol "KindSpec" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

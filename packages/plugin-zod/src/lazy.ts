@@ -183,7 +183,6 @@ export function createLazyInterpreter(buildSchema: SchemaBuildFn): SchemaInterpr
       }
       return lazySchema;
     },
-    // biome-ignore lint/correctness/useYield: leaf handler returns cached schema
     "zod/lazy_ref": async function* (node: ZodLazyRefNode) {
       const schema = lazySchemaById.get(node.lazyId);
       if (!schema)

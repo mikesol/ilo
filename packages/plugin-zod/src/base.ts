@@ -1,7 +1,7 @@
 import type { CExpr } from "@mvfm/core";
 import { isCExpr, makeCExpr } from "@mvfm/core";
 import { ZodSchemaBuilderCore } from "./base-core";
-import type { CheckDescriptor, ErrorConfig, RefinementDescriptor, WrapperASTNode } from "./types";
+import type { WrapperASTNode } from "./types";
 
 export abstract class ZodSchemaBuilder<T> extends ZodSchemaBuilderCore<T> {
   private _wrap<U>(wrapperKind: string, extra?: Record<string, unknown>): ZodWrappedBuilder<U> {

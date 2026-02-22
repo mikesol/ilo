@@ -84,7 +84,6 @@ function applyDateChecks(schema: z.ZodDate, checks: CheckDescriptor[]): z.ZodDat
 }
 
 export const dateInterpreter: SchemaInterpreterMap = {
-  // biome-ignore lint/correctness/useYield: conforms to SchemaInterpreterMap generator signature
   "zod/date": async function* (node: ZodDateNode): AsyncGenerator<unknown, z.ZodType, unknown> {
     const checks = (node.checks as CheckDescriptor[]) ?? [];
     const errorFn = toZodError(node.error as ErrorConfig | undefined);

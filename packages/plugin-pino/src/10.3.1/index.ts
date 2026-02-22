@@ -140,12 +140,12 @@ const NODE_KINDS = [
   "pino/array",
 ] as const;
 
-type PinoKindName = (typeof NODE_KINDS)[number];
+type _PinoKindName = (typeof NODE_KINDS)[number];
 
 /** Variadic KindSpec: unknown[] inputs, void output. */
 const voidKind = {
   inputs: [] as unknown[],
-  output: undefined as void,
+  output: undefined as undefined,
 } as KindSpec<unknown[], void>;
 
 const recordKind = {

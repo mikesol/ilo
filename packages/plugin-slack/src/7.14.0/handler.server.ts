@@ -1,4 +1,4 @@
-import type { Interpreter, NExpr, RuntimeEntry } from "@mvfm/core";
+import type { Interpreter, NExpr } from "@mvfm/core";
 import { fold } from "@mvfm/core";
 import { createSlackInterpreter, type SlackClient } from "./generated/interpreter";
 

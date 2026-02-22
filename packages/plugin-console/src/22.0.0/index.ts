@@ -67,7 +67,7 @@ export interface ConsoleConfig {
 /** Variadic KindSpec for console methods: unknown[] inputs, void output. */
 const variadicKind = {
   inputs: [] as unknown[],
-  output: undefined as void,
+  output: undefined as undefined,
 } as KindSpec<unknown[], void>;
 
 function buildKinds(): Record<string, KindSpec<unknown[], void>> {

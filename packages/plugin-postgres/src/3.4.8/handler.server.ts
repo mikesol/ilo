@@ -1,6 +1,6 @@
 import type { Interpreter, RuntimeEntry } from "@mvfm/core";
 import { createFoldState, fold } from "@mvfm/core";
-import { createPostgresInterpreter, escapeIdentifier, type PostgresClient } from "./interpreter";
+import { createPostgresInterpreter, type PostgresClient } from "./interpreter";
 
 /** Marker for SQL fragment results from identifier/insert/set helpers. */
 interface PgFragment {
@@ -104,7 +104,7 @@ export function createPostgresServerInterpreter(
       // Children: [queryExpr, batchSizeExpr, bodyExpr]
       // Evaluate query inline to get SQL
       const queryEntry = adj[entry.children[0]];
-      const numStrings = queryEntry.out as number | undefined;
+      const _numStrings = queryEntry.out as number | undefined;
 
       // We need to evaluate the query's children to build SQL.
       // But we can't yield into the query's subtree directly —
@@ -142,7 +142,6 @@ export function createPostgresServerInterpreter(
 
       const cursorInterp: Interpreter = {
         ...fullInterp,
-        // biome-ignore lint/correctness/useYield: returns closure data
         "postgres/cursor_batch": async function* () {
           return batchCell.current;
         },

@@ -6,34 +6,40 @@
 
 import type Stripe from 'stripe';
 
-// @public
-export interface ClientHandlerOptions {
-    baseUrl: string;
-    contractHash: string;
-    fetch?: typeof globalThis.fetch;
-    headers?: Record<string, string>;
-}
-
 // Warning: (ae-forgotten-export) The symbol "Interpreter" needs to be exported by the entry point index.d.ts
 //
 // @public
-export function clientInterpreter(options: ClientHandlerOptions, nodeKinds: string[]): Interpreter;
-
-// @public
 export function createStripeInterpreter(client: StripeClient): Interpreter;
 
-// Warning: (ae-forgotten-export) The symbol "TypedNode" needs to be exported by the entry point index.d.ts
-//
 // @public
-export function serverEvaluate(client: StripeClient, baseInterpreter: Interpreter): (root: TypedNode) => Promise<unknown>;
-
-// @public
-export function serverInterpreter(client: StripeClient): Interpreter;
-
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
-// @public
-export function stripe(config: StripeConfig): PluginDefinition<StripeMethods, {}, "stripe/create_payment_intent" | "stripe/retrieve_payment_intent" | "stripe/confirm_payment_intent" | "stripe/create_customer" | "stripe/retrieve_customer" | "stripe/update_customer" | "stripe/list_customers" | "stripe/create_charge" | "stripe/retrieve_charge" | "stripe/list_charges">;
+export function stripe(config: StripeConfig): {
+    name: "stripe";
+    ctors: {
+        stripe: {
+            paymentIntents: {
+                create(params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+                retrieve(id: string | CExpr<string>): CExpr<Record<string, unknown>>;
+                confirm(id: string | CExpr<string>, params?: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+            };
+            customers: {
+                create(params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+                retrieve(id: string | CExpr<string>): CExpr<Record<string, unknown>>;
+                update(id: string | CExpr<string>, params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+                list(params?: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+            };
+            charges: {
+                create(params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+                retrieve(id: string | CExpr<string>): CExpr<Record<string, unknown>>;
+                list(params?: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+            };
+        };
+    };
+    kinds: Record<string, KindSpec<unknown[], unknown>>;
+    traits: {};
+    lifts: {};
+    nodeKinds: ("stripe/create_payment_intent" | "stripe/retrieve_payment_intent" | "stripe/confirm_payment_intent" | "stripe/create_customer" | "stripe/retrieve_customer" | "stripe/update_customer" | "stripe/list_customers" | "stripe/create_charge" | "stripe/retrieve_charge" | "stripe/list_charges" | "stripe/record" | "stripe/array")[];
+    defaultInterpreter: () => Interpreter;
+};
 
 // @public
 export interface StripeClient {
@@ -53,30 +59,34 @@ export const stripeInterpreter: Interpreter;
 export interface StripeMethods {
     stripe: {
         paymentIntents: {
-            create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
-            retrieve(id: Expr<string> | string): Expr<Record<string, unknown>>;
-            confirm(id: Expr<string> | string, params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            create(params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+            retrieve(id: string | CExpr<string>): CExpr<Record<string, unknown>>;
+            confirm(id: string | CExpr<string>, params?: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
         };
         customers: {
-            create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
-            retrieve(id: Expr<string> | string): Expr<Record<string, unknown>>;
-            update(id: Expr<string> | string, params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
-            list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            create(params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+            retrieve(id: string | CExpr<string>): CExpr<Record<string, unknown>>;
+            update(id: string | CExpr<string>, params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+            list(params?: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
         };
         charges: {
-            create(params: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
-            retrieve(id: Expr<string> | string): Expr<Record<string, unknown>>;
-            list(params?: Expr<Record<string, unknown>> | Record<string, unknown>): Expr<Record<string, unknown>>;
+            create(params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+            retrieve(id: string | CExpr<string>): CExpr<Record<string, unknown>>;
+            list(params?: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
         };
     };
 }
+
+// @public
+export const stripePlugin: typeof stripe;
 
 // @public
 export function wrapStripeSdk(stripe: Stripe): StripeClient;
 
 // Warnings were encountered during analysis:
 //
-// dist/2025-04-30.basil/index.d.ts:14:13 - (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
+// dist/2025-04-30.basil/index.d.ts:64:17 - (ae-forgotten-export) The symbol "CExpr" needs to be exported by the entry point index.d.ts
+// dist/2025-04-30.basil/index.d.ts:90:5 - (ae-forgotten-export) The symbol "KindSpec" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

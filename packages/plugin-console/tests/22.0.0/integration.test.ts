@@ -1,4 +1,4 @@
-import { boolPluginU, createApp, defaults, fold, mvfmU, numPluginU, strPluginU } from "@mvfm/core";
+import { boolPluginU, createApp, defaults, mvfmU, numPluginU, strPluginU } from "@mvfm/core";
 import { describe, expect, it } from "vitest";
 import { consolePlugin } from "../../src/22.0.0";
 import { wrapConsole } from "../../src/22.0.0/client-console";

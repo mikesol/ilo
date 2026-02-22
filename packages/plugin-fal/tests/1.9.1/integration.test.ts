@@ -32,7 +32,7 @@ afterAll(async () => {
 }, 10_000);
 
 function evaluate(expr: unknown) {
-  const $ = mvfmU(...plugins);
+  const _$ = mvfmU(...plugins);
   const nexpr = app(expr as Parameters<typeof app>[0]);
   const interp = defaults(plugins, {
     fal: createFalInterpreter(client),

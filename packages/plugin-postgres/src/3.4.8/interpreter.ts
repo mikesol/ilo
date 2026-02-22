@@ -137,28 +137,24 @@ export function createPostgresInterpreter(client: PostgresClient): Interpreter {
       return { __pgFragment: true, sql, params } as PgFragment;
     },
 
-    // biome-ignore lint/correctness/useYield: stub throws before yielding
     "postgres/begin": async function* (_entry: RuntimeEntry) {
       throw new Error(
         "postgres/begin requires the server interpreter — use createPostgresServerInterpreter",
       );
     },
 
-    // biome-ignore lint/correctness/useYield: stub throws before yielding
     "postgres/savepoint": async function* (_entry: RuntimeEntry) {
       throw new Error(
         "postgres/savepoint requires the server interpreter — use createPostgresServerInterpreter",
       );
     },
 
-    // biome-ignore lint/correctness/useYield: stub throws before yielding
     "postgres/cursor": async function* (_entry: RuntimeEntry) {
       throw new Error(
         "postgres/cursor requires the server interpreter — use createPostgresServerInterpreter",
       );
     },
 
-    // biome-ignore lint/correctness/useYield: stub throws before yielding
     "postgres/cursor_batch": async function* (_entry: RuntimeEntry) {
       throw new Error(
         "postgres/cursor_batch requires the server interpreter — use createPostgresServerInterpreter",

@@ -77,7 +77,7 @@ describe("DAG memoization integration: shared query deduplication", () => {
   it("shared query used by two consumers executes once", async () => {
     const expr = (() => {
       const settings = $.sql`SELECT value FROM settings WHERE key = 'tax_rate'`;
-      const a = $.sql`SELECT ${settings[0].value} as rate`;
+      const _a = $.sql`SELECT ${settings[0].value} as rate`;
       const b = $.sql`SELECT ${settings[0].value} as rate2`;
       // Use a tuple-like approach: we need both a and b in the output
       // Since we don't have $.begin here, just return b (both still get deduplicated)

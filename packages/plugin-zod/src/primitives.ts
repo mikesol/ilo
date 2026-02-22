@@ -68,24 +68,19 @@ export function primitivesNamespace(
 }
 
 export const primitivesInterpreter: SchemaInterpreterMap = {
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/boolean": async function* (node: ZodSchemaNodeBase) {
     const errorFn = toZodError(node.error as ErrorConfig | undefined);
     return errorFn ? z.boolean({ error: errorFn }) : z.boolean();
   },
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/null": async function* () {
     return z.null();
   },
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/undefined": async function* () {
     return z.undefined();
   },
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/void": async function* () {
     return z.void();
   },
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/symbol": async function* () {
     return z.symbol();
   },

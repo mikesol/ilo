@@ -65,7 +65,6 @@ export function stringboolNamespace(): ZodStringboolNamespace {
 }
 
 export const stringboolInterpreter: SchemaInterpreterMap = {
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/stringbool": async function* (node: ZodStringboolNode) {
     const opts: Record<string, unknown> = {};
     if (node.truthy) opts.truthy = node.truthy;

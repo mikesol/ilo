@@ -46,7 +46,6 @@ export function createResendInterpreter(client: ResendClient): Interpreter {
       return await client.request("GET", `/contacts/${id}`);
     },
 
-    // biome-ignore lint/correctness/useYield: no child nodes to evaluate
     "resend/list_contacts": async function* (_entry: RuntimeEntry) {
       return await client.request("GET", "/contacts");
     },

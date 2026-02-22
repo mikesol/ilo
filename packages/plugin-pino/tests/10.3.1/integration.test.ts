@@ -1,11 +1,10 @@
 import { Writable } from "node:stream";
-import { boolPluginU, createApp, defaults, fold, mvfmU, numPluginU, strPluginU } from "@mvfm/core";
+import { boolPluginU, createApp, defaults, mvfmU, numPluginU, strPluginU } from "@mvfm/core";
 import pinoLib from "pino";
 import { describe, expect, it } from "vitest";
 import { pino } from "../../src/10.3.1";
 import { wrapPino } from "../../src/10.3.1/client-pino";
 import { serverEvaluate } from "../../src/10.3.1/handler.server";
-import { createPinoInterpreter } from "../../src/10.3.1/interpreter";
 
 const plugin = pino({ level: "trace" });
 const plugins = [numPluginU, strPluginU, boolPluginU, plugin] as const;

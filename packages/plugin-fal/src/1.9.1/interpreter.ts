@@ -6,7 +6,6 @@ import type {
 } from "@fal-ai/client";
 import type { Interpreter, RuntimeEntry } from "@mvfm/core";
 import { wrapFalSdk } from "./client-fal-sdk";
-import type { FalConfig } from "./index";
 
 /**
  * Fal client interface consumed by the fal handler.

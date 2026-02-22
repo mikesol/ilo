@@ -4,53 +4,38 @@
 
 ```ts
 
-import { CallInstance } from 'twilio/lib/rest/api/v2010/account/call';
-import { CallListInstanceCreateOptions } from 'twilio/lib/rest/api/v2010/account/call';
-import { CallListInstanceOptions } from 'twilio/lib/rest/api/v2010/account/call';
-import { MessageInstance } from 'twilio/lib/rest/api/v2010/account/message';
-import { MessageListInstanceCreateOptions } from 'twilio/lib/rest/api/v2010/account/message';
-import { MessageListInstanceOptions } from 'twilio/lib/rest/api/v2010/account/message';
-
-// @public
-export interface ClientHandlerOptions {
-    baseUrl: string;
-    contractHash: string;
-    fetch?: typeof globalThis.fetch;
-    headers?: Record<string, string>;
-}
-
 // Warning: (ae-forgotten-export) The symbol "Interpreter" needs to be exported by the entry point index.d.ts
 //
 // @public
-export function clientInterpreter(options: ClientHandlerOptions, nodeKinds: string[]): Interpreter;
+export function createTwilioInterpreter(client: TwilioClient, accountSid: string | (() => string)): Interpreter;
 
 // @public
-export function createTwilioInterpreter(client: TwilioClient): Interpreter;
-
-// Warning: (ae-forgotten-export) The symbol "TypedNode" needs to be exported by the entry point index.d.ts
-//
-// @public
-export function serverEvaluate(client: TwilioClient, baseInterpreter: Interpreter): (root: TypedNode) => Promise<unknown>;
-
-// @public
-export function serverInterpreter(client: TwilioClient): Interpreter;
-
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
-// @public
-export function twilio(config: TwilioConfig): PluginDefinition<TwilioMethods, {}, "twilio/create_message" | "twilio/fetch_message" | "twilio/list_messages" | "twilio/create_call" | "twilio/fetch_call" | "twilio/list_calls">;
+export function twilio(config: TwilioConfig): {
+    name: "twilio";
+    ctors: {
+        twilio: {
+            messages: TwilioMessagesResource;
+            calls: TwilioCallsResource;
+        };
+    };
+    kinds: Record<string, KindSpec<unknown[], unknown>>;
+    traits: {};
+    lifts: {};
+    nodeKinds: ("twilio/create_message" | "twilio/fetch_message" | "twilio/list_messages" | "twilio/create_call" | "twilio/fetch_call" | "twilio/list_calls" | "twilio/record" | "twilio/array")[];
+    defaultInterpreter: () => Interpreter;
+};
 
 // @public
 export interface TwilioCallContext {
-    // Warning: (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
-    fetch(): Expr<CallInstance>;
+    // Warning: (ae-forgotten-export) The symbol "CExpr" needs to be exported by the entry point index.d.ts
+    fetch(): CExpr<Record<string, unknown>>;
 }
 
 // @public
 export interface TwilioCallsResource {
-    (sid: Expr<string> | string): TwilioCallContext;
-    create(params: Expr<CallListInstanceCreateOptions> | CallListInstanceCreateOptions): Expr<CallInstance>;
-    list(params?: Expr<CallListInstanceOptions> | CallListInstanceOptions): Expr<CallInstance[]>;
+    (sid: string | CExpr<string>): TwilioCallContext;
+    create(params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+    list(params?: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
 }
 
 // @public
@@ -69,14 +54,14 @@ export const twilioInterpreter: Interpreter;
 
 // @public
 export interface TwilioMessageContext {
-    fetch(): Expr<MessageInstance>;
+    fetch(): CExpr<Record<string, unknown>>;
 }
 
 // @public
 export interface TwilioMessagesResource {
-    (sid: Expr<string> | string): TwilioMessageContext;
-    create(params: Expr<MessageListInstanceCreateOptions> | MessageListInstanceCreateOptions): Expr<MessageInstance>;
-    list(params?: Expr<MessageListInstanceOptions> | MessageListInstanceOptions): Expr<MessageInstance[]>;
+    (sid: string | CExpr<string>): TwilioMessageContext;
+    create(params: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
+    list(params?: Record<string, unknown> | CExpr<Record<string, unknown>>): CExpr<Record<string, unknown>>;
 }
 
 // @public
@@ -87,10 +72,17 @@ export interface TwilioMethods {
     };
 }
 
+// @public
+export const twilioPlugin: typeof twilio;
+
 // Warning: (ae-forgotten-export) The symbol "TwilioSdkClient" needs to be exported by the entry point index.d.ts
 //
 // @public
 export function wrapTwilioSdk(client: TwilioSdkClient): TwilioClient;
+
+// Warnings were encountered during analysis:
+//
+// dist/5.5.1/index.d.ts:80:5 - (ae-forgotten-export) The symbol "KindSpec" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

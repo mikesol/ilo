@@ -32,15 +32,32 @@ export function clientInterpreter(options: ClientHandlerOptions, nodeKinds: stri
 // @public
 export function createResendInterpreter(client: ResendClient): Interpreter;
 
-// Warning: (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export type ExprOrValue<T> = Expr<T> | T;
-
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
-export function resend(config: ResendConfig): PluginDefinition<ResendMethods, {}, "resend/send_email" | "resend/get_email" | "resend/send_batch" | "resend/create_contact" | "resend/get_contact" | "resend/list_contacts" | "resend/remove_contact">;
+export function resend(config: ResendConfig): {
+    name: "resend";
+    ctors: {
+        resend: {
+            emails: {
+                send(params: CreateEmailOptions | CExpr<CreateEmailOptions>): CExpr<CreateEmailResponseSuccess>;
+                get(id: string | CExpr<string>): CExpr<GetEmailResponseSuccess>;
+            };
+            batch: {
+                send(emails: CreateBatchOptions | CExpr<CreateBatchOptions>): CExpr<CreateBatchSuccessResponse>;
+            };
+            contacts: {
+                create(params: CreateContactOptions | LegacyCreateContactOptions | CExpr<CreateContactOptions | LegacyCreateContactOptions>): CExpr<CreateContactResponseSuccess>;
+                get(id: string | CExpr<string>): CExpr<GetContactResponseSuccess>;
+                list(): CExpr<ListContactsResponseSuccess>;
+                remove(id: string | CExpr<string>): CExpr<RemoveContactsResponseSuccess>;
+            };
+        };
+    };
+    kinds: Record<string, KindSpec<unknown[], unknown>>;
+    traits: {};
+    lifts: {};
+    nodeKinds: ("resend/send_email" | "resend/get_email" | "resend/send_batch" | "resend/create_contact" | "resend/get_contact" | "resend/list_contacts" | "resend/remove_contact" | "resend/record" | "resend/array")[];
+    defaultInterpreter: () => Interpreter;
+};
 
 // @public
 export interface ResendClient {
@@ -59,25 +76,23 @@ export const resendInterpreter: Interpreter;
 export interface ResendMethods {
     resend: {
         emails: {
-            send(params: ExprOrValue<CreateEmailOptions>): Expr<CreateEmailResponseSuccess>;
-            get(id: Expr<string> | string): Expr<GetEmailResponseSuccess>;
+            send(params: CreateEmailOptions | CExpr<CreateEmailOptions>): CExpr<CreateEmailResponseSuccess>;
+            get(id: string | CExpr<string>): CExpr<GetEmailResponseSuccess>;
         };
         batch: {
-            send(emails: ExprOrValue<CreateBatchOptions>): Expr<CreateBatchSuccessResponse>;
+            send(emails: CreateBatchOptions | CExpr<CreateBatchOptions>): CExpr<CreateBatchSuccessResponse>;
         };
         contacts: {
-            create(params: ExprOrValue<CreateContactOptions | LegacyCreateContactOptions>): Expr<CreateContactResponseSuccess>;
-            get(id: Expr<string> | string): Expr<GetContactResponseSuccess>;
-            list(): Expr<ListContactsResponseSuccess>;
-            remove(id: Expr<string> | string): Expr<RemoveContactsResponseSuccess>;
+            create(params: CreateContactOptions | LegacyCreateContactOptions | CExpr<CreateContactOptions | LegacyCreateContactOptions>): CExpr<CreateContactResponseSuccess>;
+            get(id: string | CExpr<string>): CExpr<GetContactResponseSuccess>;
+            list(): CExpr<ListContactsResponseSuccess>;
+            remove(id: string | CExpr<string>): CExpr<RemoveContactsResponseSuccess>;
         };
     };
 }
 
-// Warning: (ae-forgotten-export) The symbol "TypedNode" needs to be exported by the entry point index.d.ts
-//
 // @public
-export function serverEvaluate(client: ResendClient, baseInterpreter: Interpreter): (root: TypedNode) => Promise<unknown>;
+export const resendPlugin: typeof resend;
 
 // @public
 export function serverInterpreter(client: ResendClient): Interpreter;
@@ -86,6 +101,11 @@ export function serverInterpreter(client: ResendClient): Interpreter;
 //
 // @public
 export function wrapResendSdk(resend: ResendSdk): ResendClient;
+
+// Warnings were encountered during analysis:
+//
+// dist/6.9.2/index.d.ts:56:17 - (ae-forgotten-export) The symbol "CExpr" needs to be exported by the entry point index.d.ts
+// dist/6.9.2/index.d.ts:76:5 - (ae-forgotten-export) The symbol "KindSpec" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

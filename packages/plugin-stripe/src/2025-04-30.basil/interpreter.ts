@@ -1,6 +1,5 @@
 import type { Interpreter, RuntimeEntry } from "@mvfm/core";
 import { wrapStripeSdk } from "./client-stripe-sdk";
-import type { StripeConfig } from "./index";
 
 /**
  * Stripe client interface consumed by the stripe handler.

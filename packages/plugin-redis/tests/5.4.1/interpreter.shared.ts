@@ -7,7 +7,7 @@ export const plugins = [numPluginU, strPluginU, plugin] as const;
 export const $ = mvfmU(...plugins);
 export const app = createApp(...plugins);
 
-export async function run(nexpr: ReturnType<typeof app>, input?: Record<string, unknown>) {
+export async function run(nexpr: ReturnType<typeof app>, _input?: Record<string, unknown>) {
   const captured: Array<{ command: string; args: unknown[] }> = [];
   const mockClient: RedisClient = {
     async command(command: string, ...args: unknown[]) {

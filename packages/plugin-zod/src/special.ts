@@ -3,13 +3,7 @@ import { isCExpr, makeCExpr } from "@mvfm/core";
 import { z } from "zod";
 import { ZodSchemaBuilder, ZodWrappedBuilder } from "./base";
 import type { SchemaInterpreterMap } from "./interpreter-utils";
-import type {
-  CheckDescriptor,
-  ErrorConfig,
-  RefinementDescriptor,
-  WrapperASTNode,
-  ZodSchemaNodeBase,
-} from "./types";
+import type { CheckDescriptor, ErrorConfig, RefinementDescriptor, WrapperASTNode } from "./types";
 
 /**
  * Builder for simple Zod schema types with no type-specific methods.
@@ -103,19 +97,15 @@ export function specialNamespace(
 }
 
 export const specialInterpreter: SchemaInterpreterMap = {
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/any": async function* () {
     return z.any();
   },
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/unknown": async function* () {
     return z.unknown();
   },
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/never": async function* () {
     return z.never();
   },
-  // biome-ignore lint/correctness/useYield: leaf handler
   "zod/custom": async function* () {
     return z.any();
   },

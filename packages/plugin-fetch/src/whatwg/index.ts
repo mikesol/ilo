@@ -117,7 +117,7 @@ const NODE_KINDS = [
   "fetch/array",
 ] as const;
 
-type FetchKindName = (typeof NODE_KINDS)[number];
+type _FetchKindName = (typeof NODE_KINDS)[number];
 
 function buildKinds(): Record<string, KindSpec<unknown[], unknown>> {
   // Inputs left empty to skip type-checking at elaboration time.

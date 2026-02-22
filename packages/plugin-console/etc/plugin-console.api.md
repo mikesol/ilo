@@ -17,35 +17,42 @@ export interface ClientHandlerOptions {
 // @public
 export function clientInterpreter(options: ClientHandlerOptions, nodeKinds: string[]): Interpreter;
 
-// Warning: (ae-forgotten-export) The symbol "PluginDefinition" needs to be exported by the entry point index.d.ts
-//
 // @public
-function console_2(config?: ConsoleConfig): PluginDefinition<ConsoleMethods, {}, string>;
+function console_2(_config?: ConsoleConfig): {
+    name: "console";
+    ctors: {
+        console: ConsoleApi;
+    };
+    kinds: Record<string, KindSpec<unknown[], void>>;
+    traits: {};
+    lifts: {};
+    nodeKinds: string[];
+    defaultInterpreter: () => Interpreter;
+};
 export { console_2 as console }
 
 // @public
 export interface ConsoleApi {
-    // Warning: (ae-forgotten-export) The symbol "ConsoleArg" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "Expr" needs to be exported by the entry point index.d.ts
-    assert(condition: ConsoleArg, ...data: ConsoleArg[]): Expr<void>;
-    clear(): Expr<void>;
-    count(label?: ConsoleArg): Expr<void>;
-    countReset(label?: ConsoleArg): Expr<void>;
-    debug(...data: ConsoleArg[]): Expr<void>;
-    dir(item?: ConsoleArg, options?: ConsoleArg): Expr<void>;
-    dirxml(...data: ConsoleArg[]): Expr<void>;
-    error(...data: ConsoleArg[]): Expr<void>;
-    group(...data: ConsoleArg[]): Expr<void>;
-    groupCollapsed(...data: ConsoleArg[]): Expr<void>;
-    groupEnd(): Expr<void>;
-    info(...data: ConsoleArg[]): Expr<void>;
-    log(...data: ConsoleArg[]): Expr<void>;
-    table(tabularData?: ConsoleArg, properties?: ConsoleArg): Expr<void>;
-    time(label?: ConsoleArg): Expr<void>;
-    timeEnd(label?: ConsoleArg): Expr<void>;
-    timeLog(label?: ConsoleArg, ...data: ConsoleArg[]): Expr<void>;
-    trace(...data: ConsoleArg[]): Expr<void>;
-    warn(...data: ConsoleArg[]): Expr<void>;
+    // Warning: (ae-forgotten-export) The symbol "CExpr" needs to be exported by the entry point index.d.ts
+    assert(condition: unknown, ...data: unknown[]): CExpr<void>;
+    clear(): CExpr<void>;
+    count(label?: unknown): CExpr<void>;
+    countReset(label?: unknown): CExpr<void>;
+    debug(...data: unknown[]): CExpr<void>;
+    dir(item?: unknown, options?: unknown): CExpr<void>;
+    dirxml(...data: unknown[]): CExpr<void>;
+    error(...data: unknown[]): CExpr<void>;
+    group(...data: unknown[]): CExpr<void>;
+    groupCollapsed(...data: unknown[]): CExpr<void>;
+    groupEnd(): CExpr<void>;
+    info(...data: unknown[]): CExpr<void>;
+    log(...data: unknown[]): CExpr<void>;
+    table(tabularData?: unknown, properties?: unknown): CExpr<void>;
+    time(label?: unknown): CExpr<void>;
+    timeEnd(label?: unknown): CExpr<void>;
+    timeLog(label?: unknown, ...data: unknown[]): CExpr<void>;
+    trace(...data: unknown[]): CExpr<void>;
+    warn(...data: unknown[]): CExpr<void>;
 }
 
 // @public
@@ -96,18 +103,22 @@ export interface ConsoleMethods {
 export const consolePlugin: typeof console_2;
 
 // @public
-export function createConsoleInterpreter(client: ConsoleClient): Interpreter;
+export function createConsoleInterpreter(client?: ConsoleClient): Interpreter;
 
-// Warning: (ae-forgotten-export) The symbol "TypedNode" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "NExpr" needs to be exported by the entry point index.d.ts
 //
 // @public
-export function serverEvaluate(client: ConsoleClient, baseInterpreter: Interpreter): (root: TypedNode) => Promise<unknown>;
+export function serverEvaluate(client: ConsoleClient, baseInterpreter: Interpreter): (expr: NExpr<unknown, string, unknown, string>) => Promise<unknown>;
 
 // @public
 export function serverInterpreter(client: ConsoleClient): Interpreter;
 
 // @public
 export function wrapConsole(instance: ConsoleInstance): ConsoleClient;
+
+// Warnings were encountered during analysis:
+//
+// dist/22.0.0/index.d.ts:72:5 - (ae-forgotten-export) The symbol "KindSpec" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

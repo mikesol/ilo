@@ -2,7 +2,7 @@ import type { CExpr } from "@mvfm/core";
 import { isCExpr, makeCExpr } from "@mvfm/core";
 import type { RedisMethods } from "./types";
 
-type RedisValue = CExpr<string | number> | string | number;
+type _RedisValue = CExpr<string | number> | string | number;
 
 /**
  * Recursively lifts a plain value into a CExpr tree.
